@@ -20,6 +20,8 @@ Begin VB.MDIForm MainWindow
       Width           =   16050
       _ExtentX        =   28310
       _ExtentY        =   741
+      ButtonWidth     =   0
+      ButtonHeight    =   0
       Appearance      =   1
       ImageList       =   "ImageList1"
       _Version        =   327682
@@ -45,26 +47,6 @@ Begin VB.MDIForm MainWindow
          EndProperty
       EndProperty
    End
-   Begin VB.PictureBox Picture1 
-      Align           =   4  'Align Right
-      BorderStyle     =   0  'None
-      Height          =   8775
-      Left            =   9990
-      ScaleHeight     =   8775
-      ScaleWidth      =   2550
-      TabIndex        =   6
-      Top             =   420
-      Visible         =   0   'False
-      Width           =   2550
-      Begin VB.Frame Frame1 
-         Caption         =   "Frame1"
-         Height          =   4695
-         Left            =   0
-         TabIndex        =   7
-         Top             =   0
-         Width           =   2535
-      End
-   End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
       Height          =   300
@@ -81,6 +63,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -106,11 +89,10 @@ Begin VB.MDIForm MainWindow
          _ExtentX        =   6165
          _ExtentY        =   688
          ButtonWidth     =   609
-         ButtonHeight    =   582
          ImageList       =   "ImageList1"
          _Version        =   327682
          BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
-            NumButtons      =   6
+            NumButtons      =   9
             BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
                Key             =   "SBTNew1"
                Object.Tag             =   ""
@@ -127,7 +109,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   3
             EndProperty
             BeginProperty Button4 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   "STBRemove1"
+               Key             =   "SBTRemove1"
                Object.Tag             =   ""
                ImageIndex      =   14
             EndProperty
@@ -138,9 +120,26 @@ Begin VB.MDIForm MainWindow
                MixedState      =   -1  'True
             EndProperty
             BeginProperty Button6 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   "STBFolderUp1"
+               Key             =   "SBTFolderUp1"
                Object.Tag             =   ""
                ImageIndex      =   15
+            EndProperty
+            BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
+               Object.Tag             =   ""
+               Style           =   3
+               Object.Width           =   1e-4
+               MixedState      =   -1  'True
+            EndProperty
+            BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   "SBTFront1"
+               Object.Tag             =   ""
+               ImageIndex      =   16
+            EndProperty
+            BeginProperty Button9 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   "SBTBack1"
+               Object.Tag             =   ""
+               ImageIndex      =   17
             EndProperty
          EndProperty
       End
@@ -216,7 +215,7 @@ Begin VB.MDIForm MainWindow
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   15
+         NumListImages   =   18
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "MainWindow.frx":0442
             Key             =   ""
@@ -277,6 +276,18 @@ Begin VB.MDIForm MainWindow
             Picture         =   "MainWindow.frx":281E
             Key             =   ""
          EndProperty
+         BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "MainWindow.frx":2930
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "MainWindow.frx":2A42
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "MainWindow.frx":2B54
+            Key             =   ""
+         EndProperty
       EndProperty
    End
    Begin ComctlLib.ImageList TreeImageList1 
@@ -292,151 +303,151 @@ Begin VB.MDIForm MainWindow
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   37
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":2930
+            Picture         =   "MainWindow.frx":2C66
             Key             =   ""
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":2C4A
+            Picture         =   "MainWindow.frx":2F80
             Key             =   ""
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":2F64
+            Picture         =   "MainWindow.frx":329A
             Key             =   ""
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":327E
+            Picture         =   "MainWindow.frx":35B4
             Key             =   ""
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":3598
+            Picture         =   "MainWindow.frx":38CE
             Key             =   ""
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":38B2
+            Picture         =   "MainWindow.frx":3BE8
             Key             =   ""
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":3BCC
+            Picture         =   "MainWindow.frx":3F02
             Key             =   ""
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":3EE6
+            Picture         =   "MainWindow.frx":421C
             Key             =   ""
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":4200
+            Picture         =   "MainWindow.frx":4536
             Key             =   ""
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":451A
+            Picture         =   "MainWindow.frx":4850
             Key             =   ""
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":4834
+            Picture         =   "MainWindow.frx":4B6A
             Key             =   ""
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":4B4E
+            Picture         =   "MainWindow.frx":4E84
             Key             =   ""
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":4E68
+            Picture         =   "MainWindow.frx":519E
             Key             =   ""
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":5182
+            Picture         =   "MainWindow.frx":54B8
             Key             =   ""
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":549C
+            Picture         =   "MainWindow.frx":57D2
             Key             =   ""
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":57B6
+            Picture         =   "MainWindow.frx":5AEC
             Key             =   ""
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":5AD0
+            Picture         =   "MainWindow.frx":5E06
             Key             =   ""
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":5DEA
+            Picture         =   "MainWindow.frx":6120
             Key             =   ""
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":6104
+            Picture         =   "MainWindow.frx":643A
             Key             =   ""
          EndProperty
          BeginProperty ListImage20 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":641E
+            Picture         =   "MainWindow.frx":6754
             Key             =   ""
          EndProperty
          BeginProperty ListImage21 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":6738
+            Picture         =   "MainWindow.frx":6A6E
             Key             =   ""
          EndProperty
          BeginProperty ListImage22 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":6A52
+            Picture         =   "MainWindow.frx":6D88
             Key             =   ""
          EndProperty
          BeginProperty ListImage23 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":6D6C
+            Picture         =   "MainWindow.frx":70A2
             Key             =   ""
          EndProperty
          BeginProperty ListImage24 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":7086
+            Picture         =   "MainWindow.frx":73BC
             Key             =   ""
          EndProperty
          BeginProperty ListImage25 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":73A0
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage26 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":74B2
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage27 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":75C4
-            Key             =   ""
-         EndProperty
-         BeginProperty ListImage28 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "MainWindow.frx":76D6
             Key             =   ""
          EndProperty
-         BeginProperty ListImage29 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+         BeginProperty ListImage26 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "MainWindow.frx":77E8
             Key             =   ""
          EndProperty
-         BeginProperty ListImage30 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+         BeginProperty ListImage27 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "MainWindow.frx":78FA
             Key             =   ""
          EndProperty
+         BeginProperty ListImage28 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "MainWindow.frx":7A0C
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage29 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "MainWindow.frx":7B1E
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage30 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "MainWindow.frx":7C30
+            Key             =   ""
+         EndProperty
          BeginProperty ListImage31 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":7C14
+            Picture         =   "MainWindow.frx":7F4A
             Key             =   ""
          EndProperty
          BeginProperty ListImage32 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":7F2E
+            Picture         =   "MainWindow.frx":8264
             Key             =   ""
          EndProperty
          BeginProperty ListImage33 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":8248
+            Picture         =   "MainWindow.frx":857E
             Key             =   ""
          EndProperty
          BeginProperty ListImage34 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":8562
+            Picture         =   "MainWindow.frx":8898
             Key             =   ""
          EndProperty
          BeginProperty ListImage35 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":887C
+            Picture         =   "MainWindow.frx":8BB2
             Key             =   ""
          EndProperty
          BeginProperty ListImage36 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":8B96
+            Picture         =   "MainWindow.frx":8ECC
             Key             =   ""
          EndProperty
          BeginProperty ListImage37 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "MainWindow.frx":8EB0
+            Picture         =   "MainWindow.frx":91E6
             Key             =   ""
          EndProperty
       EndProperty
@@ -595,6 +606,9 @@ Begin VB.MDIForm MainWindow
                Caption         =   "Picture"
             End
          End
+         Begin VB.Menu mnuAddExistingObj1 
+            Caption         =   "Add Existing Object (Current Scene)"
+         End
       End
       Begin VB.Menu mnuAnimsAndEffects1 
          Caption         =   "Animation And Effects"
@@ -665,6 +679,14 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public WithEvents Engine As EngineClass
 Attribute Engine.VB_VarHelpID = -1
+Enum SBTActions
+    CreateNew = 0
+    OpenNew = 1
+    SaveItem = 2
+    RemoveItem = 3
+    SBTBringFront = 4
+    SBTBringBack = 5
+End Enum
 
 Private Sub List1_Click()
 
@@ -971,15 +993,29 @@ End Sub
 
 Private Sub SolutionBrowser1_Click()
     Me.TreeViewBrowser2.Nodes.Clear
-    Select Case Me.SolutionBrowser1.selectedItem.Key
-        
-        Case "TSceneBrowser"
-            Me.Engine.UpdateSceneBrowser Me.TreeViewBrowser2
-        Case "TSolution"
+    If Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
+        Me.Engine.UpdateSceneBrowser Me.TreeViewBrowser2
+        Me.ToolbarRightCaptionBar1.Buttons(1).ToolTipText = "Create New Object"
+        Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open Object/Scene From Disk"
+        Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Object/Scene To Disk"
+        Me.ToolbarRightCaptionBar1.Buttons(4).ToolTipText = "Make Scene Inactive Or Remove Object From Scene"
+        Me.ToolbarRightCaptionBar1.Buttons(8).ToolTipText = "Chance Drawing Priority Of Scene/Object To Front"
+        Me.ToolbarRightCaptionBar1.Buttons(9).ToolTipText = "Chance Drawing Priority Of Scene/Object To Back"
+        Me.ToolbarRightCaptionBar1.Buttons(8).Visible = True
+        Me.ToolbarRightCaptionBar1.Buttons(9).Visible = True
             
-        Case "TProjectB"
-            Me.Engine.BrowseEngineData Me.TreeViewBrowser2
-    End Select
+    ElseIf Me.SolutionBrowser1.selectedItem.Key = "TSolution" Then
+    
+            
+    ElseIf Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
+        Me.Engine.BrowseEngineData Me.TreeViewBrowser2
+        Me.ToolbarRightCaptionBar1.Buttons(1).ToolTipText = "Create New Item"
+        Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open File From Disk"
+        Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Item To Disk"
+        Me.ToolbarRightCaptionBar1.Buttons(4).ToolTipText = "Remove Item From Project"
+        Me.ToolbarRightCaptionBar1.Buttons(8).Visible = False
+        Me.ToolbarRightCaptionBar1.Buttons(9).Visible = False
+    End If
 End Sub
 
 Private Sub SolutionBrowserBar1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
@@ -1015,14 +1051,52 @@ Private Sub ToolbarRightCaptionBar1_ButtonClick(ByVal Button As ComctlLib.Button
     Select Case Button.Key
         
         Case "SBTNew1"
-        
+            SBTHandler CreateNew
         Case "SBTOpen1"
-        
+            SBTHandler OpenNew
         Case "SBTSave1"
-        
+            SBTHandler SaveItem
         Case "SBTRemove1"
-    
+            SBTHandler RemoveItem
     End Select
+End Sub
+
+Private Sub SBTHandler(Action As SBTActions)
+    Dim tGameObject As GameObject_Class
+    If Me.TreeViewBrowser2.selectedItem Is Nothing Then
+        Exit Sub
+    End If
+    
+    If Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
+        With Me.TreeViewBrowser2.selectedItem
+            If Action = RemoveItem Then
+                If .Tag = "Script" Then
+                    Me.Engine.RemoveScript .text
+                ElseIf .Tag = "Scene" Then
+                    Me.Engine.UnloadScene .text
+                ElseIf .Tag = "GameObject" Then
+                    Me.Engine.UnloadGameObject .text
+                Else
+                    MsgBox "Item cannot be removed", vbExclamation
+                End If
+            End If
+        End With
+    ElseIf Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
+        With Me.TreeViewBrowser2.selectedItem
+            If Action = RemoveItem Then
+                If .Tag = "Object" Then
+                    Me.Engine.Scenes(.root).Objects(.text).EndObject
+                ElseIf .Tag = "Scene" Then
+                    Me.Engine.Scenes(.text).EndScene
+                Else
+                    MsgBox "Item cannot be removed", vbExclamation
+                End If
+            ElseIf Action = SBTBringBack Then
+            End If
+        End With
+    Else
+        MsgBox "Not Implemented"
+    End If
 End Sub
 
 Private Sub TreeViewBrowser2_AfterLabelEdit(Cancel As Integer, NewString As String)
@@ -1076,7 +1150,7 @@ Private Sub TreeViewBrowser2_DblClick()
                 Set tGameObject = Engine.GetCurrentScene().Objects(.text)
                 Me.Engine.SelectObject tGameObject
             ElseIf .Tag = "Scene" Then
-    
+                
             ElseIf .Tag = "Module" Then
             'Me.EditModule Me.GameEngine.CodeEngine.Modules(.Key)
             ElseIf .Tag = "MeshCode" Then

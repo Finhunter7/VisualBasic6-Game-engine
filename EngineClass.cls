@@ -302,9 +302,15 @@ Sub BrowseEngineData(TargetTreeView As Object)
     Dim thisModule As Module
     Dim thisprocedure As Procedure
     
-    For i = 1 To Me.ScenesInactive.Count
-        Set thisNode = TargetTreeView.Nodes.Add("F_Scenes", 4, "Sc_" & Me.ScenesInactive.Item(i).Name, Me.ScenesInactive.Item(i).Name, 17, 17)
+    For Each Item In Me.ScenesInactive
+        Set thisNode = TargetTreeView.Nodes.Add("F_Scenes", 4, "Sc_" & Item.Name, Item.Name, 17, 17)
         thisNode.Tag = "Scene"
+        Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name, 4, "Sc_" & Item.Name & "_ObjectFolder", "Objects", 1, 1)
+        thisNode.Tag = "Folder"
+        For Each Obj In Item.Objects
+            Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name & "_ObjectFolder", 4, "Sc_" & Item.Name & "_Object_" & Obj.Name, Obj.Name, 7, 7)
+            thisNode.Tag = "GameObject"
+        Next
     Next
     For i = 1 To Me.CodeEngine.Modules.Count
         Set thisModule = Me.CodeEngine.Modules.Item(i)
@@ -529,9 +535,10 @@ Function UnloadGameObject(GameObjectName As String)
     Dim thisGameObject As GameObject_Class
     Dim ThisGameObjModule As Module
     Set thisGameObject = Me.GameObjects.Item(GameObjectName)
-    Set ThisGameObjModule = Me.CodeEngine.Modules(GameObjectName)
+    'Set ThisGameObjModule = Me.CodeEngine.Modules(GameObjectName)
     'Unload ThisGameObjModule
-    thisGameObject.EndObject
+    'thisGameObject.EndObject
+    Me.GameObjects.Remove GameObjectName
     'Unload ThisGameObject
     RaiseEvent OnDataChanged
 End Function
