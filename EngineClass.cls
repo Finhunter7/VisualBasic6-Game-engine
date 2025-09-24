@@ -233,7 +233,7 @@ Private Sub CreateProjectTree(TreeViewTarget As Object)
     Set curNode = TreeViewTarget.Nodes.Add("Program", 4, "ThreadID", "ThreadID: " & App.ThreadID, 25, 25)
     curNode.Tag = "Propety"
     
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "ScriptEngine", "ScriptEngine", 7, 7)
+    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "ScriptEngine", "MSScriptControl", 7, 7)
     curNode.Tag = "CodeEngine"
     Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "ScriptEngine_Propetites", "Propertites", 15, 15)
     curNode.Tag = "Propetites"

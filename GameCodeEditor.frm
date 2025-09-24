@@ -22,122 +22,6 @@ Begin VB.Form CodeEditor
    ScaleHeight     =   5415
    ScaleWidth      =   4470
    Tag             =   "CodeEditor"
-   Begin ComctlLib.Toolbar Toolbar2 
-      Align           =   1  'Align Top
-      Height          =   420
-      Left            =   0
-      TabIndex        =   5
-      Top             =   0
-      Width           =   4470
-      _ExtentX        =   7885
-      _ExtentY        =   741
-      ButtonWidth     =   635
-      ButtonHeight    =   582
-      Appearance      =   1
-      ImageList       =   "ImageList1"
-      _Version        =   327682
-      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
-         NumButtons      =   13
-         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TCut1"
-            Description     =   ""
-            Object.ToolTipText     =   "Cut"
-            Object.Tag             =   ""
-            ImageIndex      =   4
-         EndProperty
-         BeginProperty Button2 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TCopy1"
-            Description     =   ""
-            Object.ToolTipText     =   "Copy"
-            Object.Tag             =   ""
-            ImageIndex      =   5
-         EndProperty
-         BeginProperty Button3 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TPaste1"
-            Description     =   ""
-            Object.ToolTipText     =   "Paste"
-            Object.Tag             =   ""
-            ImageIndex      =   6
-         EndProperty
-         BeginProperty Button4 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TFind1"
-            Description     =   ""
-            Object.ToolTipText     =   "Find"
-            Object.Tag             =   ""
-            ImageIndex      =   7
-         EndProperty
-         BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
-            Object.Tag             =   ""
-            Style           =   3
-            MixedState      =   -1  'True
-         EndProperty
-         BeginProperty Button6 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TUndo1"
-            Description     =   ""
-            Object.ToolTipText     =   "Undo"
-            Object.Tag             =   ""
-            ImageIndex      =   9
-         EndProperty
-         BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TRedo1"
-            Description     =   ""
-            Object.ToolTipText     =   "Redo"
-            Object.Tag             =   ""
-            ImageIndex      =   10
-         EndProperty
-         BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
-            Object.Tag             =   ""
-            Style           =   3
-            MixedState      =   -1  'True
-         EndProperty
-         BeginProperty Button9 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TRun1"
-            Description     =   ""
-            Object.ToolTipText     =   "Start Game In Window"
-            Object.Tag             =   ""
-            ImageIndex      =   11
-         EndProperty
-         BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
-            Object.Tag             =   ""
-            Style           =   3
-            MixedState      =   -1  'True
-         EndProperty
-         BeginProperty Button11 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TCheck1"
-            Description     =   ""
-            Object.ToolTipText     =   "Check Code For Errors"
-            Object.Tag             =   ""
-            ImageIndex      =   8
-         EndProperty
-         BeginProperty Button12 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   ""
-            Description     =   ""
-            Object.ToolTipText     =   "Check For Errors"
-            Object.Tag             =   ""
-            ImageIndex      =   13
-         EndProperty
-         BeginProperty Button13 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   "TProp1"
-            Description     =   ""
-            Object.ToolTipText     =   "View Propertites"
-            Object.Tag             =   ""
-            ImageIndex      =   12
-         EndProperty
-      EndProperty
-   End
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
       Height          =   390
@@ -167,6 +51,98 @@ Begin VB.Form CodeEditor
          Width           =   8055
       End
    End
+   Begin ComctlLib.Toolbar Toolbar2 
+      Align           =   1  'Align Top
+      Height          =   420
+      Left            =   0
+      TabIndex        =   5
+      Top             =   0
+      Width           =   4470
+      _ExtentX        =   7885
+      _ExtentY        =   741
+      ButtonWidth     =   635
+      ButtonHeight    =   582
+      Appearance      =   1
+      ImageList       =   "ImageList1"
+      _Version        =   327682
+      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
+         NumButtons      =   13
+         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TCut1"
+            Object.ToolTipText     =   "Cut"
+            Object.Tag             =   ""
+            ImageIndex      =   4
+         EndProperty
+         BeginProperty Button2 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TCopy1"
+            Object.ToolTipText     =   "Copy"
+            Object.Tag             =   ""
+            ImageIndex      =   5
+         EndProperty
+         BeginProperty Button3 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TPaste1"
+            Object.ToolTipText     =   "Paste"
+            Object.Tag             =   ""
+            ImageIndex      =   6
+         EndProperty
+         BeginProperty Button4 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TFind1"
+            Object.ToolTipText     =   "Find"
+            Object.Tag             =   ""
+            ImageIndex      =   7
+         EndProperty
+         BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.Tag             =   ""
+            Style           =   3
+            MixedState      =   -1  'True
+         EndProperty
+         BeginProperty Button6 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TUndo1"
+            Object.ToolTipText     =   "Undo"
+            Object.Tag             =   ""
+            ImageIndex      =   9
+         EndProperty
+         BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TRedo1"
+            Object.ToolTipText     =   "Redo"
+            Object.Tag             =   ""
+            ImageIndex      =   10
+         EndProperty
+         BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.Tag             =   ""
+            Style           =   3
+            MixedState      =   -1  'True
+         EndProperty
+         BeginProperty Button9 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TRun1"
+            Object.ToolTipText     =   "Start Game In Window"
+            Object.Tag             =   ""
+            ImageIndex      =   11
+         EndProperty
+         BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.Tag             =   ""
+            Style           =   3
+            MixedState      =   -1  'True
+         EndProperty
+         BeginProperty Button11 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TCheck1"
+            Object.ToolTipText     =   "Check Code For Errors"
+            Object.Tag             =   ""
+            ImageIndex      =   8
+         EndProperty
+         BeginProperty Button12 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.ToolTipText     =   "Check For Errors"
+            Object.Tag             =   ""
+            ImageIndex      =   13
+         EndProperty
+         BeginProperty Button13 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TProp1"
+            Object.ToolTipText     =   "View Propertites"
+            Object.Tag             =   ""
+            ImageIndex      =   12
+         EndProperty
+      EndProperty
+   End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
       Height          =   255
@@ -184,13 +160,11 @@ Begin VB.Form CodeEditor
             Style           =   1
             Enabled         =   0   'False
             TextSave        =   "CAPS"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   2
             TextSave        =   "NUM"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -198,14 +172,12 @@ Begin VB.Form CodeEditor
             Object.Width           =   2778
             Text            =   "Exposed Object:       "
             TextSave        =   "Exposed Object:       "
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Line:"
             TextSave        =   "Line:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -219,7 +191,6 @@ Begin VB.Form CodeEditor
       _ExtentX        =   7646
       _ExtentY        =   4471
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -432,6 +403,7 @@ Function EditData(Script As Script_Class, TName As String, TSession As CodeEdito
     Set Me.GameEngine = MGameEngine
     Set inEditObjectData = Script
     Me.Text1.text = Script.Data
+    cChanged = False
     Me.Session = TSession
     Me.curClassName = TName
     Me.Caption = Me.curClassName
@@ -603,6 +575,8 @@ Private Sub Text1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y 
 End Sub
 
 Private Sub Text1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    'Dim TextCol As New Collection
+    'Dim TextArray() As String
     SelectToolTip Me.Text1.SelText
 End Sub
 
