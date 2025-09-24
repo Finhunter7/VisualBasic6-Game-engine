@@ -13,6 +13,9 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
+
+' This Is The Main Engine Class
+
 'Events
 Public Event OnDataChanged()
 Public Event OnSceneCreated()
