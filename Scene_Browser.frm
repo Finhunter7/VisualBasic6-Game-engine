@@ -30,6 +30,7 @@ Begin VB.Form Scene_Browser
             Bevel           =   0
             Text            =   "Item Type:"
             TextSave        =   "Item Type:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -37,6 +38,7 @@ Begin VB.Form Scene_Browser
             Bevel           =   0
             Text            =   "Item Class:"
             TextSave        =   "Item Class:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -548,7 +550,7 @@ Function Update()
 End Function
 
 Function UpdateSceneBrowser()
-    Me.GameEngine.UpdateSceneBrowser Me.TreeView1
+    Me.GameEngine.WorkspaceUtilClass.UpdateSceneBrowser Me.TreeView1
 End Function
 
 Private Sub TreeView1_DblClick()

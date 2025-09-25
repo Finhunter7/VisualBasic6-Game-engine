@@ -54,6 +54,7 @@ Class=Material_Class; Material_Class.cls
 Class=Texture_Class; Texture_Class.cls
 Form=ProjectTypeSelector.frm
 Class=EngineEvent_Class; EngineEvent_Class.cls
+Class=VBCEWorkspace_Class; VBCEWorkspace_Class.cls
 IconForm="MainWindow"
 Startup="Sub Main"
 HelpFile=""

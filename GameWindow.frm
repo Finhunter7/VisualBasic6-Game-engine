@@ -3,14 +3,14 @@ Begin VB.Form GameWindow
    AutoRedraw      =   -1  'True
    BackColor       =   &H00000000&
    Caption         =   "Form3"
-   ClientHeight    =   4380
+   ClientHeight    =   4065
    ClientLeft      =   60
    ClientTop       =   405
-   ClientWidth     =   5505
+   ClientWidth     =   5580
    ForeColor       =   &H00FFFFFF&
    LinkTopic       =   "Form3"
-   ScaleHeight     =   4380
-   ScaleWidth      =   5505
+   ScaleHeight     =   4065
+   ScaleWidth      =   5580
    StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "GameWindow"

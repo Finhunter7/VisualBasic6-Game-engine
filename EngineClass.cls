@@ -35,7 +35,11 @@ Public ProjectName As String
 Public ProjectPath As String
 Public ProjectCodeLanguage As String
 Public ProjectType As ProjectTypes
+
+' Editor Utils
 Public IsInEditor As Boolean
+Public WorkspaceUtilClass As Object
+
 Public BaseScene As Integer
 Public EngineRefrences As New Collection
 Public EngineComponents As New Collection
@@ -199,195 +203,6 @@ Function SelectObject(GameObject As GameObject_Class)
     Me.EditorWindow.Line (GameObject.Position.X - (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y - (GameObject.EditorColliderSize.Y / 2))-(GameObject.Position.X + (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y + (GameObject.EditorColliderSize.Y / 2)), vbGreen, B
     Set EditorSelectedObject = GameObject
 End Function
-
-Private Sub CreateProjectTree(TreeViewTarget As Object)
-    Dim curNode As Object
-    
-    Set curNode = TreeViewTarget.Nodes.Add(, 1, "c_Project_1", Me.ProjectName, 20, 20)
-    curNode.Tag = "Project"
-    
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "Engine", "Engine", 21, 21)
-    curNode.Tag = "Object"
-    Set curNode = TreeViewTarget.Nodes.Add("Engine", 4, "F_References", "References", 4, 4)
-    curNode.Tag = "Object"
-    
-    With Me
-        For i = 1 To .EngineRefrences.Count
-            Set curNode = TreeViewTarget.Nodes.Add("F_References", 4, "Reference_" & .EngineRefrences.Item(i).Name, .EngineRefrences.Item(i).Name, 5, 5)
-            curNode.Tag = "Object"
-            Set curNode = TreeViewTarget.Nodes.Add("Reference_" & .EngineRefrences.Item(i).Name, 4, "Reference_Class_" & .EngineRefrences.Item(i).Name, "Class: " & .EngineRefrences.Item(i).RefrenceClass, 25, 25)
-            curNode.Tag = "Propety"
-            Set curNode = TreeViewTarget.Nodes.Add("Reference_" & .EngineRefrences.Item(i).Name, 4, "Reference_FilePath_" & .EngineRefrences.Item(i).Name, "FilePath: " & .EngineRefrences.Item(i).Path, 25, 25)
-            curNode.Tag = "Propety"
-        Next
-    End With
-    
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "Program", "Program", 21, 21)
-    curNode.Tag = "Object"
-    Set curNode = TreeViewTarget.Nodes.Add("Program", 4, "AppPath", "Path: " & Me.GetGamePath, 25, 25)
-    curNode.Tag = "Propety"
-    Set curNode = TreeViewTarget.Nodes.Add("Program", 4, "ProjectPath", "ProjectPath: " & Me.ProjectPath, 25, 25)
-    curNode.Tag = "Propety"
-    Set curNode = TreeViewTarget.Nodes.Add("Program", 4, "TaskVisible", "TaskVisible: " & App.TaskVisible, 25, 25)
-    curNode.Tag = "Propety"
-    Set curNode = TreeViewTarget.Nodes.Add("Program", 4, "ThreadID", "ThreadID: " & App.ThreadID, 25, 25)
-    curNode.Tag = "Propety"
-    
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "ScriptEngine", "MSScriptControl", 7, 7)
-    curNode.Tag = "CodeEngine"
-    Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "ScriptEngine_Propetites", "Propertites", 15, 15)
-    curNode.Tag = "Propetites"
-    
-    
-    ' CodeEngine Propertites
-    With Me.CodeEngine
-        Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine_Propetites", 4, "AllowUI", "AllowUI: " & .AllowUI, 25, 25)
-        curNode.Tag = "Propety"
-        Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine_Propetites", 4, "Language", "Language: " & .Language, 25, 25)
-        curNode.Tag = "Propety"
-        Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine_Propetites", 4, "Global_Procedures_Count", "Global Procedures Count: " & .Procedures.Count, 25, 25)
-        curNode.Tag = "Propety"
-        Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine_Propetites", 4, "SitehWnd", "SitehWnd: " & .SitehWnd, 25, 25)
-        curNode.Tag = "Propety"
-        Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine_Propetites", 4, "Timeout", "Timeout: " & .Timeout, 25, 25)
-        curNode.Tag = "Propety"
-        Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine_Propetites", 4, "Modules_Count", "Modules Count: " & .Modules.Count, 25, 25)
-        curNode.Tag = "Propety"
-        Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine_Propetites", 4, "UseSafeSubset", "UseSafeSubset: " & .UseSafeSubset, 25, 25)
-        curNode.Tag = "Propety"
-    End With
-    
-    ' CodeEngine Global Objects
-    Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "F_Objects", "Objects", 1, 1)
-    curNode.Tag = "Folder"
-    For Each Obj In Me.GlobalObjects
-        Set curNode = TreeViewTarget.Nodes.Add("F_Objects", 4, "Global_" & Obj.Name, Obj.Name, 5, 5)
-        curNode.Tag = "Object"
-    Next
-    
-    Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "F_Modules", "Modules", 1, 1)
-    curNode.Tag = "Folder"
-    Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "F_GlobalProcedures", "GlobalProcedures", 1, 1)
-    curNode.Tag = "Folder"
-    Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "F_Global", "Global", 5, 5)
-    curNode.Tag = "Folder"
-    Set curNode = TreeViewTarget.Nodes.Add("F_Global", 4, "Script_Global", "Global", 24, 24)
-    curNode.Tag = "Script"
-    
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Scenes", "Scenes", 1, 1)
-    curNode.Tag = "Folder"
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Scripts", "Scripts", 1, 1)
-    curNode.Tag = "Folder"
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Comp_Scripts", "Component_Scripts", 1, 1)
-    curNode.Tag = "Folder"
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Mesh_Scripts", "Mesh_Scripts", 1, 1)
-    curNode.Tag = "Folder"
-    With Me
-        For Each Item In .Mesh_Scripts
-            Set curNode = TreeViewTarget.Nodes.Add("F_Mesh_Scripts", 4, "Mesh_" & Item.Name, Item.Name, 14, 14)
-            curNode.Tag = "Script"
-        Next
-    End With
-    
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_GameObjects", "GameObjects", 1, 1)
-    curNode.Tag = "Folder"
-    
-End Sub
-
-Sub BrowseEngineData(TargetTreeView As Object)
-    On Error Resume Next
-    TargetTreeView.Nodes.Clear
-    CreateProjectTree TargetTreeView
-    Dim thisNode As Object
-    Dim thisModule As Module
-    Dim thisprocedure As Procedure
-    
-    For Each Item In Me.ScenesInactive
-        Set thisNode = TargetTreeView.Nodes.Add("F_Scenes", 4, "Sc_" & Item.Name, Item.Name, 17, 17)
-        thisNode.Tag = "Scene"
-        Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name, 4, "Sc_" & Item.Name & "_ObjectFolder", "Objects", 1, 1)
-        thisNode.Tag = "Folder"
-        For Each Obj In Item.Objects
-            Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name & "_ObjectFolder", 4, "Sc_" & Item.Name & "_Object_" & Obj.Name, Obj.Name, 7, 7)
-            thisNode.Tag = "GameObject"
-        Next
-    Next
-    For i = 1 To Me.CodeEngine.Modules.Count
-        Set thisModule = Me.CodeEngine.Modules.Item(i)
-        Set thisNode = TargetTreeView.Nodes.Add("F_Modules", 4, "M_" & thisModule.Name, thisModule.Name, 5, 5)
-        thisNode.Tag = "Module"
-        For p = 1 To thisModule.Procedures.Count
-            Set thisprocedure = thisModule.Procedures.Item(p)
-            Set thisNode = TargetTreeView.Nodes.Add("M_" & thisModule.Name, 4, thisModule.Name & "_Propety_Name_" & thisprocedure.Name, "Procedure: " & thisprocedure.Name, 25, 25)
-            thisNode.Tag = "Procedure"
-            Set thisNode = TargetTreeView.Nodes.Add(thisModule.Name & "_Propety_Name_" & thisprocedure.Name, 4, thisModule.Name & "_Propety_NumArgs_" & thisprocedure.Name, "Procedure NumArgs: " & thisprocedure.NumArgs, 25, 25)
-            thisNode.Tag = "Procedure"
-            Set thisNode = TargetTreeView.Nodes.Add(thisModule.Name & "_Propety_Name_" & thisprocedure.Name, 4, thisModule.Name & "_Propety_HasReturnVal_" & thisprocedure.Name, "Procedure HasReturnValue: " & thisprocedure.HasReturnValue, 25, 25)
-            thisNode.Tag = "Procedure"
-        Next
-    Next
-    For i = 1 To Me.Scripts.Count
-        Set thisNode = TargetTreeView.Nodes.Add("F_Scripts", 4, "S_" & Me.Scripts.Item(i).Name, Me.Scripts.Item(i).Name, 14, 14)
-        thisNode.Tag = "Script"
-    Next
-    For Each GObj In Me.GameObjects
-        Set thisNode = TargetTreeView.Nodes.Add("F_GameObjects", 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name, GObj.MyScene.Name & "_" & GObj.Name, 7, 7)
-        thisNode.Tag = "GameObject"
-        Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name, 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "Components", "Components", 1, 1)
-        thisNode.Tag = "Folder"
-        For Each Comp In GObj.Components
-            Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "Components", 4, GObj.MyScene.Name & "_" & GObj.Name & "_" & Comp.Name, Comp.Name, 5, 5)
-            thisNode.Tag = "Component"
-        Next
-    Next
-    For i = 1 To Me.CodeEngine.Procedures.Count
-        Set thisprocedure = Me.CodeEngine.Procedures.Item(i)
-        Set thisNode = TargetTreeView.Nodes.Add("F_GlobalProcedures", 4, "Procedure_" & thisprocedure.Name, thisprocedure.Name)
-        thisNode.Tag = "Procedure"
-        Set thisNode = TargetTreeView.Nodes.Add("Procedure_" & thisprocedure.Name, 4, "Propety_NumArgs_" & thisprocedure.Name, "NumArgs: " & thisprocedure.NumArgs, 25, 25)
-        thisNode.Tag = "Propety"
-        Set thisNode = TargetTreeView.Nodes.Add("Procedure_" & thisprocedure.Name, 4, "Propety_HasReturnValue_" & thisprocedure.Name, "HasReturnValue: " & thisprocedure.HasReturnValue, 25, 25)
-        thisNode.Tag = "Propety"
-    Next
-End Sub
-
-Sub UpdateSceneBrowser(TreeViewObject As Object)
-    On Error Resume Next
-    TreeViewObject.Nodes.Clear
-    Dim curGObject As GameObject_Class
-    Dim curGobjChild As GameObject_Class
-    Dim curScene As Scene_Class
-    
-    If Me.Scenes.Count < 1 Then
-        TreeViewObject.Nodes.Add , 0, "None", "No Active Scenes"
-        Exit Sub
-    End If
-    For curItem = 1 To Me.Scenes.Count
-        Set thisNode = TreeViewObject.Nodes.Add(, 0, Me.Scenes.Item(curItem).Name, Me.Scenes.Item(curItem).Name, 17, 17)
-        thisNode.Tag = "Scene"
-        
-        For curObject = 1 To Me.Scenes.Item(curItem).Objects.Count
-            Set curGObject = Me.Scenes.Item(curItem).Objects.Item(curObject)
-            Set curScene = Me.Scenes.Item(curItem)
-            Set thisNode = TreeViewObject.Nodes.Add(curScene.Name, 4, curScene.Name & "_" & curGObject.Name, curGObject.Name, 7, 7)
-            
-            thisNode.Tag = "Object"
-            'For Each CItem In curGObject.GetAllChildren()
-                'Set curGobjChild = curGObject.Child.Item(curChild)
-                'Set thisNode = TreeViewObject.Nodes.Add(curGObject.MyScene.Name & "_" & curGObject.Name, 4, curGObject.Name & "_" & CItem.Name, CItem.Name, 7, 7)
-                'thisNode.Tag = "Object"
-            'Next
-        Next
-    Next
-End Sub
-
-Sub BrowseObject(TreeViewObject As Object, TObject As Object)
-    TreeViewObject.Nodes.Clear
-    If TObject Is Nothing Then
-        TreeViewObject.Nodes.Add , 0, "None", "No Items Selected Or No Items Avaible"
-        Exit Sub
-    End If
-End Sub
 
 Function EditorRefreshScenes()
     Dim curScene As Scene_Class
@@ -701,6 +516,8 @@ Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As For
         Set Me.SceneBrowser = TSceneBrowser
         Set Me.ProjectBrowser.GameEngine = Me
         Set Me.SceneBrowser.GameEngine = Me
+        Set Me.WorkspaceUtilClass = New VBCEWorkspace_Class
+        Me.WorkspaceUtilClass.LoadDeveloperTools Me
     End If
     
     Set Me.InputSystem.GameEngine = Me

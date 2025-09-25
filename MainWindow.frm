@@ -20,8 +20,6 @@ Begin VB.MDIForm MainWindow
       Width           =   16050
       _ExtentX        =   28310
       _ExtentY        =   741
-      ButtonWidth     =   0
-      ButtonHeight    =   0
       Appearance      =   1
       ImageList       =   "ImageList1"
       _Version        =   327682
@@ -63,8 +61,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -114,7 +110,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -125,7 +120,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -994,7 +988,7 @@ End Sub
 Private Sub SolutionBrowser1_Click()
     Me.TreeViewBrowser2.Nodes.Clear
     If Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
-        Me.Engine.UpdateSceneBrowser Me.TreeViewBrowser2
+        Me.Engine.WorkspaceUtilClass.UpdateSceneBrowser Me.TreeViewBrowser2
         Me.ToolbarRightCaptionBar1.Buttons(1).ToolTipText = "Create New Object"
         Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open Object/Scene From Disk"
         Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Object/Scene To Disk"
@@ -1008,7 +1002,7 @@ Private Sub SolutionBrowser1_Click()
     
             
     ElseIf Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
-        Me.Engine.BrowseEngineData Me.TreeViewBrowser2
+        Me.Engine.WorkspaceUtilClass.BrowseEngineData Me.TreeViewBrowser2
         Me.ToolbarRightCaptionBar1.Buttons(1).ToolTipText = "Create New Item"
         Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open File From Disk"
         Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Item To Disk"

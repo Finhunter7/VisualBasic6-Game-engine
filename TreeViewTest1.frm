@@ -30,7 +30,6 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Item: None"
             TextSave        =   "Item: None"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -38,7 +37,6 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Type: Test_Class "
             TextSave        =   "Type: Test_Class "
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -46,7 +44,6 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "In Scene:"
             TextSave        =   "In Scene:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -347,7 +344,7 @@ Sub SaveAs()
     Dim thisGameObject As GameObject_Class
     Dim thisScene As Scene_Class
     Dim thisScript As Script_Class
-    Dim Filename As String
+    Dim FileName As String
     
     Set selObject = TreeView1.selectedItem
     If selObject Is Nothing Then
@@ -356,26 +353,26 @@ Sub SaveAs()
     End If
 
     If selObject.Tag = "Scene" Then
-        Filename = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBScene")
-        If Len(Filename) = 0 Then
+        FileName = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBScene")
+        If Len(FileName) = 0 Then
             Exit Sub
         End If
         Set thisScene = GameEngine.ScenesInactive(selObject.text)
-        Me.GameEngine.SaveObjectToDisk Scene, Filename, thisScene
+        Me.GameEngine.SaveObjectToDisk Scene, FileName, thisScene
     ElseIf selObject.Tag = "Script" Then
-        Filename = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBCEScript")
-        If Len(Filename) = 0 Then
+        FileName = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBCEScript")
+        If Len(FileName) = 0 Then
             Exit Sub
         End If
         Set thisScript = GameEngine.Scripts(selObject.text)
-        Me.GameEngine.SaveObjectToDisk Script, Filename, thisScript
+        Me.GameEngine.SaveObjectToDisk Script, FileName, thisScript
     ElseIf selObject.Tag = "GameObject" Then
-        Filename = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBGObject")
-        If Len(Filename) = 0 Then
+        FileName = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBGObject")
+        If Len(FileName) = 0 Then
             Exit Sub
         End If
         Set thisGameObject = GameEngine.GameObjects(selObject.text)
-        Me.GameEngine.SaveObjectToDisk GameObject, Filename, thisGameObject
+        Me.GameEngine.SaveObjectToDisk GameObject, FileName, thisGameObject
     Else
         MsgBox selObject.text & " Item Cannot Be Save On Disk", vbExclamation
     End If
@@ -485,7 +482,7 @@ Function Update()
 End Function
 
 Function UpdateProjectBrowser()
-    Me.GameEngine.BrowseEngineData Me.TreeView1
+    Me.GameEngine.WorkspaceUtilClass.BrowseEngineData Me.TreeView1
 End Function
 
 Private Sub TreeView1_OLEStartDrag(Data As ComctlLib.DataObject, AllowedEffects As Long)
