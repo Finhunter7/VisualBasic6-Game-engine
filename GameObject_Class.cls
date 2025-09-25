@@ -33,6 +33,7 @@ Public Size As Double 'Kokonais Mittakoko
 Public EditorColliderSize As New Vector_Class ' Editorissa n‰kyv‰ valittsemis alue
 Public Velocity As New Vector_Class '
 Public Components As New Collection
+Private LoadedComponents As New Collection
 Public MyPropertites As New PropertyBag ' K‰ytet‰‰n kun objektista tehd‰‰n peliss‰ kopioita
 'Public MeshCode As Script_Class ' Referenssi Scriptiin
 Private IVisible As Boolean
@@ -149,6 +150,7 @@ Private Sub Load(GameCodeEngine As ScriptControl)
     Me.ResetPhysics
     'LoadMeshCode GameCodeEngine
     'LoadCode GameCodeEngine
+    'InitializeComponents
     LoadComponents GameCodeEngine
     Draw GameCodeEngine
 End Sub
@@ -189,11 +191,12 @@ End Function
 
 Function EditorCallDraw(GameCodeEngine As ScriptControl) ' K‰ytet‰‰n Kun Editorin Tarvitsee Piirt‰‰ Objekti Uudelleen
     On Error Resume Next
-    For Each Comp In Me.Components
-        If Comp.Tag = "RendererScript" Then
-            Comp.MyModule.Run "EditorDraw"
-            Exit For
-        End If
+    For Each Comp In LoadedComponents
+        'If Comp.Tag = "RendererScript" Then
+            'Comp.MyModule.Run "EditorDraw"
+            'Exit For
+        'End If
+        Comp.EditorDraw
     Next
 End Function
 
@@ -201,11 +204,12 @@ Private Function Draw(GameCodeEngine As ScriptControl)
     On Error Resume Next
     If IVisible Then
         For Each Comp In Me.Components
-        If Comp.Tag = "RendererScript" Then
-            Comp.MyModule.Run "Draw"
-            Exit For
-        End If
-    Next
+            If Comp.Tag = "RendererScript" Then
+                Comp.MyModule.Run "Draw"
+                Exit For
+            End If
+            'Comp.Draw
+        Next
     End If
 End Function
 
@@ -213,32 +217,55 @@ Private Function CallUpdate(GameCodeEngine As ScriptControl)
     'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_Code").Run "Update"
 End Function
 
+Private Sub InitializeComponents()
+    Dim curComponent As Object
+    For Each Item In Me.Components
+        If Item.Tag = "RendererScript" Then
+            Set curComponent = Item.MyModule.Eval("Component")
+            LoadedComponents.Add curComponent, Item.Name
+            Set curComponent.self = Me
+        ElseIf Item.Tag = "Script" Then
+            
+        End If
+    Next
+End Sub
+
 Private Function LoadComponents(CodeEngine As ScriptControl)
     On Error Resume Next
-    Dim curComponent As Object
-    For i = 1 To Me.Components.Count()
-        Set curComponent = Me.Components.Item(i)
-        curComponent.Load
+    For Each Item In Me.Components
+        Item.Load
     Next
 End Function
 
 Private Function UpdateComponents(CodeEngine As ScriptControl)
     On Error Resume Next
-    Dim curComponent As Object
-    For i = 1 To Me.Components.Count()
-        Set curComponent = Me.Components.Item(i)
-        curComponent.Update
+    For Each Item In Me.Components
+        Item.Update
     Next
 End Function
 Private Function UpdatePhysics()
     Me.Position.AddVectorV Me.Velocity
 End Function
 
-Function EndObject()
-    For i = 1 To Me.Components.Count
-        Me.RemoveComponent i
+Function EndObject() As Boolean
+    For i = 1 To LoadedComponents.Count
+        LoadedComponents.Remove i
     Next
-    Me.MyScene.Objects.Remove Me.Name
+    If Me.ParentObject Is Nothing Then
+        If Me.MyScene Is Nothing Then
+            EndObject = False
+            Exit Function
+        Else
+            Me.MyScene.Objects.Remove Me.Name
+            Set Me.MyScene = Nothing
+            EndObject = True
+        End If
+    Else
+        Me.ParentObject.Child.Remove Me.Name
+        Set Me.MyScene = Nothing
+        Set Me.ParentObject = Nothing
+        EndObject = True
+    End If
 End Function
 
 Private Sub Class_Initialize()
