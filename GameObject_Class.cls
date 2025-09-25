@@ -191,12 +191,12 @@ End Function
 
 Function EditorCallDraw(GameCodeEngine As ScriptControl) ' K‰ytet‰‰n Kun Editorin Tarvitsee Piirt‰‰ Objekti Uudelleen
     On Error Resume Next
-    For Each Comp In LoadedComponents
-        'If Comp.Tag = "RendererScript" Then
-            'Comp.MyModule.Run "EditorDraw"
-            'Exit For
-        'End If
-        Comp.EditorDraw
+    For Each Comp In Me.Components
+        If Comp.Tag = "RendererScript" Then
+            Comp.MyModule.Run "EditorDraw"
+            Exit For
+        End If
+        'Comp.EditorDraw
     Next
 End Function
 
