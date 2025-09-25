@@ -61,6 +61,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -85,6 +86,7 @@ Begin VB.MDIForm MainWindow
          _ExtentX        =   6165
          _ExtentY        =   688
          ButtonWidth     =   609
+         ButtonHeight    =   582
          ImageList       =   "ImageList1"
          _Version        =   327682
          BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
@@ -993,8 +995,8 @@ Private Sub SolutionBrowser1_Click()
         Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open Object/Scene From Disk"
         Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Object/Scene To Disk"
         Me.ToolbarRightCaptionBar1.Buttons(4).ToolTipText = "Make Scene Inactive Or Remove Object From Scene"
-        Me.ToolbarRightCaptionBar1.Buttons(8).ToolTipText = "Chance Drawing Priority Of Scene/Object To Front"
-        Me.ToolbarRightCaptionBar1.Buttons(9).ToolTipText = "Chance Drawing Priority Of Scene/Object To Back"
+        Me.ToolbarRightCaptionBar1.Buttons(8).ToolTipText = "Change Drawing Priority Of Scene/Object To Front"
+        Me.ToolbarRightCaptionBar1.Buttons(9).ToolTipText = "Change Drawing Priority Of Scene/Object To Back"
         Me.ToolbarRightCaptionBar1.Buttons(8).Visible = True
         Me.ToolbarRightCaptionBar1.Buttons(9).Visible = True
             

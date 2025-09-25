@@ -27,58 +27,48 @@ Begin VB.Form ModelEditor1
       BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
          NumButtons      =   10
          BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   3
             Style           =   1
          EndProperty
          BeginProperty Button2 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   1
             Style           =   1
          EndProperty
          BeginProperty Button3 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   4
             Style           =   1
          EndProperty
          BeginProperty Button4 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   2
             Style           =   1
          EndProperty
          BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   10
          EndProperty
          BeginProperty Button6 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   5
             Style           =   1
          EndProperty
          BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   6
             Style           =   1
          EndProperty
          BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   7
          EndProperty
          BeginProperty Button9 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   8
          EndProperty
          BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   9
          EndProperty
@@ -131,21 +121,18 @@ Begin VB.Form ModelEditor1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Text            =   "Current Frame:"
             TextSave        =   "Current Frame:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Mouse X:"
             TextSave        =   "Mouse X:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Mouse Y:"
             TextSave        =   "Mouse Y:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -156,13 +143,13 @@ Begin VB.Form ModelEditor1
       BackColor       =   &H80000005&
       ForeColor       =   &H80000008&
       Height          =   615
-      Left            =   3240
+      Left            =   5520
       Picture         =   "ModelEditor1.frx":0000
       ScaleHeight     =   39
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   70
       TabIndex        =   0
-      Top             =   2040
+      Top             =   4440
       Width           =   1080
    End
    Begin ComctlLib.ImageList ImageList1 
@@ -285,11 +272,16 @@ Private Sub Picture1_KeyDown(KeyCode As Integer, Shift As Integer)
     ElseIf KeyCode = 107 Then
         ChangeZoom 0.05
     End If
-    
 End Sub
 
 Sub ChangeZoom(Val As Double)
     ScaleZoom = ScaleZoom + Val
+End Sub
+
+Private Sub Picture1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    Dim NewRender As New VBCEArrayImage_Class
+    NewRender.CreateFromImage Me.Picture1.Picture, 79, 32
+    
 End Sub
 
 Private Sub Picture1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
