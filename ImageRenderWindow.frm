@@ -1,6 +1,5 @@
 VERSION 5.00
 Begin VB.Form ImageRenderWindow 
-   AutoRedraw      =   -1  'True
    BackColor       =   &H00000000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Render result"

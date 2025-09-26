@@ -25,7 +25,11 @@ Sub ResizeImage(NewX As Long, NewY As Long)
 End Sub
 
 Sub SetPixelColor(PosX As Long, PosY As Long, Color As Long)
-    ImageArray(PosX, PosY) = Color
+    If SizeX > PosX And SizeY > PosY Then
+        ImageArray(PosX, PosY) = Color
+    Else
+        ImageArray(SizeX, SizeY) = Color
+    End If
 End Sub
 Function GetPixelColor(PosX As Long, PosY As Long) As Long
     GetPixelColor = ImageArray(PosX, PosY)
@@ -35,33 +39,34 @@ Sub DrawLine(StartPos As Vector_Class, EndPos As Vector_Class, Color As Long)
     
 End Sub
 
-Sub CreateFromImage(Picture As IPictureDisp, Optional OSizeX As Long, Optional OSizeY As Long)
+Sub CreateFromImage(Picture As IPictureDisp, Optional OScaleX As Long, Optional OScaleY As Long)
     Dim Render As New ImageRenderWindow
-    If OSizeX > 0 And OSizeY > 0 Then
-        Me.ResizeImage Picture.Width / OSizeX, Picture.Height / OSizeY
+    If OScaleX > 0 And OScaleY > 0 Then
+        Me.ResizeImage Picture.Width / OScaleX, Picture.Height / OScaleY
     Else
         Me.ResizeImage Picture.Width, Picture.Height
     End If
     
-    Render.Width = SizeX
-    Render.Height = SizeY
-    
+    Render.Width = Picture.Width
+    Render.Height = Picture.Height
+    'Render.Show
+    'Render.Visible = False
     Render.Picture = Picture
     For PLine = 1 To SizeY
         For PCol = 1 To SizeX
-            SetPixelColor CLng(PCol), CLng(PLine), CLng(Render.Point(PCol, PLine))
+            SetPixelColor CLng(PCol), CLng(PLine), CLng(Render.Point(PCol * OScaleX, PLine * OScaleY))
             DoEvents
         Next
     Next
-    Render.Show
-    RenderTo Render
+    'MsgBox ImageArray(2, 2)
+    'RenderTo Render, 20, 20
+    Render.Hide
 End Sub
 
-Sub RenderTo(TargetObject As Object)
-    TargetObject.Cls
+Sub RenderTo(TargetObject As Object, newScaleX As Double, newScaleY As Double)
     For PLine = 1 To SizeY
         For PCol = 1 To SizeX
-            TargetObject.PSet (PCol, PLine), ImageArray(PCol, PLine)
+            MainWindow.Engine.GameWindow.PSet (PCol * newScaleX, PLine * newScaleY), ImageArray(PCol, PLine)
             DoEvents
         Next
     Next
