@@ -244,7 +244,12 @@ Private Function UpdateComponents(CodeEngine As ScriptControl)
     Next
 End Function
 Private Function UpdatePhysics()
-    Me.Position.AddVectorV Me.Velocity
+    If Me.ParentObject Is Nothing Then
+        Me.Position.AddVectorV Me.Velocity
+    Else
+        Me.Velocity.SetVectorV Me.ParentObject.Velocity
+        'Me.Position.SetVector Me.ParentObject.Position.X
+    End If
 End Function
 
 Function EndObject() As Boolean

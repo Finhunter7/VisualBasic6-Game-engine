@@ -7,10 +7,10 @@ Begin VB.Form Console
    ClientTop       =   810
    ClientWidth     =   8055
    BeginProperty Font 
-      Name            =   "System"
-      Size            =   9.75
-      Charset         =   0
-      Weight          =   700
+      Name            =   "Terminal"
+      Size            =   9
+      Charset         =   255
+      Weight          =   400
       Underline       =   0   'False
       Italic          =   0   'False
       Strikethrough   =   0   'False
@@ -21,13 +21,6 @@ Begin VB.Form Console
    ScaleHeight     =   5805
    ScaleWidth      =   8055
    StartUpPosition =   3  'Windows Default
-   Begin VB.VScrollBar VScroll1 
-      Height          =   5775
-      Left            =   7800
-      TabIndex        =   0
-      Top             =   0
-      Width           =   255
-   End
    Begin VB.Menu mnuExecute1 
       Caption         =   "Execute"
       Begin VB.Menu mnuStatement1 
@@ -57,10 +50,30 @@ Private curText As Long
 Private LinesCount As Integer
 Public GameEngine As EngineClass
 
+Private Sub Form_KeyPress(KeyAscii As Integer)
+    On Error Resume Next
+    'MsgBox KeyCode
+    If Not KeyAscii = 13 Then
+        If KeyAscii = 8 Then
+            InputBuffer = Left(InputBuffer, Len(InputBuffer) - 1)
+            textBuffer = Left(textBuffer, Len(textBuffer) - 1)
+            Repaint
+        Else
+            InputBuffer = InputBuffer & Chr(KeyAscii)
+            textBuffer = textBuffer & Chr(KeyAscii)
+            Repaint
+        End If
+    Else
+        textBuffer = textBuffer & vbNewLine
+        Me.GameEngine.CodeEngine.ExecuteStatement InputBuffer
+        InputBuffer = ""
+    End If
+End Sub
+
 Private Sub Form_Load()
     'Clear
     curText = 1
-    VScroll1.Min = 1
+    'VScroll1.Min = 1
 End Sub
 
 Private Sub Form_Paint()
@@ -74,9 +87,9 @@ End Sub
 
 Private Sub Form_Resize()
     On Error Resume Next
-    VScroll1.Top = 0
-    VScroll1.Left = Me.Width - VScroll1.Width - 115
-    VScroll1.Height = Me.Height - 750
+    'VScroll1.Top = 0
+    'VScroll1.Left = Me.Width - VScroll1.Width - 115
+    'VScroll1.Height = Me.Height - 750
     'Text1.Top = 0
     'Text1.Left = 0
     'Text1.Height = Me.Height - 800
@@ -90,7 +103,7 @@ Function WriteLine(text)
     Print text
     LinesCount = LinesCount + 1
     textBuffer = textBuffer & text & vbCrLf
-    VScroll1.max = LinesCount
+    'VScroll1.max = LinesCount
     'textBuffer = Text1.text
 End Function
 
@@ -164,6 +177,6 @@ End Sub
 
 
 Private Sub VScroll1_Change()
-    curText = VScroll1.Value
+    'curText = VScroll1.Value
     Repaint
 End Sub
