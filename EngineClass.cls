@@ -21,6 +21,8 @@ Public Event OnDataChanged()
 Public Event OnSceneCreated()
 Public Event OnSceneActivated()
 Public Event OnGameStart()
+Public Event OnRenderStart()
+Public Event OnRenderEnd()
 Public Event OnGameStop()
 Public Event OnGameEnd()
 Public Event OnError()
@@ -985,9 +987,9 @@ Attribute StartGame.VB_Description = "Starts The Engine"
     On Error GoTo GlobalError
     Me.CodeEngine.AddCode Me.GlobalScript.Data
     On Error GoTo CodeLoadError
-    For i = 1 To Me.Scripts.Count ' Käsittelee Kaikki Skriptit, Luo Koodinsuoritus Moottorille Moduulin Ja Tekee Referensin Skriptille Tähän Moduuliin
+    For i = 1 To Me.Scripts.Count ' Käsittelee Kaikki Skriptit, Luo Koodinsuoritus Moottorille Moduulin Ja Tekee Skriptille Referensin Tähän Moduuliin Josta Sitä On Helppo Ohjata
         Set thisScript = Me.Scripts.Item(i)
-        If thisScript.MyObject Is Nothing Then
+        If thisScript.MyObject Is Nothing Then ' Tämä On Myös Hyvä Kun Tätä Operoidaan Windows 9x Käyttöjärjestelmissä
             Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript)
         Else
             Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript.MyObject)
@@ -1115,7 +1117,7 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
     Me.EditorWindow.Caption = "Rendering Scenes"
     ReloadCodeEngine ' Resetoi Koodimoottorin
     'CreateModules
-    RaiseEvent OnGameStart
+    RaiseEvent OnRenderStart
     
     On Error Resume Next
     Me.CodeEngine.AddCode Me.GlobalScript.Data
@@ -1182,7 +1184,7 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
     MsgBox "Render Complete", vbInformation
     loadStatusDialog.Hide
     Me.EditorWindow.Caption = "Render Result"
-    RaiseEvent OnGameStop
+    RaiseEvent OnRenderEnd
     Exit Function
     
 SaveError:

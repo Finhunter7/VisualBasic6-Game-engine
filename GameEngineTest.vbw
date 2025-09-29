@@ -46,5 +46,5 @@ Texture_Class = -295, 170, 873, 820, C
 ProjectTypeSelector = 0, 0, 0, 0, C, 52, 52, 1220, 702, C
 EngineEvent_Class = 52, 52, 884, 574, C
 VBCEWorkspace_Class = -119, 87, 1049, 737, 
-VBCEArrayImage_Class = -31, 70, 1137, 720, Z
+VBCEArrayImage_Class = -31, 70, 1137, 720, 
 ImageRenderWindow = 0, 0, 0, 0, C, 260, 260, 1428, 910, C
