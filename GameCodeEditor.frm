@@ -92,6 +92,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   7
          EndProperty
          BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -109,6 +110,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   10
          EndProperty
          BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -120,6 +122,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   11
          EndProperty
          BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -131,6 +134,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   8
          EndProperty
          BeginProperty Button12 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.ToolTipText     =   "Check For Errors"
             Object.Tag             =   ""
             ImageIndex      =   13
@@ -160,11 +164,13 @@ Begin VB.Form CodeEditor
             Style           =   1
             Enabled         =   0   'False
             TextSave        =   "CAPS"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   2
             TextSave        =   "NUM"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -172,12 +178,14 @@ Begin VB.Form CodeEditor
             Object.Width           =   2778
             Text            =   "Exposed Object:       "
             TextSave        =   "Exposed Object:       "
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Line:"
             TextSave        =   "Line:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -191,6 +199,7 @@ Begin VB.Form CodeEditor
       _ExtentX        =   7646
       _ExtentY        =   4471
       _Version        =   393217
+      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -277,7 +286,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Const KeyWordsCount = 51
+Const KeyWordsCount = 53
 Public curClassName As String
 Public GameObject As GameObject_Class
 Public GameEngine As EngineClass
@@ -357,6 +366,8 @@ Function LoadItems()
     Items(49) = "Alias"
     Items(50) = "ByVal"
     Items(51) = "Each"
+    Items(52) = "Select"
+    Items(53) = "Case"
     ' ConvertFuncs
     'Items(52) = "VbString"
     'Items(53) = "VbSingle"

@@ -30,6 +30,7 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Item: None"
             TextSave        =   "Item: None"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -37,6 +38,7 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Type: Test_Class "
             TextSave        =   "Type: Test_Class "
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -44,6 +46,7 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "In Scene:"
             TextSave        =   "In Scene:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -458,23 +461,7 @@ Private Sub TreeView1_Click()
 End Sub
 
 Private Sub TreeView1_DblClick()
-    
-    If TreeView1.selectedItem Is Nothing Then
-        Exit Sub
-    End If
-    
-    With TreeView1.selectedItem
-        If .Tag = "Script" Then
-            Me.GameEngine.EditScript .text
-        ElseIf .Tag = "Scene" Then
-    
-        ElseIf .Tag = "Module" Then
-            'Me.EditModule Me.GameEngine.CodeEngine.Modules(.Key)
-        ElseIf .Tag = "MeshCode" Then
-            
-        End If
-    End With
-    
+    Me.GameEngine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick Me.TreeView1, ProjectBrowser
 End Sub
 
 Function Update()

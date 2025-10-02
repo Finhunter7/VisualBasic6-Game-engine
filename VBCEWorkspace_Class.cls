@@ -13,6 +13,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private GameEngine As EngineClass
 
+Enum BrowserTypes
+    SolutionBrowser = 0
+    ProjectBrowser = 1
+    SceneBrowser = 2
+End Enum
+
+
 Public Sub LoadDeveloperTools(TargetGameEngine As EngineClass)
     Set GameEngine = TargetGameEngine
 End Sub
@@ -206,6 +213,48 @@ Sub UpdateSceneBrowser(TreeViewObject As Object)
             Next
         Next
     Next
+End Sub
+
+Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As BrowserTypes)
+    Dim tGameObject As GameObject_Class
+    If TreeViewObject.selectedItem Is Nothing Then
+        Exit Sub
+    End If
+    
+    If BrowserType = ProjectBrowser Then
+        With TreeViewObject.selectedItem
+            If .Tag = "Script" Then
+                GameEngine.EditScript .text
+            ElseIf .Tag = "Scene" Then
+    
+            ElseIf .Tag = "Module" Then
+            'Me.EditModule Me.GameEngine.CodeEngine.Modules(.Key)
+            ElseIf .Tag = "MeshCode" Then
+            
+            End If
+        End With
+    ElseIf BrowserType = SceneBrowser Then
+        With TreeViewObject.selectedItem
+            If .Tag = "Object" Then
+                If .Parent.Tag = "Object" Then
+                    Set tGameObject = GameEngine.GetCurrentScene().Objects(.Parent.text).Child.Item(.text)
+                    GameEngine.SelectObject tGameObject
+                Else
+                    Set tGameObject = GameEngine.GetCurrentScene().Objects(.text)
+                    GameEngine.SelectObject tGameObject
+                End If
+            ElseIf .Tag = "Scene" Then
+                
+            ElseIf .Tag = "Module" Then
+            'Me.EditModule Me.GameEngine.CodeEngine.Modules(.Key)
+            ElseIf .Tag = "MeshCode" Then
+            
+            End If
+        End With
+    Else
+        MsgBox "Not Implemented"
+    End If
+    
 End Sub
 
 Sub BrowseObject(TreeViewObject As Object, TObject As Object)

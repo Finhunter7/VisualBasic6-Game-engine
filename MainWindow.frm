@@ -61,7 +61,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -1126,44 +1125,10 @@ Private Sub TreeViewBrowser2_AfterLabelEdit(Cancel As Integer, NewString As Stri
 End Sub
 
 Private Sub TreeViewBrowser2_DblClick()
-    Dim tGameObject As GameObject_Class
-    If Me.TreeViewBrowser2.selectedItem Is Nothing Then
-        Exit Sub
-    End If
-    
     If Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
-        With Me.TreeViewBrowser2.selectedItem
-            If .Tag = "Script" Then
-                Me.Engine.EditScript .text
-            ElseIf .Tag = "Scene" Then
-    
-            ElseIf .Tag = "Module" Then
-            'Me.EditModule Me.GameEngine.CodeEngine.Modules(.Key)
-            ElseIf .Tag = "MeshCode" Then
-            
-            End If
-        End With
+        Me.Engine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, ProjectBrowser
     ElseIf Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
-        With Me.TreeViewBrowser2.selectedItem
-            If .Tag = "Object" Then
-                If .Parent.Tag = "Object" Then
-                    Set tGameObject = Engine.GetCurrentScene().Objects(.Parent.text).Child.Item(.text)
-                    Me.Engine.SelectObject tGameObject
-                Else
-                    Set tGameObject = Engine.GetCurrentScene().Objects(.text)
-                    Me.Engine.SelectObject tGameObject
-                End If
-            ElseIf .Tag = "Scene" Then
-                
-            ElseIf .Tag = "Module" Then
-            'Me.EditModule Me.GameEngine.CodeEngine.Modules(.Key)
-            ElseIf .Tag = "MeshCode" Then
-            
-            End If
-        End With
-    Else
-        MsgBox "Not Implemented"
+        Me.Engine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, SceneBrowser
     End If
-    
 End Sub
 
