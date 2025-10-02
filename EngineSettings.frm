@@ -12,7 +12,7 @@ Begin VB.Form EngineSettings
    MinButton       =   0   'False
    ScaleHeight     =   5880
    ScaleWidth      =   6240
-   StartUpPosition =   3  'Windows Default
+   StartUpPosition =   1  'CenterOwner
    Begin VB.Frame Frame1 
       Caption         =   "Engine"
       Height          =   4575

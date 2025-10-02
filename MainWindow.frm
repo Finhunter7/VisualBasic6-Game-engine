@@ -62,6 +62,7 @@ Begin VB.MDIForm MainWindow
             AutoSize        =   2
             Bevel           =   0
             TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -112,6 +113,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -122,6 +124,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -1143,8 +1146,13 @@ Private Sub TreeViewBrowser2_DblClick()
     ElseIf Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
         With Me.TreeViewBrowser2.selectedItem
             If .Tag = "Object" Then
-                Set tGameObject = Engine.GetCurrentScene().Objects(.text)
-                Me.Engine.SelectObject tGameObject
+                If .Parent.Tag = "Object" Then
+                    Set tGameObject = Engine.GetCurrentScene().Objects(.Parent.text).Child.Item(.text)
+                    Me.Engine.SelectObject tGameObject
+                Else
+                    Set tGameObject = Engine.GetCurrentScene().Objects(.text)
+                    Me.Engine.SelectObject tGameObject
+                End If
             ElseIf .Tag = "Scene" Then
                 
             ElseIf .Tag = "Module" Then

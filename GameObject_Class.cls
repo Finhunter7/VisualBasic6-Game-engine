@@ -53,6 +53,25 @@ Private Sub Initialize()
     'Me.MyScript.Data = vbNewLine & "Set This = Me.MyObjects.Item(1)" & vbNewLine & "Sub Load()" & vbNewLine & vbNewLine & "End Sub" & vbNewLine & vbNewLine & "Sub Update()" & vbNewLine & vbNewLine & "End Sub"
 End Sub
 
+Public Sub BuildFromObject(Object As GameObject_Class)
+    Me.Name = Object.Name
+    Me.SceneHiearchyPath = Object.SceneHiearchyPath
+    Me.Tag = Object.Tag
+    Set Me.MyScene = Object.MyScene
+    Me.Mass = Object.Mass
+    Set Me.ParentObject = Object.ParentObject
+    For Each Item In Object.Child
+        Me.Child.Add Item, Item.Name
+    Next
+    Me.Position.SetVectorV Object.Position
+    Me.SScale.SetVectorV Object.SScale
+    Me.Size = Object.Size
+    Me.EditorColliderSize.SetVectorV Object.EditorColliderSize
+    For Each Item In Object.Components
+        Me.Components.Add Item, Item.Name
+    Next
+End Sub
+
 Public Function HasProperty(Name) As Boolean
     On Error GoTo end1
     Dim Information As Variant
@@ -66,16 +85,15 @@ end1:
     Exit Function
 End Function
 
-Function GetAllChildren() As Variant
+Function GetAllChildren(IsActivator As Boolean) As Collection
     Dim newCol As New Collection
+    Dim curCol As Collection
     
     For Each Item In Me.Child
-        If Not Item.GetAllChildren() Is Nothing Then
-            newCol.Add Item.GetAllChildren(), Item.Name
-        Else
-            MsgBox Item.Name
+        If Item.GetAllChildren() Is Nothing Then
             newCol.Add Item, Item.Name
-            Exit For
+        Else
+            newCol.Add Item.GetAllChildren(False), Item.Name
         End If
     Next
     
@@ -94,15 +112,16 @@ Function GetMyChildren() As Collection
         newCol.Add Item, Item.Name
     Next
     If newCol.Count < 1 Then
-        Set GetChildren = Nothing
+        Set GetMyChildren = Nothing
     Else
-        Set GetChildren = newCol
+        Set GetMyChildren = newCol
     End If
 End Function
 
 Sub SetParent(GObject As GameObject_Class)
     Set Me.ParentObject = GObject
     GObject.Child.Add Me, Me.Name
+    Me.MyScene.Objects.Remove Me.Name
 End Sub
 
 Sub RemoveParent()
@@ -248,6 +267,7 @@ Private Function UpdatePhysics()
         Me.Position.AddVectorV Me.Velocity
     Else
         Me.Velocity.SetVectorV Me.ParentObject.Velocity
+        'Me.Position.SetVectorV Me.ParentObject.Position
         'Me.Position.SetVector Me.ParentObject.Position.X
     End If
 End Function

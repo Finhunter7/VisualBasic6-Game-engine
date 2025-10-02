@@ -477,12 +477,16 @@ Private Sub ScriptEngine_Intialize()
     GlobalObject.Build "EngineUtils", EngineUtil_Class
     Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
     
-    Dim newRef As New EngineRefrence_Class
-    newRef.Name = "FileSystemObject"
-    newRef.Path = ""
-    newRef.RefrenceClass = "Scripting.FileSystemObject"
-    Set newRef.Refrence = fileSystemHandler
-    Me.EngineRefrences.Add newRef, newRef.Name
+    'Set GlobalObject = New CodeEngineObject_Class
+    'GlobalObject.Build "VBA", VBA
+    'Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
+    
+    'Dim newRef As New EngineRefrence_Class
+    'newRef.Name = "FileSystemObject"
+    'newRef.Path = ""
+    'newRef.RefrenceClass = "Scripting.FileSystemObject"
+    'Set newRef.Refrence = fileSystemHandler
+    'Me.EngineRefrences.Add newRef, newRef.Name
     'Me.CodeEngine.AddObject "NullClass", NullObject, True
     
 End Sub

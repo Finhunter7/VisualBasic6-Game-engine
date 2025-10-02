@@ -76,6 +76,15 @@ Private Sub CreateProjectTree(TreeViewTarget As Object)
     ' CodeEngine Global Objects
     Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "F_Objects", "Objects", 1, 1)
     curNode.Tag = "Folder"
+    Set curNode = TreeViewTarget.Nodes.Add("ScriptEngine", 4, "F_Library", "Library", 1, 1)
+    curNode.Tag = "Folder"
+    Set curNode = TreeViewTarget.Nodes.Add("F_Library", 4, "VB_Lib", "VB", 12, 12)
+    curNode.Tag = "Library"
+    Set curNode = TreeViewTarget.Nodes.Add("F_Library", 4, "VBA_Lib", "VBA", 12, 12)
+    curNode.Tag = "Library"
+    Set curNode = TreeViewTarget.Nodes.Add("F_Library", 4, "VBRUN_Lib", "VBRUN", 12, 12)
+    curNode.Tag = "Library"
+    
     For Each Obj In GameEngine.GlobalObjects
         Set curNode = TreeViewTarget.Nodes.Add("F_Objects", 4, "Global_" & Obj.Name, Obj.Name, 5, 5)
         curNode.Tag = "Object"
@@ -173,6 +182,7 @@ Sub UpdateSceneBrowser(TreeViewObject As Object)
     Dim curGObject As GameObject_Class
     Dim curGobjChild As GameObject_Class
     Dim curScene As Scene_Class
+    Dim curCol As Collection
     
     If GameEngine.Scenes.Count < 1 Then
         TreeViewObject.Nodes.Add , 0, "None", "No Active Scenes"
@@ -188,11 +198,12 @@ Sub UpdateSceneBrowser(TreeViewObject As Object)
             Set thisNode = TreeViewObject.Nodes.Add(curScene.Name, 4, curScene.Name & "_" & curGObject.Name, curGObject.Name, 7, 7)
             
             thisNode.Tag = "Object"
-            'For Each CItem In curGObject.GetAllChildren()
+            For Each CItem In curGObject.GetMyChildren()
+                Set thisNode = TreeViewObject.Nodes.Add(curGObject.MyScene.Name & "_" & curGObject.Name, 4, curGObject.Name & "_" & CItem.Name, CItem.Name, 7, 7)
                 'Set curGobjChild = curGObject.Child.Item(curChild)
                 'Set thisNode = TreeViewObject.Nodes.Add(curGObject.MyScene.Name & "_" & curGObject.Name, 4, curGObject.Name & "_" & CItem.Name, CItem.Name, 7, 7)
-                'thisNode.Tag = "Object"
-            'Next
+                thisNode.Tag = "Object"
+            Next
         Next
     Next
 End Sub

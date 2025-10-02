@@ -34,7 +34,7 @@ Public SunAngle As New Vector_Class
 Public CameraPos As New Vector_Class
 Public Gravity As New Vector_Class
 
-Public Enum ObjectPresets
+Enum ObjectPresets
     SEmpty = 0
     SPlane = 1
     Cube = 2
@@ -106,9 +106,18 @@ Sub ChangeCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
     ReDrawObjects Me.GameEngine.CodeEngine
 End Sub
 
-Sub AddObject(TGameEngine As EngineClass, TObject As Object, tKey As String)
-    On Error Resume Next
-End Sub
+Function AddObject(Name As String) As GameObject_Class
+    Dim newObject As New GameObject_Class
+    For Each Item In Me.GameEngine.GameObjects
+        If Item.Name = Name Then
+            newObject.BuildFromObject Item
+            Me.Objects.Add newObject, newObject.Name
+            Set AddObject = newObject
+            Exit Function
+        End If
+    Next
+    Set AddObject = Nothing
+End Function
 
 Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, Optional Parent As GameObject_Class, Optional Preset As ObjectPresets) As GameObject_Class ' Käytä Tätä Vain Uuden Luomisessa
     Dim CnewObject As New GameObject_Class
@@ -117,7 +126,7 @@ Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, O
     
     CnewObject.Name = objname
     CnewObject2.Name = "Hello 12345"
-    CnewObject.SetParent CnewObject
+    'CnewObject.SetParent CnewObject
     CnewObject.SceneHiearchyPath = Me.Name & "\" & objname
     Set CnewObject.MyScene = Me
     
