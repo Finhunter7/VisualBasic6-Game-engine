@@ -37,6 +37,8 @@ Public ProjectName As String
 Public ProjectPath As String
 Public ProjectCodeLanguage As String
 Public ProjectType As ProjectTypes
+Public GameWindowSizeX As Long
+Public GameWindowSizeY As Long
 
 ' Editor Utils
 Public IsInEditor As Boolean
@@ -84,6 +86,8 @@ Private SceneRestorePoint As New Collection
 Public GameObjects As New Collection
 Public Scripts As New Collection
 Public Mesh_Scripts As New Collection
+Public Textures As New Collection
+Public VBCETextures As New Collection
 Public IsEngineRunning As Boolean
 Public RunGameInEditor As Boolean
 
@@ -166,7 +170,8 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
                     Me.EditorRefreshScenes
                     Me.EditorWindow.FontSize = 8
                     Me.EditorWindow.ForeColor = &HFFFFFF
-                    Me.EditorWindow.PSet (0, 0)
+                    Me.GameWindow.CurrentX = 0
+                    Me.GameWindow.CurrentY = 0
                     Me.EditorWindow.Print "Object Name: " & SceneObject.Name
                     Me.EditorWindow.Print "Object Tag: " & SceneObject.Tag
                     Me.EditorWindow.Print "Object X: " & SceneObject.Position.X
@@ -524,6 +529,8 @@ Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As For
         Set Me.SceneBrowser.GameEngine = Me
         Set Me.WorkspaceUtilClass = New VBCEWorkspace_Class
         Me.WorkspaceUtilClass.LoadDeveloperTools Me
+        Me.GameWindowSizeX = 640
+        Me.GameWindowSizeY = 480
     End If
     
     Set Me.InputSystem.GameEngine = Me

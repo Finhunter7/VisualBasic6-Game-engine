@@ -3,16 +3,17 @@ Begin VB.Form ImageRenderWindow
    BackColor       =   &H00000000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Render result"
-   ClientHeight    =   2295
+   ClientHeight    =   1110
    ClientLeft      =   45
    ClientTop       =   390
-   ClientWidth     =   2490
+   ClientWidth     =   1560
+   ControlBox      =   0   'False
    ForeColor       =   &H00FFFFFF&
    LinkTopic       =   "Form3"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2295
-   ScaleWidth      =   2490
+   ScaleHeight     =   1110
+   ScaleWidth      =   1560
    StartUpPosition =   3  'Windows Default
 End
 Attribute VB_Name = "ImageRenderWindow"

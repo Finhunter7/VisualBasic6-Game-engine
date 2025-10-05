@@ -137,7 +137,7 @@ Begin VB.Form EngineSettings
       MultiRow        =   -1  'True
       _Version        =   327682
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
-         NumTabs         =   2
+         NumTabs         =   3
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   "Project"
             Key             =   "TProject"
@@ -147,6 +147,12 @@ Begin VB.Form EngineSettings
          BeginProperty Tab2 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   "MSScriptControl"
             Key             =   "TMSScript1"
+            Object.Tag             =   ""
+            ImageVarType    =   2
+         EndProperty
+         BeginProperty Tab3 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   "GameWindow"
+            Key             =   "TGWindow"
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty

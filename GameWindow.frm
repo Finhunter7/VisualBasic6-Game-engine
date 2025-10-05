@@ -9,8 +9,9 @@ Begin VB.Form GameWindow
    ClientWidth     =   5580
    ForeColor       =   &H00FFFFFF&
    LinkTopic       =   "Form3"
-   ScaleHeight     =   4065
-   ScaleWidth      =   5580
+   ScaleHeight     =   271
+   ScaleMode       =   3  'Pixel
+   ScaleWidth      =   372
    StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "GameWindow"

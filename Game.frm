@@ -4,26 +4,26 @@ Begin VB.Form Form1
    AutoRedraw      =   -1  'True
    BackColor       =   &H00000000&
    Caption         =   "Viewport1"
-   ClientHeight    =   2505
+   ClientHeight    =   4125
    ClientLeft      =   165
    ClientTop       =   210
-   ClientWidth     =   3000
+   ClientWidth     =   5220
    ForeColor       =   &H00FFFFFF&
    Icon            =   "Game.frx":0000
    LinkTopic       =   "Form1"
    MDIChild        =   -1  'True
    OLEDropMode     =   1  'Manual
-   ScaleHeight     =   2505
-   ScaleWidth      =   3000
+   ScaleHeight     =   4125
+   ScaleWidth      =   5220
    Tag             =   "ViewPort"
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
       Height          =   255
       Left            =   0
       TabIndex        =   0
-      Top             =   2250
-      Width           =   3000
-      _ExtentX        =   5292
+      Top             =   3870
+      Width           =   5220
+      _ExtentX        =   9208
       _ExtentY        =   450
       SimpleText      =   ""
       _Version        =   327682
@@ -34,14 +34,12 @@ Begin VB.Form Form1
             Bevel           =   0
             Text            =   "Scene:"
             TextSave        =   "Scene:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Bevel           =   0
             Text            =   "Layer: 1"
             TextSave        =   "Layer: 1"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -49,7 +47,6 @@ Begin VB.Form Form1
             Bevel           =   0
             Text            =   "Target Framerate:"
             TextSave        =   "Target Framerate:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty

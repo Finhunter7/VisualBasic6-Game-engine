@@ -29,17 +29,40 @@ Sub DrawBoxV(SVector As Vector_Class, EVector As Vector_Class, Optional Color = 
     Me.GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(EVector.X, EVector.Y), Color, B
 End Sub
 
+Sub DrawSolidBoxV(SVector As Vector_Class, EVector As Vector_Class, Optional Color = &HFFFFFF)
+    Me.GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(EVector.X, EVector.Y), Color, BF
+End Sub
+
+Sub DrawPoint(XPos As Double, YPos As Double, Optional Color = &HFFFFFF)
+    Me.GameEngine.GameWindow.PSet (XPos, YPos), Color
+End Sub
+
+Sub DrawPointV(Position As Vector_Class, Optional Color = &HFFFFFF)
+    Me.GameEngine.GameWindow.PSet (Position.X, Position.Y), Color
+End Sub
+
+Function GetPixelColor(XPos As Single, YPos As Single) As Long
+    GetPixelColor = Me.GameEngine.GameWindow.Point(XPos, YPos)
+End Function
+
+Sub DrawCircleV(Position As Vector_Class, Radius As Double, Optional Color = &HFFFFFF)
+    Me.GameEngine.GameWindow.Circle (Position.X, Position.Y), Radius, Color
+End Sub
+
 Sub PrintTextV(Position As Vector_Class, text, Optional TextSize = 8, Optional TextColor = &HFFFFFF)
     Me.GameEngine.GameWindow.FontSize = TextSize
     Me.GameEngine.GameWindow.ForeColor = TextColor
-    Me.GameEngine.GameWindow.PSet (Position.X, Position.Y)
+    'Me.GameEngine.GameWindow.PSet (Position.X, Position.Y)
+    Me.GameEngine.GameWindow.CurrentX = Position.X
+    Me.GameEngine.GameWindow.CurrentY = Position.Y
     Me.GameEngine.GameWindow.Print text
 End Sub
 
 Sub PrintText(XPos As Double, YPos As Double, text, Optional TextSize = 8, Optional TextColor = &HFFFFFF)
     Me.GameEngine.GameWindow.FontSize = TextSize
     Me.GameEngine.GameWindow.ForeColor = TextColor
-    Me.GameEngine.GameWindow.PSet (XPos, YPos)
+    Me.GameEngine.GameWindow.CurrentX = XPos
+    Me.GameEngine.GameWindow.CurrentY = YPos
     Me.GameEngine.GameWindow.Print text
 End Sub
 
@@ -59,7 +82,7 @@ Sub DrawBoxCV(SVector As Vector_Class, EVector As Vector_Class, Optional Color =
 End Sub
 
 Sub DrawTexture(VBCEArrayImage As VBCEArrayImage_Class, Position As Vector_Class, Optional Rotation As Matrix_Class)
-
+    VBCEArrayImage.RenderTo Me.GameEngine.GameWindow, Position, 10, 10
 End Sub
 
 Sub DrawPictureV(Picture As IPictureDisp, Position As Vector_Class, Optional SizeX As Long, Optional SizeY As Long)

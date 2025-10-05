@@ -20,6 +20,8 @@ Begin VB.MDIForm MainWindow
       Width           =   16050
       _ExtentX        =   28310
       _ExtentY        =   741
+      ButtonWidth     =   635
+      ButtonHeight    =   582
       Appearance      =   1
       ImageList       =   "ImageList1"
       _Version        =   327682
@@ -61,7 +63,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            Key             =   ""
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -112,7 +114,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -123,7 +124,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -735,7 +735,7 @@ Private Sub mnuAddFile1_Click()
     ElseIf FileBrowser1.GetFormat() = "VBGObject" Then
         Set TScene = Me.Engine.GetCurrentScene()
         Set curObject = Me.Engine.SaveLoadGameClass.LoadObjectFromDiskVBCFormat(GameObject, curFile)
-        TScene.AddObject Me.Engine, curObject, curObject.Name
+        'TScene.AddObject Me.Engine, curObject, curObject.Name
     End If
 End Sub
 
@@ -1038,7 +1038,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As ComctlLib.Button)
         Case "TNew1"
         
         Case "TOpen1"
-            Me.ActiveForm.Open
+            Me.ActiveForm.OpenNew
         Case "TSave1"
             Me.ActiveForm.Save
     End Select

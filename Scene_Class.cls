@@ -110,7 +110,7 @@ Function AddObject(Name As String) As GameObject_Class
     Dim newObject As New GameObject_Class
     For Each Item In Me.GameEngine.GameObjects
         If Item.Name = Name Then
-            newObject.BuildFromObject Item
+            'newObject.BuildFromObject Item
             Me.Objects.Add newObject, newObject.Name
             Set AddObject = newObject
             Exit Function

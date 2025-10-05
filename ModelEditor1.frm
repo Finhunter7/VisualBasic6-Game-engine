@@ -12,6 +12,18 @@ Begin VB.Form ModelEditor1
    ScaleHeight     =   9135
    ScaleWidth      =   11670
    Tag             =   "ModelEditor"
+   Begin ComctlLib.Toolbar Toolbar1 
+      Align           =   1  'Align Top
+      Height          =   420
+      Left            =   0
+      TabIndex        =   5
+      Top             =   0
+      Width           =   11670
+      _ExtentX        =   20585
+      _ExtentY        =   741
+      Appearance      =   1
+      _Version        =   327682
+   End
    Begin ComctlLib.Toolbar DrawToolsBar1 
       Align           =   3  'Align Left
       Height          =   7965
@@ -83,18 +95,6 @@ Begin VB.Form ModelEditor1
             ImageIndex      =   9
          EndProperty
       EndProperty
-   End
-   Begin ComctlLib.Toolbar Toolbar1 
-      Align           =   1  'Align Top
-      Height          =   420
-      Left            =   0
-      TabIndex        =   5
-      Top             =   0
-      Width           =   11670
-      _ExtentX        =   20585
-      _ExtentY        =   741
-      Appearance      =   1
-      _Version        =   327682
    End
    Begin VB.PictureBox Picture2 
       Align           =   2  'Align Bottom
@@ -259,6 +259,7 @@ Private curObject As Object
 Private NewMeshData As String
 Private CodeLoader As New MSScriptControl.ScriptControl
 Private ScaleZoom As Double
+Private curRender As Object
 
 Private Sub AnimationScroll1_Change()
     SetAnimationFrame AnimationScroll1.Value
@@ -274,6 +275,15 @@ Private Sub Form_Resize()
     Picture1.Left = (Me.Width / 2) - (Picture1.Width / 2)
 End Sub
 
+Sub OpenNew()
+    Dim curFile As String
+    curFile = FileBrowser1.OpenFile(MainWindow, "Open Image", "*.bmp|*.ico")
+    Picture1.Picture = LoadPicture(curFile)
+End Sub
+Sub Save()
+    MainWindow.Engine.VBCETextures.Add curRender
+    MsgBox "Save Completed"
+End Sub
 
 Sub DrawObject()
     CodeLoader.AddCode NewMeshData
@@ -293,7 +303,8 @@ End Sub
 
 Private Sub Picture1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     Dim NewRender As New VBCEArrayImage_Class
-    NewRender.CreateFromImage Me.Picture1.Picture, Me.Picture1.ScaleX(Me.Picture1.Width), Me.Picture1.ScaleY(Me.Picture1.Height)
+    NewRender.CreateFromImage Me.Picture1.Picture, Me.Picture1.ScaleWidth, Me.Picture1.ScaleHeight, 1
+    Set curRender = NewRender
 End Sub
 
 Private Sub Picture1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
