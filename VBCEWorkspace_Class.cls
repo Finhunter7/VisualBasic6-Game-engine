@@ -19,6 +19,15 @@ Enum BrowserTypes
     SceneBrowser = 2
 End Enum
 
+Enum SBTActions
+    CreateNewitem = 0
+    OpenNew = 1
+    SaveItem = 2
+    RemoveItem = 3
+    SBTBringFront = 4
+    SBTBringBack = 5
+End Enum
+
 
 Public Sub LoadDeveloperTools(TargetGameEngine As EngineClass)
     Set GameEngine = TargetGameEngine
@@ -255,6 +264,54 @@ Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As Browser
         MsgBox "Not Implemented"
     End If
     
+End Sub
+
+Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As BrowserTypes, Action As SBTActions)
+    Dim tGameObject As GameObject_Class
+    
+    If TreeViewObject.selectedItem Is Nothing Then
+        Exit Sub
+    End If
+    If BrowserType = ProjectBrowser Then
+        With TreeViewObject.selectedItem
+            If Action = RemoveItem Then
+                If .Tag = "Script" Then
+                    GameEngine.RemoveScript .text
+                ElseIf .Tag = "Scene" Then
+                    GameEngine.UnloadScene .text
+                ElseIf .Tag = "GameObject" Then
+                    GameEngine.UnloadGameObject .text
+                Else
+                    MsgBox "Item cannot be removed", vbExclamation
+                End If
+            End If
+        End With
+    ElseIf BrowserType = SceneBrowser Then
+        With TreeViewObject.selectedItem
+            If Action = RemoveItem Then
+                If .Tag = "Object" Then
+                    GameEngine.Scenes(.root).Objects(.text).EndObject
+                ElseIf .Tag = "Scene" Then
+                    GameEngine.Scenes(.text).EndScene
+                Else
+                    MsgBox "Item cannot be removed", vbExclamation
+                End If
+            ElseIf Action = SBTBringBack Then
+            
+            End If
+        End With
+    Else
+        MsgBox "Not Implemented"
+    End If
+End Sub
+
+Sub TreeViewRightClick(TMainWindow As MDIForm, TreeViewObject As Object, MenuObject As Object)
+        If Not TreeViewObject.selectedItem Is Nothing Then
+            TMainWindow.BmnuRemove1.Caption = "Remove " & TreeViewObject.selectedItem.text & " " & TreeViewObject.selectedItem.Tag
+        Else
+            TMainWindow.BmnuRemove1.Caption = "Remove"
+        End If
+        TMainWindow.PopupMenu MenuObject
 End Sub
 
 Sub BrowseObject(TreeViewObject As Object, TObject As Object)

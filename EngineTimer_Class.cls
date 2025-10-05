@@ -59,7 +59,7 @@ Public Sub Kill()
 End Sub
 
 Private Sub Class_Initialize()
-    Me.Interval = 100
+    Me.Interval = 16
     Active = False
 End Sub
 

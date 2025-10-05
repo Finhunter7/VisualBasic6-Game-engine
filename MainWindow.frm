@@ -64,6 +64,7 @@ Begin VB.MDIForm MainWindow
             AutoSize        =   2
             Bevel           =   0
             TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -114,6 +115,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -124,6 +126,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -669,6 +672,48 @@ Begin VB.MDIForm MainWindow
    Begin VB.Menu mnuTest1 
       Caption         =   "Test"
    End
+   Begin VB.Menu Browsermnu1 
+      Caption         =   "Browser"
+      Begin VB.Menu BmnuCreateNew1 
+         Caption         =   "Create New"
+         Begin VB.Menu BmnuScript1 
+            Caption         =   "Script"
+         End
+         Begin VB.Menu BmnuCRef1 
+            Caption         =   "Reference"
+         End
+         Begin VB.Menu BmnuCComp1 
+            Caption         =   "Component"
+         End
+         Begin VB.Menu BmnuSpace2 
+            Caption         =   "-"
+         End
+         Begin VB.Menu BmnuCScene1 
+            Caption         =   "Scene"
+         End
+      End
+      Begin VB.Menu BmnuAddNew1 
+         Caption         =   "Add New From File"
+         Begin VB.Menu BmnuAddScript1 
+            Caption         =   "Script"
+         End
+         Begin VB.Menu BmnuAddReference1 
+            Caption         =   "Reference"
+         End
+         Begin VB.Menu BmnuComponent1 
+            Caption         =   "Component"
+         End
+         Begin VB.Menu BmnuSpace1 
+            Caption         =   "-"
+         End
+         Begin VB.Menu BmnuAddScene1 
+            Caption         =   "Scene"
+         End
+      End
+      Begin VB.Menu BmnuRemove1 
+         Caption         =   "Remove"
+      End
+   End
 End
 Attribute VB_Name = "MainWindow"
 Attribute VB_GlobalNameSpace = False
@@ -677,17 +722,19 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public WithEvents Engine As EngineClass
 Attribute Engine.VB_VarHelpID = -1
-Enum SBTActions
-    CreateNew = 0
-    OpenNew = 1
-    SaveItem = 2
-    RemoveItem = 3
-    SBTBringFront = 4
-    SBTBringBack = 5
-End Enum
 
 Private Sub List1_Click()
 
+End Sub
+
+Private Sub BmnuRemove1_Click()
+    With Me.SolutionBrowser1.selectedItem
+        If .Key = "TProjectB" Then
+            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, ProjectBrowser, RemoveItem
+        ElseIf .Key = "TSceneBrowser" Then
+            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, SceneBrowser, RemoveItem
+        End If
+    End With
 End Sub
 
 Private Sub Engine_OnDataChanged()
@@ -707,7 +754,6 @@ Private Sub MDIForm_Load()
     Form1.Show
     
     Engine.LoadEngine True, Form1, Console, Form1, Form2, Scene_Browser, EngineSettings
-    Engine.ProjectName = "Project1"
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine[design]"
 End Sub
@@ -1016,9 +1062,9 @@ Private Sub SolutionBrowser1_Click()
     End If
 End Sub
 
-Private Sub SolutionBrowserBar1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub SolutionBrowserBar1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 1 Then
-        SolutionBrowserBar1.Left = X
+        SolutionBrowserBar1.Left = x
     End If
 End Sub
 
@@ -1049,7 +1095,7 @@ Private Sub ToolbarRightCaptionBar1_ButtonClick(ByVal Button As ComctlLib.Button
     Select Case Button.Key
         
         Case "SBTNew1"
-            SBTHandler CreateNew
+            SBTHandler CreateNewitem
         Case "SBTOpen1"
             SBTHandler OpenNew
         Case "SBTSave1"
@@ -1060,41 +1106,14 @@ Private Sub ToolbarRightCaptionBar1_ButtonClick(ByVal Button As ComctlLib.Button
 End Sub
 
 Private Sub SBTHandler(Action As SBTActions)
-    Dim tGameObject As GameObject_Class
-    If Me.TreeViewBrowser2.selectedItem Is Nothing Then
-        Exit Sub
-    End If
+    With Me.SolutionBrowser1.selectedItem
+        If .Key = "TProjectB" Then
+            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, ProjectBrowser, Action
+        ElseIf .Key = "TSceneBrowser" Then
+            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, SceneBrowser, Action
+        End If
+    End With
     
-    If Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
-        With Me.TreeViewBrowser2.selectedItem
-            If Action = RemoveItem Then
-                If .Tag = "Script" Then
-                    Me.Engine.RemoveScript .text
-                ElseIf .Tag = "Scene" Then
-                    Me.Engine.UnloadScene .text
-                ElseIf .Tag = "GameObject" Then
-                    Me.Engine.UnloadGameObject .text
-                Else
-                    MsgBox "Item cannot be removed", vbExclamation
-                End If
-            End If
-        End With
-    ElseIf Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
-        With Me.TreeViewBrowser2.selectedItem
-            If Action = RemoveItem Then
-                If .Tag = "Object" Then
-                    Me.Engine.Scenes(.root).Objects(.text).EndObject
-                ElseIf .Tag = "Scene" Then
-                    Me.Engine.Scenes(.text).EndScene
-                Else
-                    MsgBox "Item cannot be removed", vbExclamation
-                End If
-            ElseIf Action = SBTBringBack Then
-            End If
-        End With
-    Else
-        MsgBox "Not Implemented"
-    End If
 End Sub
 
 Private Sub TreeViewBrowser2_AfterLabelEdit(Cancel As Integer, NewString As String)
@@ -1132,3 +1151,8 @@ Private Sub TreeViewBrowser2_DblClick()
     End If
 End Sub
 
+Private Sub TreeViewBrowser2_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+    If Button = 2 Then
+        Me.Engine.WorkspaceUtilClass.TreeViewRightClick Me, Me.TreeViewBrowser2, Browsermnu1
+    End If
+End Sub

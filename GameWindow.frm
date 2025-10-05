@@ -9,9 +9,8 @@ Begin VB.Form GameWindow
    ClientWidth     =   5580
    ForeColor       =   &H00FFFFFF&
    LinkTopic       =   "Form3"
-   ScaleHeight     =   271
-   ScaleMode       =   3  'Pixel
-   ScaleWidth      =   372
+   ScaleHeight     =   4065
+   ScaleWidth      =   5580
    StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "GameWindow"
@@ -34,7 +33,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
     'Me.Engine.InputSystem.KeysDown.Remove ("Key" & KeyCode)
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
     'Me.MouseX = X
     'Me.MouseY = Y
     'Me.MouseDown = Button

@@ -11,6 +11,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Private GEngine As EngineClass
+
+Sub Build(VBCEEngine As EngineClass)
+    Set GEngine = VBCEEngine
+End Sub
+
 Public Function CList() As Collection
     Dim newCol As New Collection
     Set CList = newCol
@@ -32,3 +38,16 @@ Public Sub WatchEvent(EventScript As Script_Class, EventVarName As String, UserS
     On Error Resume Next
     EventScript.MyModule.Eval(EventVarName).S_Modules.Add UserScript.MyModule
 End Sub
+
+Public Sub Using(Class As String)
+
+End Sub
+
+Public Sub UsingSystem(Class As String)
+
+End Sub
+
+Public Sub Import(ModuleFile As String)
+
+End Sub
+
