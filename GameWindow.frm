@@ -2,15 +2,15 @@ VERSION 5.00
 Begin VB.Form GameWindow 
    AutoRedraw      =   -1  'True
    BackColor       =   &H00000000&
-   Caption         =   "Form3"
-   ClientHeight    =   4065
+   Caption         =   "GameWindow"
+   ClientHeight    =   2340
    ClientLeft      =   60
    ClientTop       =   405
-   ClientWidth     =   5580
+   ClientWidth     =   3540
    ForeColor       =   &H00FFFFFF&
    LinkTopic       =   "Form3"
-   ScaleHeight     =   4065
-   ScaleWidth      =   5580
+   ScaleHeight     =   2340
+   ScaleWidth      =   3540
    StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "GameWindow"
@@ -33,7 +33,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
     'Me.Engine.InputSystem.KeysDown.Remove ("Key" & KeyCode)
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
     'Me.MouseX = X
     'Me.MouseY = Y
     'Me.MouseDown = Button

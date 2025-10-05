@@ -12,22 +12,38 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Public Name As String
-Public TextureType As TextureTypes
-Public Texture As IPictureDisp
+Private TextureType As TextureTypes
+Public Texture As Object
 Public CordinateType As TextureCordinatesTypes
 Public Size As Double
 
 Enum TextureTypes
     Image = 0
-    Generated = 1
+    ArrayTexture = 1
+    Generated = 2
 End Enum
 
 Enum TextureCordinatesTypes
     Generated = 0
     UV = 1
-    GObject = 2
+    GameObjectSpace = 2
 End Enum
 
+Public Property Get GetType() As TextureTypes
+    GetType = TextureType
+End Property
+
+Public Property Let SetType(ByVal RHS As TextureTypes)
+    Set Texture = Nothing
+    TextureType = RHS
+End Property
+
 Sub LoadTextureImage(FileName As String)
-    Set Texture = LoadPicture(FileName)
+    If TextureType = Image Then
+        Set Texture = LoadPicture(FileName)
+    ElseIf TextureType = ArrayTexture Then
+        Dim ArrayImageClass As New VBCEArrayImage_Class
+        Set Texture = ArrayImageClass.CreateFromImage(LoadPicture(FileName))
+    End If
 End Sub
+

@@ -15,8 +15,8 @@ Public Name As String
 Private ImageArray() As Long
 Private SizeX As Long
 Private SizeY As Long
-Public ScaleX As Long
-Public ScaleY As Long
+Private RealX As Long
+Private RealY As Long
 
 Sub ResizeImage(NewX As Long, NewY As Long)
     SizeX = NewX
@@ -40,23 +40,31 @@ Sub DrawLine(StartPos As Vector_Class, EndPos As Vector_Class, Color As Long)
     
 End Sub
 
-Sub CreateFromImage(Picture As IPictureDisp, OScaleX As Long, OScaleY As Long, ScaleFactor As Integer)
+Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As Long, ScaleFactor As Integer)
     Dim Render As New ImageRenderWindow
     Dim StatusDia As New StatusDialog
     Dim PixelDenX As Double
     Dim PixelDenY As Double
     'Me.ResizeImage Picture.Width / OScaleX, Picture.Height / OScaleY
-    Me.ResizeImage OScaleX, OScaleY
-    PixelDenX = Picture.Width / OScaleX
-    PixelDenY = Picture.Height / OScaleY
     
     Render.Caption = "Please Wait... Rendering Image"
-    Render.Width = Picture.Width
+    Render.Width = Picture.Width - 690
     Render.Height = Picture.Height
-    Render.ScaleX OScaleX
-    Render.ScaleY OScaleY
-    Render.Show
+    RealX = Picture.Width - 690
+    RealY = Picture.Height
     Render.Picture = Picture
+    
+    Me.ResizeImage Render.ScaleWidth, Render.ScaleHeight
+    PixelDenX = Picture.Width / Render.ScaleWidth '/ OScaleX
+    PixelDenY = Picture.Height / Render.ScaleHeight '/ OScaleY
+    
+    Render.ScaleMode = 1
+    'Render.WindowState = 1
+    'Render.ScaleX OScaleX
+    'Render.ScaleY OScaleY
+    'Render.AutoRedraw = True
+    Render.Show
+    Render.Caption = "Please Wait... Rendering Texture"
     'Render.Visible = False
     StatusDia.PRGBar_Show "Please Wait... Rendering"
     
@@ -67,22 +75,36 @@ Sub CreateFromImage(Picture As IPictureDisp, OScaleX As Long, OScaleY As Long, S
         Next
         StatusDia.PRGBar_SetValue CLng(PLine), CLng(SizeY), "Rendering "
     Next
-    
-    'MsgBox ImageArray(2, 2)
-    'RenderTo Render, 10, 10
     Render.Hide
     StatusDia.Hide
-End Sub
+    Set CreateFromImage = Me
+End Function
 
 Sub RenderTo(TargetObject As Object, Pos As Vector_Class, newScaleX As Double, newScaleY As Double)
     For PLine = 1 To SizeY
         For PCol = 1 To SizeX
             'MainWindow.Engine.GameWindow.PSet (PCol * newScaleX, PLine * newScaleY), ImageArray(PCol, PLine)
             TargetObject.Line (Pos.X + (PCol - 1) * newScaleX, Pos.Y + (PLine - 1) * newScaleY)-(Pos.X + ((PCol - 1) * newScaleX) + newScaleX, Pos.Y + ((PLine - 1) * newScaleY) + newScaleY), ImageArray(PCol, PLine), BF
-            DoEvents
+            'DoEvents
         Next
     Next
 End Sub
+
+Function ToPicture(ScaleX As Double, ScaleY As Double) As StdPicture
+    Dim ConvertRender As New ImageRenderWindow
+    Dim Pos As New Vector_Class
+    'Render.ScaleMode = 3
+    'ConvertRender.WindowState = 1
+    ConvertRender.ScaleMode = 3
+    ConvertRender.Width = RealX * ScaleX
+    ConvertRender.Height = RealY * ScaleY
+    ConvertRender.Show
+    ConvertRender.Caption = "Please Wait... Converting Texture To Picture"
+    ConvertRender.Cls
+    RenderTo ConvertRender, Pos, ScaleX, ScaleY
+    Set ToPicture = ConvertRender.Image
+    ConvertRender.Hide
+End Function
 
 Function GetSizeX() As Long
     GetSizeX = SizeX
@@ -90,3 +112,7 @@ End Function
 Function GetSizeY() As Long
     GetSizeY = SizeY
 End Function
+
+Private Sub Class_Initialize()
+    'MyType = ArrayTexture
+End Sub

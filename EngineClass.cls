@@ -26,9 +26,9 @@ Public Event OnRenderEnd()
 Public Event OnGameStop()
 Public Event OnGameEnd()
 Public Event OnError()
-Public Event MouseDown(Button As Integer, x As Single, y As Single)
-Public Event MouseUp(Button As Integer, x As Single, y As Single)
-Public Event MouseMove(Button As Integer, x As Single, y As Single)
+Public Event MouseDown(Button As Integer, X As Single, Y As Single)
+Public Event MouseUp(Button As Integer, X As Single, Y As Single)
+Public Event MouseMove(Button As Integer, X As Single, Y As Single)
 Public Event KeyDown(KeyCode As Integer)
 Public Event KeyUp(KeyCode As Integer)
 
@@ -75,7 +75,8 @@ Public DrawClass As New Draw_Class
 Private EVectorClass As New Vector_Class
 Private MathClass As New Math_Class
 Private AudioSystem As New AudioSystem_Class
-Private fileSystemHandler As New Scripting.FileSystemObject
+Private fileSystemHandler As FileSystemObject
+
 Private EngineUtil_Class As New EngineUtils_Class
 
 Public SaveLoadGameClass As New GameLoader_Class
@@ -141,6 +142,12 @@ Enum ComponentTypes
     CustomComponent = 3
 End Enum
 
+Enum TextureClases
+    ArrayTexture = 0
+    PictureTexture = 1
+    PictureOrImage = 2
+End Enum
+
 Function GetCurrentScene() As Scene_Class ' Palauttaa ensimmäisen Scenen
     If Me.Scenes.Count < 1 Then
         Set GetCurrentScene = Nothing
@@ -168,8 +175,8 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
         Set curScene = Me.Scenes(i)
         For o = 1 To curScene.Objects.Count
             Set SceneObject = curScene.Objects(o)
-            If MPosX > (SceneObject.Position.x - (SceneObject.EditorColliderSize.x / 2)) And MPosX < (SceneObject.Position.x + (SceneObject.EditorColliderSize.x / 2)) Then
-                If MPosY > (SceneObject.Position.y - (SceneObject.EditorColliderSize.y / 2)) And MPosY < (SceneObject.Position.y + (SceneObject.EditorColliderSize.y / 2)) Then
+            If MPosX > (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2)) And MPosX < (SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2)) Then
+                If MPosY > (SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2)) And MPosY < (SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)) Then
                     Me.EditorRefreshScenes
                     Me.EditorWindow.FontSize = 8
                     Me.EditorWindow.ForeColor = &HFFFFFF
@@ -177,17 +184,17 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
                     Me.GameWindow.CurrentY = 0
                     Me.EditorWindow.Print "Object Name: " & SceneObject.Name
                     Me.EditorWindow.Print "Object Tag: " & SceneObject.Tag
-                    Me.EditorWindow.Print "Object X: " & SceneObject.Position.x
-                    Me.EditorWindow.Print "Object Y: " & SceneObject.Position.y
+                    Me.EditorWindow.Print "Object X: " & SceneObject.Position.X
+                    Me.EditorWindow.Print "Object Y: " & SceneObject.Position.Y
                     Me.EditorWindow.Print "Object Z: " & SceneObject.Position.Z
-                    Me.EditorWindow.Print "Object ScaleX: " & SceneObject.SScale.x
-                    Me.EditorWindow.Print "Object ScaleY: " & SceneObject.SScale.y
+                    Me.EditorWindow.Print "Object ScaleX: " & SceneObject.SScale.X
+                    Me.EditorWindow.Print "Object ScaleY: " & SceneObject.SScale.Y
                     Me.EditorWindow.Print "Object ScaleZ: " & SceneObject.SScale.Z
                     Me.EditorWindow.Print "Object Size: " & SceneObject.Size
-                    Me.EditorWindow.Line (SceneObject.Position.x - (SceneObject.EditorColliderSize.x / 2), SceneObject.Position.y - (SceneObject.EditorColliderSize.y / 2))-(SceneObject.Position.x + (SceneObject.EditorColliderSize.x / 2), SceneObject.Position.y + (SceneObject.EditorColliderSize.y / 2)), vbGreen, B
-                    Me.EditorWindow.Line (SceneObject.Position.x, SceneObject.Position.y)-(SceneObject.Position.x + (SceneObject.EditorColliderSize.x), SceneObject.Position.y), vbRed
+                    Me.EditorWindow.Line (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2))-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)), vbGreen, B
+                    Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X), SceneObject.Position.Y), vbRed
                     Me.EditorWindow.Print "X"
-                    Me.EditorWindow.Line (SceneObject.Position.x, SceneObject.Position.y)-(SceneObject.Position.x, SceneObject.Position.y + SceneObject.EditorColliderSize.y), vbGreen
+                    Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X, SceneObject.Position.Y + SceneObject.EditorColliderSize.Y), vbGreen
                     Me.EditorWindow.Print "Y"
                     Set EditorSelectedObject = SceneObject
                     Exit Function
@@ -210,7 +217,7 @@ Function SelectObject(GameObject As GameObject_Class)
         Exit Function
     End If
     Me.EditorRefreshScenes
-    Me.EditorWindow.Line (GameObject.Position.x - (GameObject.EditorColliderSize.x / 2), GameObject.Position.y - (GameObject.EditorColliderSize.y / 2))-(GameObject.Position.x + (GameObject.EditorColliderSize.x / 2), GameObject.Position.y + (GameObject.EditorColliderSize.y / 2)), vbGreen, B
+    Me.EditorWindow.Line (GameObject.Position.X - (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y - (GameObject.EditorColliderSize.Y / 2))-(GameObject.Position.X + (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y + (GameObject.EditorColliderSize.Y / 2)), vbGreen, B
     Set EditorSelectedObject = GameObject
 End Function
 
@@ -248,8 +255,8 @@ Function CreateNewScene(thisName As String) As Scene_Class ' Luo uuden Scenen Sc
     newScene.Name = thisName
     Set newScene.GameEngine = Me
     
-    newScene.WorldCenterPos.x = Me.GameWindow.Width / 2
-    newScene.WorldCenterPos.y = Me.GameWindow.Height / 2
+    newScene.WorldCenterPos.X = Me.GameWindow.Width / 2
+    newScene.WorldCenterPos.Y = Me.GameWindow.Height / 2
     
     ScenesInactive.Add newScene, thisName
     Set CreateNewScene = newScene
@@ -460,6 +467,8 @@ Private Sub ScriptEngine_Intialize()
         'Unload Me
         End
     End If
+    Set fileSystemHandler = New Scripting.FileSystemObject
+    
     Me.SetCodeLaunguage "VBScript"
     Me.CodeEngine.AddObject "Engine", Me, True
     Me.CodeEngine.AddObject "Vector", EVectorClass, True
@@ -520,7 +529,9 @@ End Function
 
 Private Function OnProjectLoad(Com As String)
     Dim Commands() As String
+    
     Commands = Split(Com, " ")
+    
     If Commands(0) = "/P" Then
         
     ElseIf Commands(0) = "/C" Then
@@ -530,13 +541,28 @@ End Function
 Private Sub LoadStartupCode(FilePath As String)
     Dim Data As String
     Dim curLine As String
-    Open (FilePath) For Input As #1
-        Do Until EOF(1)
-            Input #1, curLine
+    Dim curFile As Object
+    'Open (FilePath) For Input As #1
+        'Do Until EOF(1)
+            'Input #1, curLine
+            'Data = Data & curLine & vbCrLf
+        'Loop
+    'Close #1
+    If fileSystemHandler Is Nothing Then
+        Exit Sub
+    End If
+    
+    If fileSystemHandler.FileExists(FilePath) Then
+        Set curFile = fileSystemHandler.OpenTextFile(FilePath, ForReading, False)
+        Do Until curFile.AtEndOfStream
+            curLine = curFile.ReadLine()
             Data = Data & curLine & vbCrLf
         Loop
-    Close #1
-    Me.CodeEngine.AddCode Data
+        curFile.Close
+        Me.CodeEngine.AddCode Data
+    Else
+        MsgBox "File " & FilePath & " Does Not Exists", vbExclamation
+    End If
 End Sub
 
 Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As Form, Optional TEditorWindow As Form, Optional TProjectBrowser As Form, Optional TSceneBrowser As Form, Optional TSettingsWindow As Form)
@@ -893,8 +919,8 @@ Private Function SaveProjectSceneData(scFolder As Folder)
             sData.WriteLine "[General]"
             sData.WriteLine "Scene_Name " & curScene.Name
             sData.WriteLine "[Gravity]"
-            sData.WriteLine "X " & curScene.Gravity.x
-            sData.WriteLine "Y " & curScene.Gravity.y
+            sData.WriteLine "X " & curScene.Gravity.X
+            sData.WriteLine "Y " & curScene.Gravity.Y
             sData.WriteLine "Z " & curScene.Gravity.Z
             sData.WriteLine "[Objects]"
             For o = 1 To curScene.Objects.Count
@@ -1252,10 +1278,10 @@ Private Sub EditorWindow_KeyDown(KeyCode As Integer, Shift As Integer)
     Me.EditorRefreshScenes
 End Sub
 
-Private Sub EditorWindow_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub EditorWindow_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Me.IsEngineRunning = False Then
         If Button = 1 Then
-            Me.EditorGetSelectedObject x, y
+            Me.EditorGetSelectedObject X, Y
             If Me.GetSelectedObject() Is Nothing Then
                 'Me.EditorWindow.StatusBar1.Panels(5).text = "Selected Object: Nothing"
                 Exit Sub
@@ -1266,13 +1292,13 @@ Private Sub EditorWindow_MouseDown(Button As Integer, Shift As Integer, x As Sin
     End If
 End Sub
 
-Private Sub EditorWindow_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub EditorWindow_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Me.IsEngineRunning = False Then
         If Button = 1 Then
             If Not Me.GetSelectedObject() Is Nothing Then
                 Me.EditorWindow.Cls
-                Me.GetSelectedObject().Position.x = x
-                Me.GetSelectedObject().Position.y = y
+                Me.GetSelectedObject().Position.X = X
+                Me.GetSelectedObject().Position.Y = Y
                 Me.EditorRefreshScenes
             End If
         Else
@@ -1308,14 +1334,14 @@ Private Sub GameWindow_KeyUp(KeyCode As Integer, Shift As Integer)
     RaiseEvent KeyUp(KeyCode)
 End Sub
 
-Private Sub GameWindow_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
-    RaiseEvent MouseDown(Button, x, y)
+Private Sub GameWindow_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    RaiseEvent MouseDown(Button, X, Y)
 End Sub
 
-Private Sub GameWindow_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
-    RaiseEvent MouseMove(Button, x, y)
+Private Sub GameWindow_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    RaiseEvent MouseMove(Button, X, Y)
 End Sub
 
-Private Sub GameWindow_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
-    RaiseEvent MouseUp(Button, x, y)
+Private Sub GameWindow_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    RaiseEvent MouseUp(Button, X, Y)
 End Sub

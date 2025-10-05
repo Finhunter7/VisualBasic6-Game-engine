@@ -63,8 +63,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -115,7 +113,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -126,7 +123,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -148,7 +144,7 @@ Begin VB.MDIForm MainWindow
          Height          =   1095
          Left            =   120
          TabIndex        =   4
-         Top             =   1080
+         Top             =   1320
          Width           =   3255
          _ExtentX        =   5741
          _ExtentY        =   1931
@@ -161,17 +157,17 @@ Begin VB.MDIForm MainWindow
          OLEDropMode     =   1
       End
       Begin ComctlLib.TabStrip SolutionBrowser1 
-         Height          =   1935
+         Height          =   2295
          Left            =   0
          TabIndex        =   1
          Top             =   360
          Width           =   3495
          _ExtentX        =   6165
-         _ExtentY        =   3413
+         _ExtentY        =   4048
          MultiRow        =   -1  'True
          _Version        =   327682
          BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
-            NumTabs         =   5
+            NumTabs         =   6
             BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
                Caption         =   "Solution"
                Key             =   "TSolution"
@@ -191,14 +187,20 @@ Begin VB.MDIForm MainWindow
                ImageVarType    =   2
             EndProperty
             BeginProperty Tab4 {0713F341-850A-101B-AFC0-4210102A8DA7} 
-               Caption         =   "Component-Browser"
-               Key             =   "TComponentBrowser"
+               Caption         =   "Object-Browser"
+               Key             =   "TObjectB"
                Object.Tag             =   ""
                ImageVarType    =   2
             EndProperty
             BeginProperty Tab5 {0713F341-850A-101B-AFC0-4210102A8DA7} 
-               Caption         =   "Object-Browser"
-               Key             =   "TObjectB"
+               Caption         =   "Folder-Browser"
+               Key             =   "TFolderB1"
+               Object.Tag             =   ""
+               ImageVarType    =   2
+            EndProperty
+            BeginProperty Tab6 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+               Caption         =   "Component-Browser"
+               Key             =   "TComB1"
                Object.Tag             =   ""
                ImageVarType    =   2
             EndProperty
@@ -1062,9 +1064,9 @@ Private Sub SolutionBrowser1_Click()
     End If
 End Sub
 
-Private Sub SolutionBrowserBar1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub SolutionBrowserBar1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Button = 1 Then
-        SolutionBrowserBar1.Left = x
+        SolutionBrowserBar1.Left = X
     End If
 End Sub
 
@@ -1151,7 +1153,7 @@ Private Sub TreeViewBrowser2_DblClick()
     End If
 End Sub
 
-Private Sub TreeViewBrowser2_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub TreeViewBrowser2_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Button = 2 Then
         Me.Engine.WorkspaceUtilClass.TreeViewRightClick Me, Me.TreeViewBrowser2, Browsermnu1
     End If

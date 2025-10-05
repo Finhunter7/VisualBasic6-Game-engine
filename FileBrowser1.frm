@@ -89,6 +89,8 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Dim selectedItem As String
 Dim Handle As FileBrowserHandler
+Private curFileName As String
+
 Enum FileBrowserHandler
     FOpen = 1
     FSave = 2
@@ -104,20 +106,26 @@ Private Sub Combo1_Click()
     File1.Pattern = Combo1.text
 End Sub
 
+Public Property Get GetFileName() As String
+    SelFileName = curFileName
+End Property
+
 Private Sub Command1_Click()
     If Handle = FOpen Then
-        selectedItem = File1.Path & "\" & File1.fileName
+        selectedItem = File1.Path & "\" & File1.FileName
+        curFileName = File1.FileName
     ElseIf Handle = DSave Then
         selectedItem = Dir1.Path
     ElseIf Handle = FSave Then
         selectedItem = Dir1.Path & "\" & Text1.text
+        curFileName = Text1.text
     Else
         selectedItem = Dir1.Path
     End If
     
     If Text1.text = "" And Handle = FSave Then
         MsgBox "Please Insert Filename", vbExclamation
-    ElseIf Handle = FOpen And File1.fileName = "" Then
+    ElseIf Handle = FOpen And File1.FileName = "" Then
         MsgBox "Please Select File", vbExclamation
     Else
         Me.Hide
@@ -126,6 +134,7 @@ End Sub
 
 Private Sub Command2_Click()
     selectedItem = ""
+    curFileName = ""
     Me.Hide
 End Sub
 
@@ -139,8 +148,8 @@ Private Sub Drive1_Change()
 End Sub
 
 Private Sub File1_Click()
-    Me.Caption = File1.Path & "\" & File1.fileName
-    Text1.text = File1.fileName
+    Me.Caption = File1.Path & "\" & File1.FileName
+    Text1.text = File1.FileName
 End Sub
 
 Sub AddFilters(formatsText As String)
@@ -158,7 +167,7 @@ End Sub
 
 Function GetFormat() As String
     If Handle = FOpen Then
-        cArray = Split(File1.fileName, ".")
+        cArray = Split(File1.FileName, ".")
         GetFormat = cArray(1)
     ElseIf Handle = FSave Then
         cArray = Split(Combo1.text, ".")
