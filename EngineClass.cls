@@ -76,11 +76,12 @@ Private EVectorClass As New Vector_Class
 Private MathClass As New Math_Class
 Private AudioSystem As New AudioSystem_Class
 Private fileSystemHandler As FileSystemObject
+Public Direct8Lib As Object
+Private Direct1LIB As Object
 
 Private EngineUtil_Class As New EngineUtils_Class
 
 Public SaveLoadGameClass As New GameLoader_Class
-
 
 Public Scenes As New Collection ' Aktiiviset Scenet
 Public ScenesInactive As New Collection
@@ -468,13 +469,12 @@ Private Sub ScriptEngine_Intialize()
         End
     End If
     Set fileSystemHandler = New Scripting.FileSystemObject
-    
+    AudioSystem.Build Me
     Me.SetCodeLaunguage "VBScript"
     Me.CodeEngine.AddObject "Engine", Me, True
     Me.CodeEngine.AddObject "Vector", EVectorClass, True
     Me.CodeEngine.AddObject "Math", MathClass, True
     Me.CodeEngine.AddObject "AudioSystem", AudioSystem, True
-    
     
     Me.GlobalScript.Name = "Global"
     Me.ProjectName = "Project1"

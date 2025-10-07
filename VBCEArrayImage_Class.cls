@@ -48,9 +48,9 @@ Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As L
     'Me.ResizeImage Picture.Width / OScaleX, Picture.Height / OScaleY
     
     Render.Caption = "Please Wait... Rendering Image"
-    Render.Width = Picture.Width - 690
+    Render.Width = Picture.Width - 650
     Render.Height = Picture.Height
-    RealX = Picture.Width - 690
+    RealX = Picture.Width '- 690
     RealY = Picture.Height
     Render.Picture = Picture
     
@@ -66,7 +66,7 @@ Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As L
     Render.Show
     Render.Caption = "Please Wait... Rendering Texture"
     'Render.Visible = False
-    StatusDia.PRGBar_Show "Please Wait... Rendering"
+    StatusDia.PRGBar_Show "Please Wait... Rendering", StatusdlgCancel
     
     For PLine = 1 To SizeY
         For PCol = 1 To SizeX
@@ -74,6 +74,14 @@ Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As L
             DoEvents
         Next
         StatusDia.PRGBar_SetValue CLng(PLine), CLng(SizeY), "Rendering "
+        If StatusDia.IsOperationCanceled Then
+            Exit For
+            Exit For
+            Render.Hide
+            StatusDia.Hide
+            Set CreateFromImage = Nothing
+            Exit Function
+        End If
     Next
     Render.Hide
     StatusDia.Hide
