@@ -66,6 +66,7 @@ Attribute VB_Exposed = False
 'Public MouseY As Double
 'Public MouseDown As Integer
 'Dim curScene As Long
+'Public Engine As EngineClass
 
 Private Sub Form_Load()
     On Error Resume Next
@@ -112,4 +113,9 @@ Private Sub Form_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integ
     If Data.GetFormat(1) Then
         MsgBox "GameObject " & Data.GetData(5)
     End If
+End Sub
+
+Private Sub Form_Resize()
+    'Me.ScaleWidth = 5000
+    'Me.ScaleHeight = 4000
 End Sub

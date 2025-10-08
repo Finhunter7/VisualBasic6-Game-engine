@@ -39,6 +39,8 @@ Public ProjectCodeLanguage As String
 Public ProjectType As ProjectTypes
 Public GameWindowSizeX As Long
 Public GameWindowSizeY As Long
+Public GameWindowScaleX As Long
+Public GameWindowScaleY As Long
 
 ' Editor Utils
 Public IsInEditor As Boolean

@@ -199,7 +199,6 @@ Begin VB.Form CodeEditor
       _ExtentX        =   7646
       _ExtentY        =   4471
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -286,7 +285,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Const KeyWordsCount = 53
+Const KeyWordsCount = 55
 Public curClassName As String
 Public GameObject As GameObject_Class
 Public GameEngine As EngineClass
@@ -368,6 +367,9 @@ Function LoadItems()
     Items(51) = "Each"
     Items(52) = "Select"
     Items(53) = "Case"
+    Items(54) = "In"
+    Items(55) = "WithEvents"
+    
     ' ConvertFuncs
     'Items(52) = "VbString"
     'Items(53) = "VbSingle"

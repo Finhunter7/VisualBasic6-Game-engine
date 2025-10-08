@@ -4,10 +4,10 @@ Begin VB.MDIForm MainWindow
    AutoShowChildren=   0   'False
    BackColor       =   &H8000000C&
    Caption         =   "MDIForm1"
-   ClientHeight    =   5130
+   ClientHeight    =   9315
    ClientLeft      =   165
    ClientTop       =   510
-   ClientWidth     =   7275
+   ClientWidth     =   14205
    Icon            =   "MainWindow.frx":0000
    LinkTopic       =   "MDIForm1"
    NegotiateToolbars=   0   'False
@@ -18,8 +18,8 @@ Begin VB.MDIForm MainWindow
       Left            =   0
       TabIndex        =   2
       Top             =   0
-      Width           =   7275
-      _ExtentX        =   12832
+      Width           =   14205
+      _ExtentX        =   25056
       _ExtentY        =   741
       ButtonWidth     =   635
       ButtonHeight    =   582
@@ -53,9 +53,9 @@ Begin VB.MDIForm MainWindow
       Height          =   300
       Left            =   0
       TabIndex        =   3
-      Top             =   4830
-      Width           =   7275
-      _ExtentX        =   12832
+      Top             =   9015
+      Width           =   14205
+      _ExtentX        =   25056
       _ExtentY        =   529
       SimpleText      =   ""
       _Version        =   327682
@@ -73,14 +73,14 @@ Begin VB.MDIForm MainWindow
    Begin VB.PictureBox SolutionBrowserBar1 
       Align           =   4  'Align Right
       BorderStyle     =   0  'None
-      Height          =   4410
-      Left            =   3765
+      Height          =   8595
+      Left            =   10575
       Negotiate       =   -1  'True
-      ScaleHeight     =   4410
-      ScaleWidth      =   3510
+      ScaleHeight     =   8595
+      ScaleWidth      =   3630
       TabIndex        =   0
       Top             =   420
-      Width           =   3510
+      Width           =   3630
       Begin ComctlLib.Toolbar ToolbarRightCaptionBar1 
          Height          =   390
          Left            =   0
@@ -150,8 +150,8 @@ Begin VB.MDIForm MainWindow
          Left            =   120
          TabIndex        =   4
          Top             =   1320
-         Width           =   3255
-         _ExtentX        =   5741
+         Width           =   3375
+         _ExtentX        =   5953
          _ExtentY        =   1931
          _Version        =   327682
          Indentation     =   529
@@ -166,8 +166,8 @@ Begin VB.MDIForm MainWindow
          Left            =   0
          TabIndex        =   1
          Top             =   360
-         Width           =   3495
-         _ExtentX        =   6165
+         Width           =   3615
+         _ExtentX        =   6376
          _ExtentY        =   4048
          MultiRow        =   -1  'True
          _Version        =   327682
@@ -771,7 +771,7 @@ End Sub
 Private Sub MDIForm_Load()
     Set Engine = New EngineClass
     Form1.Show
-    
+    ProjectTypeSelectorDialog.Show vbModal, Me
     Engine.LoadEngine True, Form1, Console, Form1, Form2, Scene_Browser, EngineSettings
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine[design]"
@@ -973,7 +973,7 @@ Private Sub mnuProjectBrowser1_Click()
 End Sub
 
 Private Sub mnuProjectProp1_Click()
-    EngineSettings.Show vbModal, Me
+    'EngineSettings.Show vbModal, Me
 End Sub
 
 Private Sub mnuRefrences1_Click()

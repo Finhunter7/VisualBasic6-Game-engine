@@ -285,7 +285,7 @@ Private Sub ListRefrences()
     Me.ListView1.ListItems.Clear
     For Each Item In GameEngine.EngineRefrences
         curItem = curItem + 1
-        Me.ListView1.ListItems.Add , Item.Name, Item.Name, 4, 4
+        Me.ListView1.ListItems.Add , Item.Name, Item.Name, 12, 12
     Next
 End Sub
 
