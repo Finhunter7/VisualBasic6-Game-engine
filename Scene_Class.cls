@@ -143,6 +143,7 @@ Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, O
     Dim MeshScript As New Script_Class
     MeshScript.Tag = "RendererScript"
     
+    CnewObject.AddComponent MeshScript
     If Preset = SEmpty Then 'Empty
         'CnewObject.ChangeMeshCode CnewObject.MeshCode, Me.GameEngine.CodeEngine
     

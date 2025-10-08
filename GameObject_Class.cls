@@ -32,8 +32,8 @@ Public SScale As New Vector_Class
 Public Size As Double 'Kokonais Mittakoko
 Public EditorColliderSize As New Vector_Class ' Editorissa näkyvä valittsemis alue
 Public Velocity As New Vector_Class '
+Public MyComponents As New Collection ' Kaikki Komponentit Jotka Objekti luo
 Public Components As New Collection
-Private LoadedComponents As New Collection
 Public MyPropertites As New PropertyBag ' Käytetään kun objektista tehdään pelissä kopioita
 'Public MeshCode As Script_Class ' Referenssi Scriptiin
 Private IVisible As Boolean
@@ -131,10 +131,24 @@ End Sub
 
 Public Function GetComponent(NameOrIndex) As Object
     On Error Resume Next
-    If Me.Components.Count > 0 Then
-        Set GetComponent = Me.Components.Item(NameOrIndex)
+    If MyComponents.Count > 0 Then
+        Set GetComponent = MyComponents.Item(NameOrIndex)
     Else
         Set GetComponent = Nothing
+    End If
+End Function
+
+Public Function GetComponents() As Collection
+    Set GetComponents = MyComponents
+End Function
+
+Public Function GetRuntimeComponent(NameOrID) As Object
+    On Error Resume Next
+    
+    If Me.Components.Count > 0 Then
+        Set GetRuntimeComponent = Me.Components.Item(NameOrID)
+    Else
+        Set GetRuntimeComponent = Nothing
     End If
 End Function
 
@@ -142,11 +156,11 @@ Public Function RemoveComponent(NameOrID) As Boolean
     On Error GoTo DError
     Dim curComp As Object
     
-    If Me.Components.Count > 0 Then
-        Set curComp = Me.Components.Item(NameOrID)
-        Set curComp.MyObject = Nothing
+    If MyComponents.Count > 0 Then
+        Set curComp = MyComponents.Item(NameOrID)
+        Set curComp.MyObject = curComp
         'curComp.IsComponent = False
-        Me.Components.Remove NameOrID
+        MyComponents.Remove NameOrID
         RemoveComponent = True
     Else
         RemoveComponent = False
@@ -156,12 +170,19 @@ DError:
     RemoveComponent = False
 End Function
 
-Public Sub AddComponent(NComponent As Object)
+Public Sub AddComponent(NComponent As Script_Class)
+    On Error Resume Next
     Dim newComponent As Object
     'Set NComponent.MyObject = Me
     'Set newComponent = NComponent
     'Set newComponent.MyObject = Me
-    Me.Components.Add newComponent, newComponent.Name
+    Set newComponent = NComponent.MyModule.Eval("Component")
+    If newComponent Is Nothing And Me.MyScene.GameEngine.IsEngineRunning = True Then
+        Err.Raise 8, Me.Name & ".AddComponent", "Script " & NComponent.Name & " Is Not Component Supported"
+    Else
+        MyComponents.Add NComponent, NComponent.Name
+        Debug.Print "Added Component " & NComponent.Name
+    End If
 End Sub
 
 Private Sub Load(GameCodeEngine As ScriptControl)
@@ -237,15 +258,12 @@ Private Function CallUpdate(GameCodeEngine As ScriptControl)
 End Function
 
 Private Sub InitializeComponents()
+    On Error Resume Next
     Dim curComponent As Object
-    For Each Item In Me.Components
-        If Item.Tag = "RendererScript" Then
-            Set curComponent = Item.MyModule.Eval("Component")
-            LoadedComponents.Add curComponent, Item.Name
-            Set curComponent.self = Me
-        ElseIf Item.Tag = "Script" Then
-            
-        End If
+    For Each Item In MyComponents
+        Set curComponent = Item.MyModule.Eval("Component")
+        Me.Components.Add curComponent, curComponent.Name
+        Set curComponent.self = Me
     Next
 End Sub
 
@@ -273,8 +291,8 @@ Private Function UpdatePhysics()
 End Function
 
 Function EndObject() As Boolean
-    For i = 1 To LoadedComponents.Count
-        LoadedComponents.Remove i
+    For i = 1 To Me.Components.Count
+        Components.Remove i
     Next
     If Me.ParentObject Is Nothing Then
         If Me.MyScene Is Nothing Then

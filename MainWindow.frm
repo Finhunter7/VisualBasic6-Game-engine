@@ -858,13 +858,16 @@ End Sub
 Private Sub mnuExCCompScript1_Click()
     Engine.CreateNewScript InputBox("Script Name"), ComponentScript, vbNewLine & _
     "Class CustomComponent" & vbNewLine & vbNewLine & _
-    "   Public Name" & vbNewLine & _
-    "   Public MyObject" & vbNewLine & vbNewLine & _
-    "   Private Sub Class_Initialize()" & vbNewLine & _
+    "Public Name" & vbNewLine & _
+    "Public self" & vbNewLine & vbNewLine & _
+    "Private Sub Class_Initialize()" & vbNewLine & _
+    "'Name = " & vbNewLine & _
+    "End Sub" & vbNewLine & vbNewLine & _
+    "Private Sub Class_Terminate()" & vbNewLine & _
     vbNewLine & _
-    "   End Sub" & vbNewLine & _
-    vbNewLine & _
-    "End Class"
+    "End Sub" & vbNewLine & vbNewLine & _
+    "End Class" & vbNewLine & _
+    "Set Component = New CustomComponent"
 End Sub
 
 Private Sub mnuExit1_Click()

@@ -184,12 +184,19 @@ Sub BrowseEngineData(TargetTreeView As Object)
     For Each GObj In GameEngine.GameObjects
         Set thisNode = TargetTreeView.Nodes.Add("F_GameObjects", 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name, GObj.MyScene.Name & "_" & GObj.Name, 7, 7)
         thisNode.Tag = "GameObject"
+        Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name, 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "AComponents", "ActiveComponents", 1, 1)
+        thisNode.Tag = "Folder"
         Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name, 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "Components", "Components", 1, 1)
         thisNode.Tag = "Folder"
         For Each Comp In GObj.Components
             Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "Components", 4, GObj.MyScene.Name & "_" & GObj.Name & "_" & Comp.Name, Comp.Name, 5, 5)
             thisNode.Tag = "Component"
         Next
+        For Each Comp In GObj.MyComponents
+            Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "AComponents", 4, GObj.MyScene.Name & "_" & GObj.Name & "_A_" & Comp.Name, Comp.Name, 5, 5)
+            thisNode.Tag = "Component"
+        Next
+        
     Next
     For i = 1 To GameEngine.CodeEngine.Procedures.Count
         Set thisprocedure = GameEngine.CodeEngine.Procedures.Item(i)
