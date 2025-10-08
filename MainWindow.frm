@@ -772,7 +772,7 @@ Private Sub MDIForm_Load()
     Set Engine = New EngineClass
     Form1.Show
     ProjectTypeSelectorDialog.Show vbModal, Me
-    Engine.LoadEngine True, Form1, Console, Form1, Form2, Scene_Browser, EngineSettings
+    Engine.LoadEngine True, Form1, Console, Form1, Form2, Scene_Browser, Nothing
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine[design]"
 End Sub
