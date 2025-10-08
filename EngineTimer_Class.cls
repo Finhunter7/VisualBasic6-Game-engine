@@ -33,10 +33,10 @@ End Sub
 Private Sub TimingEngine()
     Do Until Active = False
         If (Timer * 1000) >= startTime Then
-            RaiseEvent Update
             startTime = ((Timer * 1000) + Me.Interval)
             IntervalTime = (Timer * 1000) - IntervalStart
             IntervalStart = (Timer * 1000)
+            RaiseEvent Update
             Cycles = 0
         End If
         Cycles = Cycles + 1
@@ -46,10 +46,10 @@ End Sub
 
 Private Sub TimingEngineUncapped()
     Do Until Active = False
-        RaiseEvent Update
         startTime = ((Timer * 1000) + Me.Interval)
         IntervalTime = (Timer * 1000) - IntervalStart
         IntervalStart = (Timer * 1000)
+        RaiseEvent Update
         DoEvents
     Loop
 End Sub

@@ -999,36 +999,50 @@ Error1:
     
 End Sub
 
-Private Sub CreateModules(loadStatusDialog As Form)
+Private Sub CreateScriptModules(StatusDialog As Form)
     Dim thisScript As Script_Class
     Dim thisModule As Module
+    Dim curScene As Scene_Class
+    Dim baseObject As IObject_Class
+    Dim curGObject As GameObject_Class
+    'OnGameLoad
+    ReloadCodeEngine ' Resetoi Koodimoottorin
+    'CreateModules
+    
     On Error Resume Next
-    For i = 1 To Me.Scripts.Count ' Käsittelee Kaikki Skriptit, Luo Koodinsuoritus Moottorille Moduulin Ja Tekee Referensin Skriptille Tähän Moduuliin
+    For i = 1 To Me.Scripts.Count ' Käsittelee Kaikki Skriptit, Luo Koodinsuoritus Moottorille Moduulin Ja Tekee Skriptille Referensin Tähän Moduuliin Josta Sitä On Helppo Ohjata
         Set thisScript = Me.Scripts.Item(i)
-        If thisScript.MyObject Is Nothing Then
+        If thisScript.MyObject Is Nothing Then ' Tämä On Myös Hyvä Kun Tätä Operoidaan Windows 9x Käyttöjärjestelmissä
             Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript)
         Else
             Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript.MyObject)
         End If
         Set thisScript.MyModule = thisModule
         If Me.IsInEditor Then
-            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Modules Adding Code "
+            StatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Modules Adding Code "
         End If
         thisModule.AddCode thisScript.Data
     Next
+    
     For i = 1 To Me.Mesh_Scripts.Count
         Set thisScript = Me.Mesh_Scripts.Item(i)
-        Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name, thisScript.MyObject)
+        If thisScript.MyObject Is Nothing Then
+            Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript)
+        Else
+            Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript.MyObject)
+        End If
         Set thisScript.MyModule = thisModule
         If Me.IsInEditor Then
-            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Mesh_Scripts.Count), "Objects Loading Mesh Code "
+            StatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Mesh_Scripts.Count), "Objects Loading Mesh Code "
         End If
         thisModule.AddCode thisScript.Data
     Next
+    
+    'loadStatusDialog.Hide
 End Sub
 
-Function StartGame()
-Attribute StartGame.VB_Description = "Starts The Engine"
+Function StartEngine()
+Attribute StartEngine.VB_Description = "Starts The Engine"
     Dim thisScript As Script_Class
     Dim thisModule As Module
     Dim curScene As Scene_Class
@@ -1057,7 +1071,7 @@ Attribute StartGame.VB_Description = "Starts The Engine"
         End If
         Set thisScript.MyModule = thisModule
         If Me.IsInEditor Then
-            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Modules Adding Code "
+            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Creating Modules "
         End If
         thisModule.AddCode thisScript.Data
     Next

@@ -440,20 +440,7 @@ Private Sub mnuOpen1_Click()
 End Sub
 
 Private Sub mnuSave1_Click()
-    If Me.GameEngine.IsEngineRunning = False Then
-        SaveData
-    Else
-        Dim Choise As VbMsgBoxResult
-        Choise = MsgBox("Saving Will Stop GameEngine. Do You Want To Proceed", vbYesNo + vbExclamation)
-        If Choise = vbYes Then
-            Me.GameEngine.EndGame
-            SaveData
-        Else
-            Exit Sub
-        End If
-    End If
-    
-    cChanged = False
+    Save
 End Sub
 
 Sub Save()
@@ -469,8 +456,9 @@ Sub Save()
             Exit Sub
         End If
     End If
-    
+    AddColor
     cChanged = False
+    Me.Caption = curClassName
 End Sub
 
 Private Sub SaveData()
@@ -562,7 +550,7 @@ Private Sub Text1_KeyDown(KeyCode As Integer, Shift As Integer)
     'me.StatusBar1.Panels(4).Text = me.Text1.sel
     Text1.SelColor = vbBlack
     If KeyCode = vbKeyReturn Then
-        AddColor
+        'AddColor
     End If
     
 End Sub
@@ -602,6 +590,6 @@ Private Sub Toolbar2_ButtonClick(ByVal Button As ComctlLib.Button)
         
         Case "TRun1"
             Me.GameEngine.RunGameInEditor = False
-            Me.GameEngine.StartGame
+            Me.GameEngine.StartEngine
     End Select
 End Sub

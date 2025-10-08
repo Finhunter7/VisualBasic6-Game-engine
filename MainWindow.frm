@@ -4,12 +4,13 @@ Begin VB.MDIForm MainWindow
    AutoShowChildren=   0   'False
    BackColor       =   &H8000000C&
    Caption         =   "MDIForm1"
-   ClientHeight    =   9495
+   ClientHeight    =   5130
    ClientLeft      =   165
    ClientTop       =   510
-   ClientWidth     =   16050
+   ClientWidth     =   7275
    Icon            =   "MainWindow.frx":0000
    LinkTopic       =   "MDIForm1"
+   NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
@@ -17,8 +18,8 @@ Begin VB.MDIForm MainWindow
       Left            =   0
       TabIndex        =   2
       Top             =   0
-      Width           =   16050
-      _ExtentX        =   28310
+      Width           =   7275
+      _ExtentX        =   12832
       _ExtentY        =   741
       ButtonWidth     =   635
       ButtonHeight    =   582
@@ -52,9 +53,9 @@ Begin VB.MDIForm MainWindow
       Height          =   300
       Left            =   0
       TabIndex        =   3
-      Top             =   9195
-      Width           =   16050
-      _ExtentX        =   28310
+      Top             =   4830
+      Width           =   7275
+      _ExtentX        =   12832
       _ExtentY        =   529
       SimpleText      =   ""
       _Version        =   327682
@@ -63,6 +64,8 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
+            TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -70,10 +73,10 @@ Begin VB.MDIForm MainWindow
    Begin VB.PictureBox SolutionBrowserBar1 
       Align           =   4  'Align Right
       BorderStyle     =   0  'None
-      Height          =   8775
-      Left            =   12540
+      Height          =   4410
+      Left            =   3765
       Negotiate       =   -1  'True
-      ScaleHeight     =   8775
+      ScaleHeight     =   4410
       ScaleWidth      =   3510
       TabIndex        =   0
       Top             =   420
@@ -113,6 +116,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -123,6 +127,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -670,6 +675,18 @@ Begin VB.MDIForm MainWindow
    End
    Begin VB.Menu mnuWindow1 
       Caption         =   "Window"
+      Begin VB.Menu mnuCascade1 
+         Caption         =   "Cascade"
+      End
+      Begin VB.Menu mnuTitleHoriz1 
+         Caption         =   "Tile Horizontal"
+      End
+      Begin VB.Menu mnuTileVertic1 
+         Caption         =   "Tile Vertical"
+      End
+      Begin VB.Menu mnuArrangeIcons1 
+         Caption         =   "Arrange Icons"
+      End
    End
    Begin VB.Menu mnuTest1 
       Caption         =   "Test"
@@ -802,6 +819,14 @@ Private Sub mnuBox1_Click()
     Else
         Me.Engine.SceneAddObject 2
     End If
+End Sub
+
+Private Sub mnuArrangeIcons1_Click()
+    Me.Arrange vbArrangeIcons
+End Sub
+
+Private Sub mnuCascade1_Click()
+    Me.Arrange vbCascade
 End Sub
 
 Private Sub mnuCircle1_Click()
@@ -1012,12 +1037,12 @@ End Sub
 
 Private Sub mnuStart1_Click()
     Engine.RunGameInEditor = True
-    Engine.StartGame
+    Engine.StartEngine
 End Sub
 
 Private Sub mnuStartInNewWindow1_Click()
     Engine.RunGameInEditor = False
-    Engine.StartGame
+    Engine.StartEngine
 End Sub
 
 Private Sub mnuStop1_Click()
@@ -1029,6 +1054,14 @@ End Sub
 Private Sub mnuTest1_Click()
     'Me.Engine.SaveLoadGameClass.SaveObjectToDiskXML Scene, "C:\tmp\Test.xml", Me.Engine.GetCurrentScene()
     ModelEditor1.Show
+End Sub
+
+Private Sub mnuTileVertic1_Click()
+    Me.Arrange vbTileVertical
+End Sub
+
+Private Sub mnuTitleHoriz1_Click()
+    Me.Arrange vbTileHorizontal
 End Sub
 
 Private Sub mnuViewPort1_Click()

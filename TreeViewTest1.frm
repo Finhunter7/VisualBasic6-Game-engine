@@ -1,16 +1,20 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form Form2 
+   BorderStyle     =   5  'Sizable ToolWindow
    Caption         =   "Project Browser"
    ClientHeight    =   4830
    ClientLeft      =   165
-   ClientTop       =   210
+   ClientTop       =   405
    ClientWidth     =   5790
    Icon            =   "TreeViewTest1.frx":0000
    LinkTopic       =   "Form2"
+   MaxButton       =   0   'False
    MDIChild        =   -1  'True
+   MinButton       =   0   'False
    ScaleHeight     =   4830
    ScaleWidth      =   5790
+   ShowInTaskbar   =   0   'False
    Tag             =   "ProjectBrowser"
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
@@ -30,7 +34,6 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Item: None"
             TextSave        =   "Item: None"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -38,7 +41,6 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Type: Test_Class "
             TextSave        =   "Type: Test_Class "
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -46,7 +48,6 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "In Scene:"
             TextSave        =   "In Scene:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty

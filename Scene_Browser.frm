@@ -1,6 +1,7 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form Scene_Browser 
+   BorderStyle     =   5  'Sizable ToolWindow
    Caption         =   "Scene-Browser"
    ClientHeight    =   3060
    ClientLeft      =   165
@@ -8,9 +9,12 @@ Begin VB.Form Scene_Browser
    ClientWidth     =   3600
    Icon            =   "Scene_Browser.frx":0000
    LinkTopic       =   "Form3"
+   MaxButton       =   0   'False
    MDIChild        =   -1  'True
+   MinButton       =   0   'False
    ScaleHeight     =   3060
    ScaleWidth      =   3600
+   ShowInTaskbar   =   0   'False
    Tag             =   "SceneBrowser"
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
@@ -30,7 +34,6 @@ Begin VB.Form Scene_Browser
             Bevel           =   0
             Text            =   "Item Type:"
             TextSave        =   "Item Type:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -38,7 +41,6 @@ Begin VB.Form Scene_Browser
             Bevel           =   0
             Text            =   "Item Class:"
             TextSave        =   "Item Class:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
