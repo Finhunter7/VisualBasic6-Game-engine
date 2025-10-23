@@ -24,6 +24,7 @@ Public Index As Long
 Public Layer As Long
 
 Public GameEngine As EngineClass
+Attribute GameEngine.VB_VarHelpID = -1
 Public Objects As New Collection
 Private CopyObjects As New Collection
 'Public Scripts As New Collection
@@ -41,6 +42,22 @@ Enum ObjectPresets
     SCircle = 3
 End Enum
 
+Sub CreateFromScene(SceneObj As Scene_Class)
+    With SceneObj
+        Me.Name = .Name
+        Me.Index = .Index
+        Me.Layer = .Layer
+        
+        For Each Item In .Objects
+            Me.Objects.Add Item, Item.Name
+        Next
+        Me.WorldCenterPos.SetVectorV .WorldCenterPos
+        Me.SunAngle.SetVectorV .SunAngle
+        Me.CameraPos.SetVectorV .CameraPos
+        Me.Gravity.SetVectorV .Gravity
+        
+    End With
+End Sub
 
 'Private Intialize()
 'Set Intialize() = EndScene
@@ -51,13 +68,16 @@ Function EndScene() As Boolean
 End Function
 
 Sub OnLoad(GameCodeEngine As ScriptControl)
+    Dim GameObject As GameObject_Class
     LoadMeshCode GameCodeEngine
-    'For i = 1 To CopyObjects.Count
-       ' CopyObjects.Remove i
-    'Next
-    'For i = 1 To Me.Objects.Count
-        'CopyObjects.Add Me.Objects.Item(i), Me.Objects.Item(i).Name
-    'Next
+    For i = 1 To CopyObjects.Count
+        CopyObjects.Remove i
+    Next
+    For i = 1 To Me.Objects.Count
+        Set GameObject = New GameObject_Class
+        GameObject.BuildFromObject Me.Objects.Item(i)
+        CopyObjects.Add GameObject, GameObject.Name
+    Next
 End Sub
 
 Sub OnGameStop()
@@ -237,3 +257,6 @@ Private Sub OnSceneLoad()
     Me.Layer = 0
 End Sub
 
+Private Sub GameEngine_OnDataChanged()
+
+End Sub

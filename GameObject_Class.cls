@@ -53,23 +53,26 @@ Private Sub Initialize()
     'Me.MyScript.Data = vbNewLine & "Set This = Me.MyObjects.Item(1)" & vbNewLine & "Sub Load()" & vbNewLine & vbNewLine & "End Sub" & vbNewLine & vbNewLine & "Sub Update()" & vbNewLine & vbNewLine & "End Sub"
 End Sub
 
-Public Sub BuildFromObject(Object As GameObject_Class)
-    Me.Name = Object.Name
-    Me.SceneHiearchyPath = Object.SceneHiearchyPath
-    Me.Tag = Object.Tag
-    Set Me.MyScene = Object.MyScene
-    Me.Mass = Object.Mass
-    Set Me.ParentObject = Object.ParentObject
-    For Each Item In Object.Child
-        Me.Child.Add Item, Item.Name
-    Next
-    Me.Position.SetVectorV Object.Position
-    Me.SScale.SetVectorV Object.SScale
-    Me.Size = Object.Size
-    Me.EditorColliderSize.SetVectorV Object.EditorColliderSize
-    For Each Item In Object.Components
-        Me.Components.Add Item, Item.Name
-    Next
+Public Sub BuildFromObject(GObject As GameObject_Class)
+    With GObject
+        Me.Name = .Name
+        Me.SceneHiearchyPath = .SceneHiearchyPath
+        Me.Tag = .Tag
+        Set Me.MyScene = .MyScene
+        Me.Mass = .Mass
+        Set Me.ParentObject = .ParentObject
+        For Each Item In .Child
+            Me.Child.Add Item, Item.Name
+        Next
+        Me.Position.SetVectorV .Position
+        Me.SScale.SetVectorV .SScale
+        Me.Size = .Size
+        Me.EditorColliderSize.SetVectorV .EditorColliderSize
+        For Each Item In .Components
+            Me.Components.Add Item, Item.Name
+        Next
+        Me.text = .text
+    End With
 End Sub
 
 Public Function HasProperty(Name) As Boolean

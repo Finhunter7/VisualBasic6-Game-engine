@@ -158,6 +158,8 @@ Sub BrowseEngineData(TargetTreeView As Object)
         thisNode.Tag = "Scene"
         Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name, 4, "Sc_" & Item.Name & "_ObjectFolder", "Objects", 1, 1)
         thisNode.Tag = "Folder"
+        Set thisNode = TargetTreeView.Nodes.Add("F_GameObjects", 4, Item.Name & "_Objects", Item.Name, 17, 17)
+        thisNode.Tag = "Folder"
         For Each Obj In Item.Objects
             Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name & "_ObjectFolder", 4, "Sc_" & Item.Name & "_Object_" & Obj.Name, Obj.Name, 7, 7)
             thisNode.Tag = "GameObject"
@@ -182,8 +184,12 @@ Sub BrowseEngineData(TargetTreeView As Object)
         thisNode.Tag = "Script"
     Next
     For Each GObj In GameEngine.GameObjects
-        Set thisNode = TargetTreeView.Nodes.Add("F_GameObjects", 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name, GObj.MyScene.Name & "_" & GObj.Name, 7, 7)
+        Set thisNode = TargetTreeView.Nodes.Add(GObj.MyScene.Name & "_Objects", 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name, GObj.Name, 7, 7)
         thisNode.Tag = "GameObject"
+        For Each CObj In GObj.GetMyChildren()
+            Set thisNode = TargetTreeView.Nodes.Add(CObj.MyScene.Name & "_Objects", 4, "G_" & CObj.MyScene.Name & "_" & CObj.Name, CObj.Name, 7, 7)
+            thisNode.Tag = "GameObject"
+        Next
         Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name, 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "AComponents", "ActiveComponents", 1, 1)
         thisNode.Tag = "Folder"
         Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name, 4, "G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "Components", "Components", 1, 1)
@@ -297,7 +303,7 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
                 ElseIf .Tag = "Scene" Then
                     GameEngine.UnloadScene .text
                 ElseIf .Tag = "GameObject" Then
-                    GameEngine.UnloadGameObject .text
+                    GameEngine.UnloadGameObject .Parent & "_" & .text
                 Else
                     MsgBox "Item cannot be removed", vbExclamation
                 End If

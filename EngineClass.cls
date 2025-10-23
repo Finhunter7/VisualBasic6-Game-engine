@@ -340,6 +340,12 @@ Function EndScene(Name) As Boolean
     RaiseEvent OnDataChanged
 End Function
 
+Function CopyScene(Name As String) As Scene_Class
+    Dim newSceneCopy As New Scene_Class
+    newSceneCopy.CreateFromScene Me.ScenesInactive.Item(Name)
+    Set CopyScene = newSceneCopy
+End Function
+
 Sub UnloadScene(SceneName As String)
     EndScene SceneName
     Me.ScenesInactive.Remove SceneName
@@ -706,6 +712,10 @@ Private Function OnGameStop()
     Set Me.GameWindow = Me.EditorWindow
     Me.EditorRefreshScenes
     'Me.CodeEngine.Reset
+    'For Each Item In Me.Scenes
+        'Item.OnGameStop
+    'Next
+    
     RaiseEvent OnGameStop
 End Function
 

@@ -28,7 +28,6 @@ End Function
 
 Function To_Collection()
 Attribute To_Collection.VB_Description = "Converts Vector To Collection"
-Attribute To_Collection.VB_UserMemId = 0
     Dim NCol As New Collection
     NCol.Add X
     NCol.Add Y
@@ -48,6 +47,8 @@ Function VClone() As Vector_Class ' Luo Kopion Vektorista
 End Function
 
 Function NewVector(Optional NX As Double, Optional NY As Double, Optional NZ As Double) As Vector_Class 'Luo Uuden Vektorin
+Attribute NewVector.VB_Description = "Returns A New Vector Instance"
+Attribute NewVector.VB_UserMemId = 0
     Dim NewVectorInstance As New Vector_Class
     NewVectorInstance.X = NX
     NewVectorInstance.Y = NY

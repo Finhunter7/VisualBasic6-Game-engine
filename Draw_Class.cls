@@ -92,3 +92,4 @@ End Sub
 Sub DrawPictureV(Pic As StdPicture, Pos As Vector_Class, Optional SizeX As Double, Optional SizeY As Double)
     Me.GameEngine.GameWindow.PaintPicture Pic, Pos.X, Pos.Y, SizeX, SizeY
 End Sub
+
