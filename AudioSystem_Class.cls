@@ -28,7 +28,7 @@ Public Function PlayWaveSound(FileOrResource As String, flags As Long, Optional 
 End Function
 
 Public Function DirectCreateSoundDevice(guid As String) As Object
-    Set DirectCreateSoundDevice = DirectSound(guid) 'GameEngine.Direct8Lib.DirectSoundCreate(guid)
+    'Set DirectCreateSoundDevice = DirectSound(guid) 'GameEngine.Direct8Lib.DirectSoundCreate(guid)
 End Function
 
 Public Function CreateSoundBuffer(Device As Object, FileName As String, bufferDesc) As Object
