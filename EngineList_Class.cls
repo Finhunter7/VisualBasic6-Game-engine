@@ -27,16 +27,17 @@ Public Function List(ListOfWhat As VbVarType) As CList_Class
     Set List = newList
 End Function
 
-Public Function CreateEvent(ProcName As String)
+Public Function CreateEvent(FromCName As String, ProcName As String)
     Dim NEvent As New EngineEvent_Class
     'NEvent.S_Modules.Add Script.MyModule
+    NEvent.EventClassName = FromCName
     NEvent.ExecuteProc = ProcName
     Set CreateEvent = NEvent
 End Function
 
-Public Sub WatchEvent(EventScript As Script_Class, EventVarName As String, UserScript As Script_Class) 'Param 1. "Script What Contains The Event" Param 2. "Event Var Name" Param 3. "Script What Uses The Event"
+Public Sub WatchEvent(TEvent As EngineEvent_Class, TargetObj As Object) 'Param 1. "Script What Contains The Event" Param 2. "Event Var Name" Param 3. "Script What Uses The Event"
     On Error Resume Next
-    EventScript.MyModule.Eval(EventVarName).S_Modules.Add UserScript.MyModule
+    TEvent.AddUser TargetObj
 End Sub
 
 Public Sub Using(Class As String)

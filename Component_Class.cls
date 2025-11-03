@@ -17,6 +17,10 @@ Public Name As String
 Private Owner As Object
 Private MyObject As Object
 'Private ComponentScriptData As String
+Sub SetObject(TObject As Object)
+    Set MyObject = TObject
+End Sub
+
 Sub Load(GameObject)
     Set Owner = GameObject
     MyObject.Load

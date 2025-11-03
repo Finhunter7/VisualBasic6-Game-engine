@@ -401,7 +401,24 @@ Function CreateNewScript(Name As String, SType As ScriptTypes, Optional PresetDa
         newClass.Tag = "MeshScript"
         Me.Mesh_Scripts.Add newClass, Name
     ElseIf SType = ComponentScript Then
-        newClass.Data = vbNewLine + "Sub Load() 'Called Before First Frame" + vbNewLine + vbNewLine + "End Sub" + vbNewLine + vbNewLine + "Sub Update() 'Called On Every Frame Update" + vbNewLine + vbNewLine + "End Sub"
+        newClass.Data = vbNewLine & _
+        "Class CustomComponent" & vbNewLine & vbNewLine & _
+        vbTab & "Public Name" & vbNewLine & _
+        vbTab & "Public self" & vbNewLine & vbNewLine & _
+        vbTab & "Private Sub Class_Initialize()" & vbNewLine & _
+        vbTab & vbTab & "'Name = " & vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & vbNewLine & _
+        vbTab & "Private Sub Class_Terminate()" & vbNewLine & _
+        vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & vbNewLine & _
+        vbTab & "Sub Load()" & vbNewLine & _
+        vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & vbNewLine & _
+        vbTab & "Sub Update()" & vbNewLine & _
+        vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & _
+        vbNewLine & "End Class" & vbNewLine & _
+        "Set Component = New CustomComponent"
         newClass.Tag = "ComponentScript"
         Me.Scripts.Add newClass, Name
     End If

@@ -65,7 +65,6 @@ Begin VB.MDIForm MainWindow
             AutoSize        =   2
             Bevel           =   0
             TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -116,7 +115,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -127,7 +125,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -713,6 +710,7 @@ Begin VB.MDIForm MainWindow
       End
       Begin VB.Menu BmnuAddNew1 
          Caption         =   "Add New From File"
+         Enabled         =   0   'False
          Begin VB.Menu BmnuAddScript1 
             Caption         =   "Script"
          End
@@ -732,6 +730,13 @@ Begin VB.MDIForm MainWindow
       Begin VB.Menu BmnuRemove1 
          Caption         =   "Remove"
       End
+      Begin VB.Menu BmnuSpace3 
+         Caption         =   "-"
+      End
+      Begin VB.Menu BmnuPropertites1 
+         Caption         =   "Propertites"
+         Enabled         =   0   'False
+      End
    End
 End
 Attribute VB_Name = "MainWindow"
@@ -746,6 +751,10 @@ Private Sub List1_Click()
 
 End Sub
 
+Private Sub BmnuCScene1_Click()
+    Engine.CreateNewScene InputBox("Name", "Scene Name")
+End Sub
+
 Private Sub BmnuRemove1_Click()
     With Me.SolutionBrowser1.selectedItem
         If .Key = "TProjectB" Then
@@ -754,6 +763,10 @@ Private Sub BmnuRemove1_Click()
             Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, SceneBrowser, RemoveItem
         End If
     End With
+End Sub
+
+Private Sub BmnuScript1_Click()
+    Engine.CreateNewScript InputBox("Name", "Create Script"), DefaultScript
 End Sub
 
 Private Sub Engine_OnDataChanged()

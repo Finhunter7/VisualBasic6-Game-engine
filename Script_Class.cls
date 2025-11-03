@@ -50,3 +50,8 @@ End Sub
 Private Sub Class_Initialize()
     Me.Active = True
 End Sub
+
+Sub CreateModule(CodeEngine As ScriptControl)
+    Set MyModule = CodeEngine.Modules.Add("Script_" & Me.Name & "_" & Rnd(1) * 10000, MyObject)
+    MyModule.AddCode Data
+End Sub

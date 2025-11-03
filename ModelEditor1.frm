@@ -12,6 +12,18 @@ Begin VB.Form ModelEditor1
    ScaleHeight     =   9135
    ScaleWidth      =   11670
    Tag             =   "ModelEditor"
+   Begin ComctlLib.Toolbar Toolbar1 
+      Align           =   1  'Align Top
+      Height          =   420
+      Left            =   0
+      TabIndex        =   5
+      Top             =   0
+      Width           =   11670
+      _ExtentX        =   20585
+      _ExtentY        =   741
+      Appearance      =   1
+      _Version        =   327682
+   End
    Begin ComctlLib.Toolbar DrawToolsBar1 
       Align           =   3  'Align Left
       Height          =   7965
@@ -73,18 +85,6 @@ Begin VB.Form ModelEditor1
             ImageIndex      =   9
          EndProperty
       EndProperty
-   End
-   Begin ComctlLib.Toolbar Toolbar1 
-      Align           =   1  'Align Top
-      Height          =   420
-      Left            =   0
-      TabIndex        =   5
-      Top             =   0
-      Width           =   11670
-      _ExtentX        =   20585
-      _ExtentY        =   741
-      Appearance      =   1
-      _Version        =   327682
    End
    Begin VB.PictureBox Picture2 
       Align           =   2  'Align Bottom

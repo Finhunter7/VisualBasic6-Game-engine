@@ -22,35 +22,6 @@ Begin VB.Form CodeEditor
    ScaleHeight     =   5415
    ScaleWidth      =   4470
    Tag             =   "CodeEditor"
-   Begin ComctlLib.Toolbar Toolbar1 
-      Align           =   1  'Align Top
-      Height          =   390
-      Left            =   0
-      TabIndex        =   2
-      Top             =   420
-      Width           =   4470
-      _ExtentX        =   7885
-      _ExtentY        =   688
-      _Version        =   327682
-      Begin VB.ComboBox ScriptCombo1 
-         Height          =   360
-         Left            =   60
-         TabIndex        =   4
-         TabStop         =   0   'False
-         Text            =   "Script_Name"
-         Top             =   15
-         Width           =   2775
-      End
-      Begin VB.ComboBox MethodCombo1 
-         Height          =   360
-         Left            =   3000
-         TabIndex        =   3
-         TabStop         =   0   'False
-         Text            =   "Script_Methods"
-         Top             =   15
-         Width           =   8055
-      End
-   End
    Begin ComctlLib.Toolbar Toolbar2 
       Align           =   1  'Align Top
       Height          =   420
@@ -92,7 +63,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   7
          EndProperty
          BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -110,7 +80,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   10
          EndProperty
          BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -122,7 +91,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   11
          EndProperty
          BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -134,7 +102,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   8
          EndProperty
          BeginProperty Button12 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.ToolTipText     =   "Check For Errors"
             Object.Tag             =   ""
             ImageIndex      =   13
@@ -146,6 +113,35 @@ Begin VB.Form CodeEditor
             ImageIndex      =   12
          EndProperty
       EndProperty
+   End
+   Begin ComctlLib.Toolbar Toolbar1 
+      Align           =   1  'Align Top
+      Height          =   390
+      Left            =   0
+      TabIndex        =   2
+      Top             =   420
+      Width           =   4470
+      _ExtentX        =   7885
+      _ExtentY        =   688
+      _Version        =   327682
+      Begin VB.ComboBox ScriptCombo1 
+         Height          =   360
+         Left            =   60
+         TabIndex        =   4
+         TabStop         =   0   'False
+         Text            =   "Script_Name"
+         Top             =   15
+         Width           =   2775
+      End
+      Begin VB.ComboBox MethodCombo1 
+         Height          =   360
+         Left            =   3000
+         TabIndex        =   3
+         TabStop         =   0   'False
+         Text            =   "Script_Methods"
+         Top             =   15
+         Width           =   8055
+      End
    End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
@@ -164,13 +160,11 @@ Begin VB.Form CodeEditor
             Style           =   1
             Enabled         =   0   'False
             TextSave        =   "CAPS"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   2
             TextSave        =   "NUM"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -178,14 +172,12 @@ Begin VB.Form CodeEditor
             Object.Width           =   2778
             Text            =   "Exposed Object:       "
             TextSave        =   "Exposed Object:       "
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Line:"
             TextSave        =   "Line:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -199,6 +191,7 @@ Begin VB.Form CodeEditor
       _ExtentX        =   7646
       _ExtentY        =   4471
       _Version        =   393217
+      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -295,6 +288,8 @@ Public cChanged As Boolean
 
 Private colorAdded As Boolean
 Private Items(KeyWordsCount) As String
+'Private Express As New VBScript_RegExp_55.RegExp
+
 
 Private Sub Form_Activate()
     MainWindow.mnuSaveW1.Caption = "Save " & Me.curClassName & " Code"

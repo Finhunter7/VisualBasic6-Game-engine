@@ -56,7 +56,7 @@ Attribute NewVector.VB_UserMemId = 0
     Set NewVector = NewVectorInstance
 End Function
 
-Function AddVectorV(Vector As Vector_Class) As Vector_Class ' Yhdist‰‰ Vektorin Arvot Ja Palauttaa Muutuneen Vektorin
+Function AddVectorV(Vector As Object) As Vector_Class ' Yhdist‰‰ Vektorin Arvot Ja Palauttaa Muutuneen Vektorin
     Me.X = Me.X + Vector.X
     Me.Y = Me.Y + Vector.Y
     Me.Z = Me.Z + Vector.Z
@@ -69,14 +69,21 @@ Function AddVector(Optional AddX As Double, Optional AddY As Double, Optional Ad
     Set AddVector = Me
 End Function
 
-Function SetVector(Optional NewX As Double, Optional NewY As Double, Optional NewZ As Double)
+Function SetVector(Optional NewX As Double, Optional NewY As Double, Optional NewZ As Double) As Vector_Class
     Me.X = NewX
     Me.Y = NewY
     Me.Z = NewZ
+    Set SetVector = Me
 End Function
-Function SetVectorV(NVector As Vector_Class)
+
+Function SetV(NVector As Object) As Vector_Class
     Me.X = NVector.X
     Me.Y = NVector.Y
     Me.Z = NVector.Z
+    Set SetV = Me
 End Function
+
+Sub SetVectorV(NVector As Object) ' Legacy feature this will be removed in future updates
+    SetV NVector
+End Sub
 

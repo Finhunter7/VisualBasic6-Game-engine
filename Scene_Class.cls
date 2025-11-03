@@ -159,7 +159,8 @@ Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, O
     On Error Resume Next
     
     Me.Objects.Add CnewObject, CnewObject.Name
-    Me.GameEngine.GameObjects.Add CnewObject, Me.Name & "_" & CnewObject.Name
+    'Me.GameEngine.GameObjects.Add CnewObject, Me.Name & "_" & CnewObject.Name
+    Dim MeshRendererComp As New Component_Class
     Dim MeshScript As New Script_Class
     MeshScript.Tag = "RendererScript"
     

@@ -158,8 +158,8 @@ Sub BrowseEngineData(TargetTreeView As Object)
         thisNode.Tag = "Scene"
         Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name, 4, "Sc_" & Item.Name & "_ObjectFolder", "Objects", 1, 1)
         thisNode.Tag = "Folder"
-        Set thisNode = TargetTreeView.Nodes.Add("F_GameObjects", 4, Item.Name & "_Objects", Item.Name, 17, 17)
-        thisNode.Tag = "Folder"
+        'Set thisNode = TargetTreeView.Nodes.Add("F_GameObjects", 4, Item.Name & "_Objects", Item.Name, 17, 17)
+        'thisNode.Tag = "Folder"
         For Each Obj In Item.Objects
             Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name & "_ObjectFolder", 4, "Sc_" & Item.Name & "_Object_" & Obj.Name, Obj.Name, 7, 7)
             thisNode.Tag = "GameObject"
@@ -300,12 +300,19 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
             If Action = RemoveItem Then
                 If .Tag = "Script" Then
                     GameEngine.RemoveScript .text
+                    TreeViewObject.Nodes.Remove .Key
                 ElseIf .Tag = "Scene" Then
                     GameEngine.UnloadScene .text
+                    TreeViewObject.Nodes.Remove .Key
                 ElseIf .Tag = "GameObject" Then
-                    GameEngine.UnloadGameObject .Parent & "_" & .text
+                    If .Parent.Tag = "Folder" Then
+                        GameEngine.UnloadGameObject .Parent.Parent.text & "_" & .text
+                    Else
+                        GameEngine.UnloadGameObject .Parent.text & "_" & .text
+                    End If
+                    TreeViewObject.Nodes.Remove .Key
                 Else
-                    MsgBox "Item cannot be removed", vbExclamation
+                    MsgBox "This item cannot be removed", vbExclamation
                 End If
             End If
         End With
@@ -314,10 +321,12 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
             If Action = RemoveItem Then
                 If .Tag = "Object" Then
                     GameEngine.Scenes(.root).Objects(.text).EndObject
+                    TreeViewObject.Nodes.Remove .Key
                 ElseIf .Tag = "Scene" Then
                     GameEngine.Scenes(.text).EndScene
+                    TreeViewObject.Nodes.Remove .Key
                 Else
-                    MsgBox "Item cannot be removed", vbExclamation
+                    MsgBox "This item cannot be removed", vbExclamation
                 End If
             ElseIf Action = SBTBringBack Then
             

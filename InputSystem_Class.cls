@@ -22,6 +22,8 @@ Public MouseX As Single
 Public MouseY As Single
 Public MouseButtonDown As Integer
 
+Public OnMouseDownEvent As New EngineEvent_Class
+
 Public Enum InputSystemKeyConstants
     IKeyUp = 38
     IKeyDown = 40
@@ -60,6 +62,11 @@ Function IsMouseButtonDown(Button As Integer) As Boolean
     End If
 End Function
 
+Private Sub Class_Initialize()
+    OnMouseDownEvent.EventClassName = "InputSystem"
+    OnMouseDownEvent.ExecuteProc = "OnMouseDown"
+End Sub
+
 Private Sub GameEngine_KeyDown(KeyCode As Integer)
     On Error Resume Next
     Me.KeysDown.Add KeyCode, "Key_" & KeyCode
@@ -72,6 +79,7 @@ End Sub
 
 Private Sub GameEngine_MouseDown(Button As Integer, X As Single, Y As Single)
     MouseButtonDown = Button
+    OnMouseDownEvent.Invoke
 End Sub
 
 Private Sub GameEngine_MouseMove(Button As Integer, X As Single, Y As Single)
@@ -81,6 +89,10 @@ End Sub
 
 Private Sub GameEngine_MouseUp(Button As Integer, X As Single, Y As Single)
     MouseButtonDown = 0
+End Sub
+
+Private Sub GameEngine_OnGameEnd()
+    Me.OnMouseDownEvent.Clear
 End Sub
 
 Private Sub GameEngine_OnGameStop()

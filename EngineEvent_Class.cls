@@ -12,19 +12,26 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Public Name As String
+Public EventClassName As String
 Public ExecuteProc As String
 Public S_Modules As New Collection
 
-Sub Invoke()
+Sub Invoke() 'Args() As Variant
     For Each Item In S_Modules
         If Not Item Is Nothing Then
-            Item.Run ExecuteProc
+            CallByName Item, EventClassName & "_" & ExecuteProc, VbMethod ', Args
         Else
         
         End If
     Next
 End Sub
 
-Sub AddWatch()
+Sub Clear()
+    For i = 1 To Me.S_Modules.Count
+        Me.S_Modules.Remove i
+    Next
+End Sub
 
+Sub AddUser(UObject As Object)
+    S_Modules.Add UObject
 End Sub
