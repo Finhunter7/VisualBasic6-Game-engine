@@ -29,12 +29,16 @@ Public Active As Boolean
 Public Function GetVariable(VName As String) As Variant
 Attribute GetVariable.VB_Description = "Gets Variable In Script's Module"
 Attribute GetVariable.VB_UserMemId = 0
+    On Error GoTo end1
     If IsObject(Me.MyModule.Eval(VName)) Then
         Set GetVariable = Me.MyModule.Eval(VName)
     Else
         GetVariable = Me.MyModule.Eval(VName)
     End If
-    Set GetVariable = Me.MyModule.Eval(VName)
+    'Set GetVariable = Me.MyModule.Eval(VName)
+    Exit Function
+end1:
+    
 End Function
 
 Sub Load()

@@ -64,7 +64,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -115,6 +115,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -125,6 +126,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -658,13 +660,19 @@ Begin VB.MDIForm MainWindow
    Begin VB.Menu mnuRun1 
       Caption         =   "Run"
       Begin VB.Menu mnuStart1 
-         Caption         =   "Start Code Engine"
+         Caption         =   "Start Engine"
       End
       Begin VB.Menu mnuStartInNewWindow1 
-         Caption         =   "Start Code Engine In New Window"
+         Caption         =   "Start In Window"
+      End
+      Begin VB.Menu mnuResume1 
+         Caption         =   "Resume Engine"
+      End
+      Begin VB.Menu mnuPause1 
+         Caption         =   "Pause Engine"
       End
       Begin VB.Menu mnuStop1 
-         Caption         =   "Stop Code Engine"
+         Caption         =   "Stop Engine"
       End
       Begin VB.Menu mnuRender1 
          Caption         =   "Render Frames"
@@ -773,12 +781,20 @@ Private Sub Engine_OnDataChanged()
     'ProjectChanged = True
 End Sub
 
+Private Sub Engine_OnGamePause()
+    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [Paused]"
+End Sub
+
+Private Sub Engine_OnGameResume()
+    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [run]"
+End Sub
+
 Private Sub Engine_OnGameStart()
-    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine[run]"
+    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [run]"
 End Sub
 
 Private Sub Engine_OnGameStop()
-    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine[design]"
+    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
 End Sub
 
 Private Sub MDIForm_Load()
@@ -787,7 +803,7 @@ Private Sub MDIForm_Load()
     ProjectTypeSelectorDialog.Show vbModal, Me
     Engine.LoadEngine True, Form1, Console, Form1, Form2, Scene_Browser, Nothing
     Set ActiveWindow = Me.ActiveForm
-    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine[design]"
+    Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
 End Sub
 
 Private Sub mnuAcScene1_Click()
@@ -967,6 +983,12 @@ Private Sub mnuOpenProject1_Click()
     Engine.OpenProject FileBrowser1.OpenFile(Me)
 End Sub
 
+Private Sub mnuPause1_Click()
+    If Me.Engine.IsEngineRunning = True Then
+        Me.Engine.PauseGame
+    End If
+End Sub
+
 Private Sub mnuPlane1_Click()
     On Error Resume Next
     If Me.ActiveForm.Tag = "SceneBrowser" Then
@@ -1016,6 +1038,12 @@ Private Sub mnuRenderTo1_Click()
     Engine.RenderScene InputBox("Render Frames"), FileBrowser1.SaveToDir(Me)
 End Sub
 
+Private Sub mnuResume1_Click()
+    If Me.Engine.IsEngineRunning = True Then
+        Me.Engine.ResumeGame
+    End If
+End Sub
+
 Private Sub mnuSaveAs1_Click()
     On Error Resume Next
     If Me.ActiveForm.Tag = "SceneBrowser" Or Me.ActiveForm.Tag = "ProjectBrowser" Or Me.ActiveForm.Tag = "CodeEditor" Then
@@ -1049,13 +1077,17 @@ Private Sub mnuSceneBrowser1_Click()
 End Sub
 
 Private Sub mnuStart1_Click()
-    Engine.RunGameInEditor = True
-    Engine.StartEngine
+    If Not Engine.IsEngineRunning Then
+        Engine.RunGameInEditor = True
+        Engine.StartEngine
+    End If
 End Sub
 
 Private Sub mnuStartInNewWindow1_Click()
-    Engine.RunGameInEditor = False
-    Engine.StartEngine
+    If Not Engine.IsEngineRunning Then
+        Engine.RunGameInEditor = False
+        Engine.StartEngine
+    End If
 End Sub
 
 Private Sub mnuStop1_Click()

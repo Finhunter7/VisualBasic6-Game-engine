@@ -25,6 +25,8 @@ Public Event OnRenderStart()
 Public Event OnRenderEnd()
 Public Event OnGameStop()
 Public Event OnGameEnd()
+Public Event OnGamePause()
+Public Event OnGameResume()
 Public Event OnError()
 Public Event MouseDown(Button As Integer, X As Single, Y As Single)
 Public Event MouseUp(Button As Integer, X As Single, Y As Single)
@@ -637,11 +639,14 @@ End Function
 
 Function PauseGame()
     Me.EngineTimer.Kill
-    MsgBox "Game Paused"
-    Me.EngineTimer.Start
+    Me.GameWindow.Caption = Me.ProjectName & " [Paused]"
+    RaiseEvent OnGamePause
 End Function
 
 Function ResumeGame()
+    RaiseEvent OnGameResume
+    RenderStart = Timer
+    Me.GameWindow.Caption = Me.ProjectName
     Me.EngineTimer.Start
 End Function
 
@@ -724,7 +729,7 @@ Private Function OnGameStop()
         Me.EngineTimer.Kill
     End If
     IsEngineRunning = False
-    Me.GameWindow.Caption = "Engine Stopped"
+    Me.GameWindow.Caption = "Engine [Desing]"
     Me.EConsole.WriteLine "Engine Stopped"
     Set Me.GameWindow = Me.EditorWindow
     Me.EditorRefreshScenes

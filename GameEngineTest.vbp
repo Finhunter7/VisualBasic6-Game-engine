@@ -58,6 +58,7 @@ Class=GameObjectChild_Class; GameObjectChild_Class.cls
 Form=..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\VB98\ProjectTypeSelectorDialog.frm
 Form=..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\VB98\LogicEditorWindow.frm
 Form=SettingsWindow.frm
+Class=Console_Class; Console_Class.cls
 IconForm="MainWindow"
 Startup="Sub Main"
 HelpFile=""
