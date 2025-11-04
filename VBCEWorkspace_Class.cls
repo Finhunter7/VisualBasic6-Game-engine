@@ -130,7 +130,7 @@ Private Sub CreateProjectTree(TreeViewTarget As Object)
     
     With GameEngine
         For Each Item In .Mesh_Scripts
-            Set curNode = TreeViewTarget.Nodes.Add("F_Mesh_Scripts", 4, "Mesh_" & Item.Name, Item.Name, 14, 14)
+            Set curNode = TreeViewTarget.Nodes.Add("F_Mesh_Scripts", 4, "Mesh_" & Item.Name, Item.Name, 38, 38)
             curNode.Tag = "Script"
         Next
         For Each Item In .Textures
@@ -180,7 +180,7 @@ Sub BrowseEngineData(TargetTreeView As Object)
         Next
     Next
     For i = 1 To GameEngine.Scripts.Count
-        Set thisNode = TargetTreeView.Nodes.Add("F_Scripts", 4, "S_" & GameEngine.Scripts.Item(i).Name, GameEngine.Scripts.Item(i).Name, 14, 14)
+        Set thisNode = TargetTreeView.Nodes.Add("F_Scripts", 4, "S_" & GameEngine.Scripts.Item(i).Name, GameEngine.Scripts.Item(i).Name, 38, 38)
         thisNode.Tag = "Script"
     Next
     For Each GObj In GameEngine.GameObjects
@@ -306,7 +306,7 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
                     TreeViewObject.Nodes.Remove .Key
                 ElseIf .Tag = "GameObject" Then
                     If .Parent.Tag = "Folder" Then
-                        GameEngine.UnloadGameObject .Parent.Parent.text & "_" & .text
+                        GameEngine.ScenesInactive.Item(.Parent.Parent.text).Objects(.text).EndObject
                     Else
                         GameEngine.UnloadGameObject .Parent.text & "_" & .text
                     End If

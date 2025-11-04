@@ -64,6 +64,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -308,7 +309,7 @@ Begin VB.MDIForm MainWindow
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   37
+         NumListImages   =   38
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "MainWindow.frx":2C66
             Key             =   ""
@@ -455,6 +456,10 @@ Begin VB.MDIForm MainWindow
          EndProperty
          BeginProperty ListImage37 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "MainWindow.frx":91E6
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage38 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "MainWindow.frx":92F0
             Key             =   ""
          EndProperty
       EndProperty
@@ -693,11 +698,16 @@ Begin VB.MDIForm MainWindow
          Caption         =   "Arrange Icons"
       End
    End
+   Begin VB.Menu mnuHelp1 
+      Caption         =   "Help"
+   End
    Begin VB.Menu mnuTest1 
       Caption         =   "Test"
+      Visible         =   0   'False
    End
    Begin VB.Menu Browsermnu1 
       Caption         =   "Browser"
+      Visible         =   0   'False
       Begin VB.Menu BmnuCreateNew1 
          Caption         =   "Create New"
          Begin VB.Menu BmnuScript1 
