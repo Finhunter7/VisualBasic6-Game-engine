@@ -15,16 +15,19 @@ Public Name As String
 Public EventClassName As String
 Public ExecuteProc As String
 Public S_Modules As New Collection
+'Option Explicit
 
-Sub Invoke() 'Args() As Variant
+Function Invoke(ParamArray IArgs() As Variant) As Variant  'Args() As Variant
+    Dim retVal As Variant
+    On Error Resume Next
     For Each Item In S_Modules
         If Not Item Is Nothing Then
-            CallByName Item, EventClassName & "_" & ExecuteProc, VbMethod ', Args
+            Invoke = CallByName(Item, EventClassName & "_" & ExecuteProc, VbMethod, IArgs)
         Else
         
         End If
     Next
-End Sub
+End Function
 
 Sub Clear()
     For i = 1 To Me.S_Modules.Count
@@ -32,6 +35,13 @@ Sub Clear()
     Next
 End Sub
 
-Sub AddUser(UObject As Object)
-    S_Modules.Add UObject
+Sub RemoveUser(Index)
+    On Error Resume Next
+    Me.S_Modules.Remove Index
 End Sub
+
+Function AddUser(UObject As Object, Optional key As String) As Long ' Returns Pos Index
+    On Error Resume Next
+    S_Modules.Add UObject, key
+    'AddUser = Me.S_Modules.Count
+End Function

@@ -79,7 +79,7 @@ End Sub
 
 Private Sub GameEngine_MouseDown(Button As Integer, X As Single, Y As Single)
     MouseButtonDown = Button
-    OnMouseDownEvent.Invoke
+    OnMouseDownEvent.Invoke Button, X, Y
 End Sub
 
 Private Sub GameEngine_MouseMove(Button As Integer, X As Single, Y As Single)
