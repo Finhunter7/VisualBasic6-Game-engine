@@ -11,24 +11,16 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Public X As Double
-Public Y As Double
-Public Z As Double
-Public XX As Double
-Public YY As Double
-Public ZZ As Double
-Public XXX As Double
-Public YYY As Double
-Public ZZZ As Double
+Private IMatrix(2, 2, 2) As Double
 'Public Matrix(4, 4) As Double
 
-Enum AxisEnum
+Private Enum AxisEnum
     AX = 0
     AY = 1
     AZ = 2
 End Enum
 
-Public Sub Rotate(Almount As Double, Axis As AxisEnum)
+Public Sub Rotate(Almount As Double, Axis)
 
 End Sub
 

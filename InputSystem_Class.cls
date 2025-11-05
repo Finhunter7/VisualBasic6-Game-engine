@@ -99,6 +99,7 @@ End Sub
 
 Private Sub GameEngine_OnGameEnd()
     Me.OnMouseDownEvent.Clear
+    Me.OnKeyDownEvent.Clear
 End Sub
 
 Private Sub GameEngine_OnGameStop()
