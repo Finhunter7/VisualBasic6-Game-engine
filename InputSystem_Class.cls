@@ -22,7 +22,9 @@ Public MouseX As Single
 Public MouseY As Single
 Public MouseButtonDown As Integer
 
+' Events For VBS And JS
 Public OnMouseDownEvent As New EngineEvent_Class
+Public OnKeyDownEvent As New EngineEvent_Class
 
 Public Enum InputSystemKeyConstants
     IKeyUp = 38
@@ -63,13 +65,17 @@ Function IsMouseButtonDown(Button As Integer) As Boolean
 End Function
 
 Private Sub Class_Initialize()
+    ' Create Events
     OnMouseDownEvent.EventClassName = "InputSystem"
     OnMouseDownEvent.ExecuteProc = "OnMouseDown"
+    OnKeyDownEvent.EventClassName = "InputSystem"
+    OnKeyDownEvent.ExecuteProc = "OnKeyDown"
 End Sub
 
 Private Sub GameEngine_KeyDown(KeyCode As Integer)
     On Error Resume Next
     Me.KeysDown.Add KeyCode, "Key_" & KeyCode
+    OnKeyDownEvent.Invoke KeyCode
 End Sub
 
 Private Sub GameEngine_KeyUp(KeyCode As Integer)

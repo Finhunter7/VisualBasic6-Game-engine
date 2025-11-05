@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Public Name As String
 Public EventClassName As String
 Public ExecuteProc As String
-Public S_Modules As New Collection
+Private S_Modules As New Collection
 'Option Explicit
 
 Function Invoke(ParamArray IArgs() As Variant) As Variant  'Args() As Variant
@@ -30,18 +30,22 @@ Function Invoke(ParamArray IArgs() As Variant) As Variant  'Args() As Variant
 End Function
 
 Sub Clear()
-    For i = 1 To Me.S_Modules.Count
-        Me.S_Modules.Remove i
+    For i = 1 To S_Modules.Count
+        S_Modules.Remove i
     Next
 End Sub
 
 Sub RemoveUser(Index)
     On Error Resume Next
-    Me.S_Modules.Remove Index
+    S_Modules.Remove Index
 End Sub
 
-Function AddUser(UObject As Object, Optional key As String) As Long ' Returns Pos Index
+Function UsersCount() As Long
+    UsersCount = S_Modules.Count
+End Function
+
+Function AddUser(UObject As Object, Optional Key As String) As Long ' Returns Pos Index
     On Error Resume Next
-    S_Modules.Add UObject, key
+    S_Modules.Add UObject, Key
     'AddUser = Me.S_Modules.Count
 End Function

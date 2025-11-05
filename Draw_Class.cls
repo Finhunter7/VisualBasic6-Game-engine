@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Public GameEngine As EngineClass
 
-Sub DrawLineV(SVector As Object, EVector As Object, Optional Rotation As Matrix_Class, Optional Color = &HFFFFFF)
+Sub DrawLineV(SVector, EVector, Optional Rotation As Matrix_Class, Optional Color = &HFFFFFF)
     Me.GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(EVector.X, EVector.Y), Color
 End Sub
 
@@ -25,11 +25,11 @@ Sub DrawBox(SPosX As Double, SPosY As Double, EPosX As Double, EPosY As Double, 
     Me.GameEngine.GameWindow.Line (SPosX, SPosY)-(EPosX, EPosY), Color, B
 End Sub
 
-Sub DrawBoxV(SVector As Object, EVector As Object, Optional Color = &HFFFFFF)
+Sub DrawBoxV(SVector, EVector, Optional Color = &HFFFFFF)
     Me.GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(EVector.X, EVector.Y), Color, B
 End Sub
 
-Sub DrawSolidBoxV(SVector As Object, EVector As Object, Optional Color = &HFFFFFF)
+Sub DrawSolidBoxV(SVector, EVector, Optional Color = &HFFFFFF)
     Me.GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(EVector.X, EVector.Y), Color, BF
 End Sub
 
@@ -37,7 +37,7 @@ Sub DrawPoint(XPos As Double, YPos As Double, Optional Color = &HFFFFFF)
     Me.GameEngine.GameWindow.PSet (XPos, YPos), Color
 End Sub
 
-Sub DrawPointV(Position As Object, Optional Color = &HFFFFFF)
+Sub DrawPointV(Position, Optional Color = &HFFFFFF)
     Me.GameEngine.GameWindow.PSet (Position.X, Position.Y), Color
 End Sub
 
@@ -45,11 +45,11 @@ Function GetPixelColor(XPos As Single, YPos As Single) As Long
     GetPixelColor = Me.GameEngine.GameWindow.Point(XPos, YPos)
 End Function
 
-Sub DrawCircleV(Position As Object, Radius As Double, Optional Color = &HFFFFFF)
+Sub DrawCircleV(Position, Radius As Double, Optional Color = &HFFFFFF)
     Me.GameEngine.GameWindow.Circle (Position.X, Position.Y), Radius, Color
 End Sub
 
-Sub PrintTextV(Position As Object, text, Optional TextSize = 8, Optional TextColor = &HFFFFFF)
+Sub PrintTextV(Position, text, Optional TextSize As Integer = 8, Optional TextColor = &HFFFFFF)
     Me.GameEngine.GameWindow.FontSize = TextSize
     Me.GameEngine.GameWindow.ForeColor = TextColor
     'Me.GameEngine.GameWindow.PSet (Position.X, Position.Y)
@@ -58,7 +58,7 @@ Sub PrintTextV(Position As Object, text, Optional TextSize = 8, Optional TextCol
     Me.GameEngine.GameWindow.Print text
 End Sub
 
-Sub PrintText(XPos As Double, YPos As Double, text, Optional TextSize = 8, Optional TextColor = &HFFFFFF)
+Sub PrintText(XPos As Double, YPos As Double, text, Optional TextSize As Integer = 8, Optional TextColor = &HFFFFFF)
     Me.GameEngine.GameWindow.FontSize = TextSize
     Me.GameEngine.GameWindow.ForeColor = TextColor
     Me.GameEngine.GameWindow.CurrentX = XPos
@@ -74,7 +74,7 @@ Sub DrawCubeCV(SVector As Vector_Class, EVector As Vector_Class, Optional Color 
     'Me.DrawLineV Me.Position.VClone().AddVector(0, 1000, 0), Me.Position.VClone().AddVector(250, 1500, 0)
 End Sub
 
-Sub DrawBoxCV(SVector As Object, EVector As Object, Optional Color = &HFFFFFF, Optional Rotation As Matrix_Class)
+Sub DrawBoxCV(SVector, EVector, Optional Color = &HFFFFFF, Optional Rotation As Matrix_Class)
     Me.GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(EVector.X, SVector.Y), Color
     Me.GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(SVector.X, EVector.Y), Color
     Me.GameEngine.GameWindow.Line (EVector.X, SVector.Y)-(EVector.X, EVector.Y), Color
@@ -92,4 +92,3 @@ End Sub
 Sub DrawPictureV(Pic As StdPicture, Pos As Object, Optional SizeX As Double, Optional SizeY As Double)
     Me.GameEngine.GameWindow.PaintPicture Pic, Pos.X, Pos.Y, SizeX, SizeY
 End Sub
-
