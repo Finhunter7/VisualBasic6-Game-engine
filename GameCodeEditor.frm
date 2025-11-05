@@ -22,6 +22,35 @@ Begin VB.Form CodeEditor
    ScaleHeight     =   5415
    ScaleWidth      =   4470
    Tag             =   "CodeEditor"
+   Begin ComctlLib.Toolbar Toolbar1 
+      Align           =   1  'Align Top
+      Height          =   390
+      Left            =   0
+      TabIndex        =   2
+      Top             =   420
+      Width           =   4470
+      _ExtentX        =   7885
+      _ExtentY        =   688
+      _Version        =   327682
+      Begin VB.ComboBox ScriptCombo1 
+         Height          =   360
+         Left            =   60
+         TabIndex        =   4
+         TabStop         =   0   'False
+         Text            =   "Script_Name"
+         Top             =   15
+         Width           =   2775
+      End
+      Begin VB.ComboBox MethodCombo1 
+         Height          =   360
+         Left            =   3000
+         TabIndex        =   3
+         TabStop         =   0   'False
+         Text            =   "Script_Methods"
+         Top             =   15
+         Width           =   8055
+      End
+   End
    Begin ComctlLib.Toolbar Toolbar2 
       Align           =   1  'Align Top
       Height          =   420
@@ -37,7 +66,7 @@ Begin VB.Form CodeEditor
       ImageList       =   "ImageList1"
       _Version        =   327682
       BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
-         NumButtons      =   13
+         NumButtons      =   14
          BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
             Key             =   "TCut1"
             Object.ToolTipText     =   "Cut"
@@ -107,41 +136,18 @@ Begin VB.Form CodeEditor
             ImageIndex      =   13
          EndProperty
          BeginProperty Button13 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   "TPaint1"
+            Object.ToolTipText     =   "Paint Keywords"
+            Object.Tag             =   ""
+            ImageIndex      =   14
+         EndProperty
+         BeginProperty Button14 {0713F354-850A-101B-AFC0-4210102A8DA7} 
             Key             =   "TProp1"
             Object.ToolTipText     =   "View Propertites"
             Object.Tag             =   ""
             ImageIndex      =   12
          EndProperty
       EndProperty
-   End
-   Begin ComctlLib.Toolbar Toolbar1 
-      Align           =   1  'Align Top
-      Height          =   390
-      Left            =   0
-      TabIndex        =   2
-      Top             =   420
-      Width           =   4470
-      _ExtentX        =   7885
-      _ExtentY        =   688
-      _Version        =   327682
-      Begin VB.ComboBox ScriptCombo1 
-         Height          =   360
-         Left            =   60
-         TabIndex        =   4
-         TabStop         =   0   'False
-         Text            =   "Script_Name"
-         Top             =   15
-         Width           =   2775
-      End
-      Begin VB.ComboBox MethodCombo1 
-         Height          =   360
-         Left            =   3000
-         TabIndex        =   3
-         TabStop         =   0   'False
-         Text            =   "Script_Methods"
-         Top             =   15
-         Width           =   8055
-      End
    End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
@@ -183,15 +189,14 @@ Begin VB.Form CodeEditor
       EndProperty
    End
    Begin RichTextLib.RichTextBox Text1 
-      Height          =   2535
+      Height          =   4095
       Left            =   0
       TabIndex        =   0
       Top             =   960
-      Width           =   4335
-      _ExtentX        =   7646
-      _ExtentY        =   4471
+      Width           =   4455
+      _ExtentX        =   7858
+      _ExtentY        =   7223
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -217,7 +222,7 @@ Begin VB.Form CodeEditor
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   13
+         NumListImages   =   14
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "GameCodeEditor.frx":04CC
             Key             =   ""
@@ -268,6 +273,10 @@ Begin VB.Form CodeEditor
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "GameCodeEditor.frx":225C
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "GameCodeEditor.frx":279E
             Key             =   ""
          EndProperty
       EndProperty
@@ -440,6 +449,11 @@ Private Sub mnuSave1_Click()
     Save
 End Sub
 
+Sub OpenNew()
+
+End Sub
+
+
 Sub Save()
     If Me.GameEngine.IsEngineRunning = False Then
         SaveData
@@ -573,7 +587,7 @@ End Sub
 Private Sub Text1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
     'Dim TextCol As New Collection
     'Dim TextArray() As String
-    SelectToolTip Me.Text1.SelText
+    'SelectToolTip Me.Text1.SelText
 End Sub
 
 Private Sub Toolbar2_ButtonClick(ByVal Button As ComctlLib.Button)
@@ -588,5 +602,7 @@ Private Sub Toolbar2_ButtonClick(ByVal Button As ComctlLib.Button)
         Case "TRun1"
             Me.GameEngine.RunGameInEditor = False
             Me.GameEngine.StartEngine
+        Case "TPaint1"
+            AddColor
     End Select
 End Sub
