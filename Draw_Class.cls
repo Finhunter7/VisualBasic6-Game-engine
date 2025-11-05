@@ -89,6 +89,6 @@ Sub DrawTextureV(Texture As Texture_Class, Position As Object, Optional Size As 
     Me.GameEngine.GameWindow.PaintPicture Texture.Texture, Position.X, Position.Y, Size.X, Size.Y
 End Sub
 
-Sub DrawPictureV(Pic As StdPicture, Pos As Object, Optional SizeX As Double, Optional SizeY As Double)
-    Me.GameEngine.GameWindow.PaintPicture Pic, Pos.X, Pos.Y, SizeX, SizeY
+Sub DrawPictureV(StdPic, PosVector2, Optional SizeX As Double, Optional SizeY As Double)
+    Me.GameEngine.GameWindow.PaintPicture StdPic, PosVector2.X, PosVector2.Y, SizeX, SizeY
 End Sub

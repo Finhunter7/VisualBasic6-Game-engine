@@ -17,13 +17,19 @@ Sub Build(VBCEEngine As EngineClass)
     Set GEngine = VBCEEngine
 End Sub
 
-Public Function CList() As Collection
+Public Function CList(ParamArray Items() As Variant) As Collection
     Dim newCol As New Collection
+    For Each Item In Items
+        newCol.Add Item
+    Next
     Set CList = newCol
 End Function
-Public Function List(ListOfWhat As VbVarType) As CList_Class
+Public Function List(ListOfWhat As VbVarType, ParamArray Items() As Variant) As CList_Class
     Dim newList As New CList_Class
     newList.SetListType ListOfWhat
+    For Each Item In Items
+        newList.Add Item
+    Next
     Set List = newList
 End Function
 
