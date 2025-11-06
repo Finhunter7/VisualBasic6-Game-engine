@@ -492,6 +492,7 @@ Private Sub ScriptEngine_Intialize()
         Me.CodeEngine.Reset
     End If
     If Me.CodeEngine Is Nothing Then
+        MsgBox "This Program Requires MSScriptControl.ScriptControl ActiveX Object. Unable To Load VBCE", vbExclamation
         MsgBox "MSScriptControl Failed To Load. Unable To Load VBCE", vbExclamation
         'Unload Me
         End
