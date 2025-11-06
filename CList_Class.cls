@@ -66,8 +66,22 @@ Public Property Get Count() As Long
     Count = LCol.Count
 End Property
 
-Function CountInstances(text) As Long
-    
+Function CountInstances(Data, Optional InObjectVar) As Long
+    Dim items As Long
+    If LVarType = vbObject Then
+        For i = 1 To LCol.Count
+            If CallByName(LCol.Item(i), InObjectVar, VbGet) = Data Then
+                items = i
+            End If
+        Next
+    Else
+        For i = 1 To LCol.Count
+            If LCol.Item(i) = Data Then
+                items = i
+            End If
+        Next
+    End If
+    CountInstances = items
 End Function
 
 Function Find(text) As Long
