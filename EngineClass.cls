@@ -79,7 +79,7 @@ Public DrawClass As New Draw_Class
 Private EVectorClass As New Vector_Class
 Private MathClass As New Math_Class
 Private AudioSystem As New AudioSystem_Class
-Private fileSystemHandler As FileSystemObject
+Private fileSystemHandler As Object 'FileSystemObject
 Public Direct8Lib As Object
 Private Direct1LIB As Object
 
@@ -484,6 +484,7 @@ Private Sub Class_Initialize()
     ScriptEngine_Intialize
 End Sub
 Private Sub ScriptEngine_Intialize()
+    On Error Resume Next
     'Intialize ScriptEngine
     If Me.CodeEngine Is Nothing Then
         Set CodeEngine = New MSScriptControl.ScriptControl
@@ -496,6 +497,9 @@ Private Sub ScriptEngine_Intialize()
         End
     End If
     Set fileSystemHandler = New Scripting.FileSystemObject
+    If fileSystemHandler Is Nothing Then
+        MsgBox "Scripting.FileSystemObject ActiveX Component Failed To Load", vbExclamation
+    End If
     AudioSystem.Build Me
     Me.SetCodeLaunguage "VBScript"
     Me.CodeEngine.AddObject "Engine", Me, True
