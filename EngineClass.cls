@@ -188,13 +188,12 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
                     Me.GameWindow.CurrentX = 0
                     Me.GameWindow.CurrentY = 0
                     Me.EditorWindow.Print "Object Name: " & SceneObject.Name
+                    Me.EditorWindow.Print "Object Scene: " & SceneObject.MyScene.Name
                     Me.EditorWindow.Print "Object Tag: " & SceneObject.Tag
                     Me.EditorWindow.Print "Object X: " & SceneObject.Position.X
                     Me.EditorWindow.Print "Object Y: " & SceneObject.Position.Y
                     Me.EditorWindow.Print "Object Z: " & SceneObject.Position.Z
-                    Me.EditorWindow.Print "Object ScaleX: " & SceneObject.SScale.X
-                    Me.EditorWindow.Print "Object ScaleY: " & SceneObject.SScale.Y
-                    Me.EditorWindow.Print "Object ScaleZ: " & SceneObject.SScale.Z
+                    Me.EditorWindow.Print "Object Scale: X:" & SceneObject.SScale.X & " Y:" & SceneObject.SScale.Y & " Z:" & SceneObject.SScale.Z
                     Me.EditorWindow.Print "Object Size: " & SceneObject.Size
                     Me.EditorWindow.Line (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2))-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)), vbGreen, B
                     Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X), SceneObject.Position.Y), vbRed
