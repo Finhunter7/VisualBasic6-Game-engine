@@ -20,11 +20,11 @@ Private S_Modules As New Collection
 Function Invoke(ParamArray IArgs() As Variant) As Variant  'Args() As Variant
     Dim retVal As Variant
     On Error Resume Next
-    For Each Item In S_Modules
-        If Not Item Is Nothing Then
-            Invoke = CallByName(Item, EventClassName & "_" & ExecuteProc, VbMethod, IArgs)
+    For i = 1 To S_Modules.Count
+        If Not S_Modules.Item(i) Is Nothing Then
+            Invoke = CallByName(S_Modules.Item(i), EventClassName & "_" & ExecuteProc, VbMethod, IArgs)
         Else
-        
+            RemoveUser i
         End If
     Next
 End Function
@@ -44,7 +44,7 @@ Function UsersCount() As Long
     UsersCount = S_Modules.Count
 End Function
 
-Function AddUser(UObject As Object, Optional Key As String) As Long ' Returns Pos Index
+Function AddUser(UObject, Optional Key As String) As Long ' Returns Pos Index
     On Error Resume Next
     S_Modules.Add UObject, Key
     'AddUser = Me.S_Modules.Count

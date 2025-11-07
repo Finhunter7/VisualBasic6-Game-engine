@@ -320,7 +320,7 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
         With TreeViewObject.selectedItem
             If Action = RemoveItem Then
                 If .Tag = "Object" Then
-                    GameEngine.Scenes(.root).Objects(.text).EndObject
+                    GameEngine.Scenes(.Parent.text).Objects(.text).EndObject
                     TreeViewObject.Nodes.Remove .Key
                 ElseIf .Tag = "Scene" Then
                     GameEngine.Scenes(.text).EndScene

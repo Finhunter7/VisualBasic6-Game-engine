@@ -84,6 +84,24 @@ Function CountInstances(Data, Optional InObjectVar) As Long
     CountInstances = items
 End Function
 
+Function GetInstance(InstanceData, Optional InObjectVar) As Variant
+    If LVarType = vbObject Then
+        For i = 1 To LCol.Count
+            If CallByName(LCol.Item(i), InObjectVar, VbGet) = Data Then
+                Set GetInstance = LCol.Item(i)
+                Exit For
+            End If
+        Next
+    Else
+        For i = 1 To LCol.Count
+            If LCol.Item(i) = Data Then
+                GetInstance = LCol.Item(i)
+                Exit For
+            End If
+        Next
+    End If
+End Function
+
 Function Find(text) As Long
     Dim curText As String
     If LCol.Count > 0 Then

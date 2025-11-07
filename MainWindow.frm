@@ -64,8 +64,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -116,7 +114,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -127,7 +124,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -565,6 +561,12 @@ Begin VB.MDIForm MainWindow
    End
    Begin VB.Menu mnuProject 
       Caption         =   "Project"
+      Begin VB.Menu mnuProgram1 
+         Caption         =   "Program"
+         Begin VB.Menu mnuAddForm1 
+            Caption         =   "Add Form"
+         End
+      End
       Begin VB.Menu mnuScripts1 
          Caption         =   "Scripts"
          Begin VB.Menu mnuPresets1 
@@ -841,6 +843,10 @@ Private Sub mnuAddFile1_Click()
         Set curObject = Me.Engine.SaveLoadGameClass.LoadObjectFromDiskVBCFormat(GameObject, curFile)
         'TScene.AddObject Me.Engine, curObject, curObject.Name
     End If
+End Sub
+
+Private Sub mnuAddForm1_Click()
+    Engine.Forms.Add New NewForm
 End Sub
 
 Private Sub mnuAddMeshScript1_Click()

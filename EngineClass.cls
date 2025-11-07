@@ -91,6 +91,7 @@ Public Scenes As New Collection ' Aktiiviset Scenet
 Public ScenesInactive As New Collection
 Private SceneRestorePoint As New Collection
 
+Public Forms As New Collection
 Public GameObjects As New Collection
 Public Scripts As New Collection
 Public Mesh_Scripts As New Collection
@@ -1311,6 +1312,12 @@ Private Sub CodeEngine_Error()
     End If
     Me.EConsole.WriteLine "Warning. " & Me.CodeEngine.Error.Source & " " & Me.CodeEngine.Error.Description & " In Line " & CodeEngine.Error.Line
     RaiseEvent OnError
+End Sub
+
+Private Sub CodeEngine_Timeout()
+    If Me.IsEngineRunning Then
+        Me.EndGame
+    End If
 End Sub
 
 Private Sub EditorWindow_KeyDown(KeyCode As Integer, Shift As Integer)
