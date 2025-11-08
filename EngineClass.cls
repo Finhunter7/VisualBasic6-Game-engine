@@ -113,6 +113,8 @@ Enum ProjectTypes
     VBCEGameProject = 0
     VBCEScriptProject = 1
     VBCEVideoProject = 2
+    VBCEDX8GameProject = 3
+    VBCEDX11GameProject = 4
 End Enum
 
 Enum SceneConstants
@@ -597,12 +599,11 @@ Private Sub LoadStartupCode(FilePath As String)
     End If
 End Sub
 
-Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As Form, Optional TEditorWindow As Form, Optional TProjectBrowser As Form, Optional TSceneBrowser As Form, Optional TSettingsWindow As Form)
+Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As Form, Optional TProjectType As ProjectTypes = 0, Optional TEditorWindow As Form, Optional TProjectBrowser As Form, Optional TSceneBrowser As Form, Optional TSettingsWindow As Form)
     Me.IsInEditor = TIsInEditor
     Set Me.GameWindow = TGameWindow
-    
     If Me.IsInEditor Then
-        ProjectType = VBCEGameProject
+        Me.ProjectType = TProjectType
         Set Me.EditorWindow = TEditorWindow
         'Set Me.CodeEngine = ScriptEngine
         'Set Me.EngineTimer = TEngineTimer

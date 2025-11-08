@@ -14,6 +14,7 @@ Attribute VB_Exposed = False
 
 Function AddButton(Form As Form, Name As String)
     Dim CButton As New FormControlsButton_Class
-    
-    Set AddButton = Form.Controls.Add("VB.CommandButton", Name)
+    CButton.Build Name
+    Set CButton.Button = Form.Controls.Add("VB.CommandButton", Name)
+    Set AddButton = CButton
 End Function

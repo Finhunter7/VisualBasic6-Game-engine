@@ -64,6 +64,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -114,6 +115,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -124,6 +126,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -813,7 +816,7 @@ Private Sub MDIForm_Load()
     Set Engine = New EngineClass
     Form1.Show
     ProjectTypeSelectorDialog.Show vbModal, Me
-    Engine.LoadEngine True, Form1, Console, Form1, Form2, Scene_Browser, Nothing
+    Engine.LoadEngine True, Form1, Console, VBCEGameProject, Form1, Form2, Scene_Browser, Nothing
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
 End Sub

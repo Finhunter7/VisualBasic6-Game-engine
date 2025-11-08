@@ -16,12 +16,14 @@ Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 'Implements IScript_Class
 Public Name As String ' Scriptin Nimi
 Public Tag As String
-Public Data As String ' Scriptin koodi
+Private IData As String ' Scriptin koodi
 Public Index As Long ' Ei Käytössä
 Public ScriptPriority As Long
 Public MyModule As Module
 Public MyObject As Object
 Public GameObject As Object
+Private VariablesInData As New Collection
+Private ObjectsInData As New Collection
 'Public MyObjects As New Collection ' Scriptin Objektit Jota Käytetään Me.MyObjects.Item(Index/Key) Komennolla Tai Suoraan Tällä Muuttujalla
 'Public MyPropertyBag As New PropertyBag ' Scriptin Arvoja Jota Muut Scriptit Voivat Muuttaa/Käyttää
 Public Active As Boolean
@@ -40,6 +42,27 @@ Attribute GetVariable.VB_UserMemId = 0
 end1:
     
 End Function
+
+Public Property Get Data() As String
+    Data = IData
+End Property
+
+Public Property Let Data(RHS As String)
+    'CountKeysStat
+    IData = RHS
+End Property
+
+Private Sub CountKeysStat()
+    Dim Vars As Variant
+    Dim pos As Long
+    Vars = Array("Dim", "Private", "Public")
+    For Each Var In Vars
+        Do Until pos > Len(IData)
+            pos = InStr(pos + Len(Var), IData, Var, vbTextCompare)
+        Loop
+        
+    Next
+End Sub
 
 Sub Load()
     On Error Resume Next

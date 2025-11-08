@@ -22,35 +22,6 @@ Begin VB.Form CodeEditor
    ScaleHeight     =   5415
    ScaleWidth      =   4470
    Tag             =   "CodeEditor"
-   Begin ComctlLib.Toolbar Toolbar1 
-      Align           =   1  'Align Top
-      Height          =   390
-      Left            =   0
-      TabIndex        =   2
-      Top             =   420
-      Width           =   4470
-      _ExtentX        =   7885
-      _ExtentY        =   688
-      _Version        =   327682
-      Begin VB.ComboBox ScriptCombo1 
-         Height          =   360
-         Left            =   60
-         TabIndex        =   4
-         TabStop         =   0   'False
-         Text            =   "Script_Name"
-         Top             =   15
-         Width           =   2775
-      End
-      Begin VB.ComboBox MethodCombo1 
-         Height          =   360
-         Left            =   3000
-         TabIndex        =   3
-         TabStop         =   0   'False
-         Text            =   "Script_Methods"
-         Top             =   15
-         Width           =   8055
-      End
-   End
    Begin ComctlLib.Toolbar Toolbar2 
       Align           =   1  'Align Top
       Height          =   420
@@ -92,7 +63,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   7
          EndProperty
          BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -110,7 +80,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   10
          EndProperty
          BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -122,7 +91,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   11
          EndProperty
          BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -134,7 +102,6 @@ Begin VB.Form CodeEditor
             ImageIndex      =   8
          EndProperty
          BeginProperty Button12 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.ToolTipText     =   "Check For Errors"
             Object.Tag             =   ""
             ImageIndex      =   13
@@ -153,6 +120,35 @@ Begin VB.Form CodeEditor
          EndProperty
       EndProperty
    End
+   Begin ComctlLib.Toolbar Toolbar1 
+      Align           =   1  'Align Top
+      Height          =   390
+      Left            =   0
+      TabIndex        =   2
+      Top             =   420
+      Width           =   4470
+      _ExtentX        =   7885
+      _ExtentY        =   688
+      _Version        =   327682
+      Begin VB.ComboBox ScriptCombo1 
+         Height          =   360
+         Left            =   60
+         TabIndex        =   4
+         TabStop         =   0   'False
+         Text            =   "Script_Name"
+         Top             =   15
+         Width           =   2775
+      End
+      Begin VB.ComboBox MethodCombo1 
+         Height          =   360
+         Left            =   3000
+         TabIndex        =   3
+         TabStop         =   0   'False
+         Text            =   "Script_Methods"
+         Top             =   15
+         Width           =   8055
+      End
+   End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
       Height          =   255
@@ -170,13 +166,11 @@ Begin VB.Form CodeEditor
             Style           =   1
             Enabled         =   0   'False
             TextSave        =   "CAPS"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   2
             TextSave        =   "NUM"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -184,14 +178,12 @@ Begin VB.Form CodeEditor
             Object.Width           =   2778
             Text            =   "Exposed Object:       "
             TextSave        =   "Exposed Object:       "
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Line:"
             TextSave        =   "Line:"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -205,7 +197,6 @@ Begin VB.Form CodeEditor
       _ExtentX        =   7858
       _ExtentY        =   7223
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -305,7 +296,7 @@ Private inEditObjectData As Object
 Public cChanged As Boolean
 
 Private colorAdded As Boolean
-Private Items(KeyWordsCount) As String
+Private items(KeyWordsCount) As String
 'Private Express As New VBScript_RegExp_55.RegExp
 
 
@@ -327,62 +318,62 @@ Private Sub Form_Load()
 End Sub
 
 Function LoadItems()
-    Items(1) = "Sub"
-    Items(2) = "Function"
-    Items(3) = "Exit"
-    Items(4) = "End"
-    Items(5) = "Private"
-    Items(6) = "Public"
-    Items(7) = "And"
-    Items(8) = "Or"
-    Items(9) = "Not"
-    Items(10) = "Is"
-    Items(11) = "To"
-    Items(12) = "Do"
-    Items(13) = "Until"
-    Items(14) = "Loop"
-    Items(15) = "For"
-    Items(16) = "Next"
-    Items(17) = "True"
-    Items(18) = "False"
-    Items(19) = "If"
-    Items(20) = "Then"
-    Items(21) = "Set"
-    Items(22) = "As"
-    Items(23) = "On"
-    Items(24) = "Return"
-    Items(25) = "Resume"
-    Items(26) = "Optional"
-    Items(27) = "Double"
-    Items(28) = "Integer"
-    Items(29) = "Long"
-    Items(30) = "Boolean"
-    Items(31) = "String"
-    Items(32) = "Nothing"
-    Items(33) = "Else"
-    Items(34) = "ElseIf"
-    Items(35) = "New"
-    Items(36) = "Goto"
-    Items(37) = "Error"
-    Items(38) = "Const"
-    Items(39) = "Enum"
-    Items(40) = "Friend"
-    Items(41) = "Let"
-    Items(42) = "Get"
-    Items(43) = "Property"
-    Items(44) = "Dim"
-    Items(45) = "Declare"
-    Items(46) = "Class"
-    Items(47) = "Call"
-    Items(48) = "Lib"
-    Items(49) = "Alias"
-    Items(50) = "ByVal"
-    Items(51) = "Each"
-    Items(52) = "Select"
-    Items(53) = "Case"
-    Items(54) = "In"
-    Items(55) = "WithEvents"
-    Items(56) = "With"
+    items(1) = "Sub"
+    items(2) = "Function"
+    items(3) = "Exit"
+    items(4) = "End"
+    items(5) = "Private"
+    items(6) = "Public"
+    items(7) = "And"
+    items(8) = "Or"
+    items(9) = "Not"
+    items(10) = "Is"
+    items(11) = "To"
+    items(12) = "Do"
+    items(13) = "Until"
+    items(14) = "Loop"
+    items(15) = "For"
+    items(16) = "Next"
+    items(17) = "True"
+    items(18) = "False"
+    items(19) = "If"
+    items(20) = "Then"
+    items(21) = "Set"
+    items(22) = "As"
+    items(23) = "On"
+    items(24) = "Return"
+    items(25) = "Resume"
+    items(26) = "Optional"
+    items(27) = "Double"
+    items(28) = "Integer"
+    items(29) = "Long"
+    items(30) = "Boolean"
+    items(31) = "String"
+    items(32) = "Nothing"
+    items(33) = "Else"
+    items(34) = "ElseIf"
+    items(35) = "New"
+    items(36) = "Goto"
+    items(37) = "Error"
+    items(38) = "Const"
+    items(39) = "Enum"
+    items(40) = "Friend"
+    items(41) = "Let"
+    items(42) = "Get"
+    items(43) = "Property"
+    items(44) = "Dim"
+    items(45) = "Declare"
+    items(46) = "Class"
+    items(47) = "Call"
+    items(48) = "Lib"
+    items(49) = "Alias"
+    items(50) = "ByVal"
+    items(51) = "Each"
+    items(52) = "Select"
+    items(53) = "Case"
+    items(54) = "In"
+    items(55) = "WithEvents"
+    items(56) = "With"
     
     ' ConvertFuncs
     'Items(52) = "VbString"
@@ -534,7 +525,7 @@ End Sub
 Private Function AddColor()
     On Error Resume Next
     Dim OldPos As Integer
-    Dim Pos As Integer
+    Dim pos As Integer
     Dim TChanged As Boolean
     
     TChanged = cChanged
@@ -545,17 +536,17 @@ Private Function AddColor()
     Text1.SelColor = vbBlack
     
     For Item = 1 To KeyWordsCount
-        Pos = 0
+        pos = 0
         For ILine = 1 To Len(Text1.text)
-            Pos = Text1.Find(Items(Item), ILine, , rtfWholeWord)
-            If Pos > 0 Then
-                Text1.SelStart = Pos
+            pos = Text1.Find(items(Item), ILine, , rtfWholeWord)
+            If pos > 0 Then
+                Text1.SelStart = pos
                 Text1.SelLength = 1
                 Text1.SelText = UCase(Text1.SelText)
-                Text1.SelStart = Pos
-                Text1.SelLength = Len(Items(Item))
+                Text1.SelStart = pos
+                Text1.SelLength = Len(items(Item))
                 Text1.SelColor = vbBlue
-                ILine = Pos '+ Len(Items(Item)) - 1
+                ILine = pos '+ Len(Items(Item)) - 1
             Else
                 Exit For
             End If
