@@ -907,31 +907,28 @@ End Function
 
 Private Function SaveProjectGeneralInfo(TStream As TextStream)
     Dim curScene As Scene_Class
-    TStream.WriteLine "VBCE_ProjectFile                      "
-    TStream.WriteLine "[Project]"
-    TStream.WriteLine "Project_Version " & App.Major & "." & App.Minor & "." & App.Revision
-    TStream.WriteLine "Project_Name " & Me.ProjectName
-    TStream.WriteLine "Project_Path " & Me.ProjectPath
-    TStream.WriteLine "Project_BaseSceneNum " & Me.BaseScene
-    TStream.WriteLine "Project_ScenesInactive_Count " & Me.ScenesInactive.Count
-    TStream.WriteLine "Project_Scenes_Count " & Me.Scenes.Count
-    TStream.WriteLine "Project_TargetFramerate " & Me.GetTargetFramerate()
-    TStream.WriteLine "Project_Code_Language " & Me.GetCodeLanguage()
-    TStream.WriteLine "[InactiveScenes]"
+    TStream.WriteLine "'VBCE_ProjectFile Version 1.0"
+    TStream.WriteLine "With Engine"
+    TStream.WriteLine ".Name = " & Me.ProjectName
+    TStream.WriteLine ".ProjectType = " & Me.ProjectType
+    TStream.WriteLine "'InactiveScenes"
+    
     For i = 1 To Me.ScenesInactive.Count
-        TStream.WriteLine Me.ScenesInactive.Item(i).Name
+        TStream.WriteLine ".CreateNewScene " & Me.ScenesInactive.Item(i).Name
     Next
-    TStream.WriteLine "[ActiveScenes]"
+    TStream.WriteLine "'ActiveScenes"
     For i = 1 To Me.Scenes.Count
-        TStream.WriteLine Me.Scenes.Item(i).Name
+        TStream.WriteLine ".AddScene " & Me.Scenes.Item(i).Name
     Next
-    TStream.WriteLine "[Objects]"
+    TStream.WriteLine "'Objects"
     For i = 1 To Me.ScenesInactive.Count
         Set curScene = Me.ScenesInactive.Item(i)
         For o = 1 To curScene.Objects.Count
-            TStream.WriteLine curScene.Name & "_" & curScene.Objects.Item(o).Name
+            'TStream.WriteLine curScene.Name & "_" & curScene.Objects.Item(o).Name
+            TStream.WriteLine ".ScenesInactive.Item(" & i & ").CreateNewObject " & curScene.Objects.Item(o).Name
         Next
     Next
+    TStream.WriteLine "End With"
     
 End Function
 Private Function SaveProjectScriptData(sFolder As Folder)
