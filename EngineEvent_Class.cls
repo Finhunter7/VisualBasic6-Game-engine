@@ -22,13 +22,21 @@ Function Invoke(ParamArray IArgs() As Variant) As Variant  'Args() As Variant
     On Error Resume Next
     For i = 1 To S_Modules.Count
         If Not S_Modules.Item(i) Is Nothing Then
-            Invoke = CallByName(S_Modules.Item(i), EventClassName & "_" & ExecuteProc, VbMethod, IArgs)
+            If UBound(IArgs) = -1 Then
+                Invoke = CallByName(S_Modules.Item(i), EventClassName & "_" & ExecuteProc, VbMethod)
+            Else
+                Invoke = CallByName(S_Modules.Item(i), EventClassName & "_" & ExecuteProc, VbMethod, IArgs())
+            End If
         Else
             RemoveUser i
         End If
     Next
     For i = 1 To User_Modules.Count
-        User_Modules.Item(i).Run EventClassName & "_" & ExecuteProc
+        If Not User_Modules.Item(i) Is Nothing Then
+            User_Modules.Item(i).Run EventClassName & "_" & ExecuteProc
+        Else
+            RemoveUserModule i
+        End If
     Next
 End Function
 

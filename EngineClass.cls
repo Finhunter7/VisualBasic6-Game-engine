@@ -75,6 +75,7 @@ Public EConsole As Form
 
 Public InputSystem As New InputSystem_Class
 Public DrawClass As New Draw_Class
+Public FormControls As New FormControls
 
 Private EVectorClass As New Vector_Class
 Private MathClass As New Math_Class

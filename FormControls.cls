@@ -12,6 +12,10 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 
+Function CreateForm(Name As String)
+    
+End Function
+
 Function AddButton(Form As Form, Name As String)
     Dim CButton As New FormControlsButton_Class
     CButton.Build Name
