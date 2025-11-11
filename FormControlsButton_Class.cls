@@ -6,16 +6,15 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "FormControlsTextbox_Class"
+Attribute VB_Name = "FormControlsButton_Class"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private IName As String
-'Public OnChangeEvent As New EngineEvent_Class
-Public Events As New EventManager_Class ' Newer Version Of The Event System
-Public WithEvents TextBox As TextBox
-Attribute TextBox.VB_VarHelpID = -1
+Public Events As New EventManager_Class
+Public WithEvents Button As CommandButton
+Attribute Button.VB_VarHelpID = -1
 
 Sub Build(Name As String)
     Me.Name = Name
@@ -27,16 +26,15 @@ Public Property Get Name() As String
 End Property
 
 Public Property Let Name(RHS As String)
-    'OnClickEvent.EventClassName = RHS
     Events.ChangeClassName RHS
     IName = RHS
 End Property
 
-Private Sub Class_Initialize()
-    Events.MyClass = IName
-    Events.CreateEvent "OnChange"
+Private Sub Button_Click()
+    Events.Item("OnClick").Invoke
 End Sub
 
-Private Sub Text_Change()
-    Events.Item("OnChange").Invoke
+Private Sub Class_Initialize()
+    Events.MyClass = Me.Name
+    Events.CreateEvent "OnClick"
 End Sub
