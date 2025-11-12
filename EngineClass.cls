@@ -909,41 +909,41 @@ Private Function SaveProjectGeneralInfo(TStream As TextStream)
     Dim curScene As Scene_Class
     TStream.WriteLine "'VBCE_ProjectFile Version 1.0"
     TStream.WriteLine "With Engine"
-    TStream.WriteLine ".Name = " & Me.ProjectName
+    TStream.WriteLine ".Name = " & Chr(34) & Me.ProjectName & Chr(34)
     TStream.WriteLine ".ProjectType = " & Me.ProjectType
-    TStream.WriteLine "'InactiveScenes"
+    TStream.WriteLine "End With"
+    TStream.WriteLine "'---- Scripts ----"
+    For i = 1 To Me.Scripts.Count
+        TStream.WriteLine "Set Script = Engine.CreateNewScript(" & Chr(34) & Me.Scripts.Item(i).Name & Chr(34) & ")"
+        TStream.WriteLine "Script.Data = Engine.GetTextFromFile(" & "Engine.GetGamePath()" & Chr(34) & "\Scripts\" & Me.Scripts.Item(i).Name & ".VBS" & Chr(34) & ")"
+    Next
     
     For i = 1 To Me.ScenesInactive.Count
-        TStream.WriteLine "Set TScene = .CreateNewScene(" & Me.ScenesInactive.Item(i).Name & ")"
-        TStream.WriteLine "TScene.Name = " & Me.ScenesInactive.Item(i).Name
-        
+        TStream.WriteLine "Set TScene = Engine.CreateNewScene(" & Chr(34) & Me.ScenesInactive.Item(i).Name & Chr(34) & ")"
+        'TStream.WriteLine "TScene.Name = " & Me.ScenesInactive.Item(i).Name
     Next
-    TStream.WriteLine "'ActiveScenes"
     For i = 1 To Me.Scenes.Count
-        TStream.WriteLine ".AddScene " & Me.Scenes.Item(i).Name
+        TStream.WriteLine "Engine.AddScene " & Chr(34) & Me.Scenes.Item(i).Name & Chr(34)
     Next
-    TStream.WriteLine "'Objects"
-    For i = 1 To Me.ScenesInactive.Count
-        Set curScene = Me.ScenesInactive.Item(i)
-        For o = 1 To curScene.Objects.Count
-            'TStream.WriteLine curScene.Name & "_" & curScene.Objects.Item(o).Name
-            TStream.WriteLine ".ScenesInactive.Item(" & i & ").CreateNewObject " & curScene.Objects.Item(o).Name
-        Next
-    Next
-    TStream.WriteLine "End With"
     
 End Function
+
+Private Function GetTextFromFile(FileName As String) As String
+    Dim FileObj As New FileSystemObject
+    Dim Data As TextStream
+    Set Data = FileObj.OpenTextFile(FileName, ForReading, False)
+    GetTextFromFile = Data.ReadAll()
+    Data.Close
+End Function
+
 Private Function SaveProjectScriptData(sFolder As Folder)
     Dim curScript As Script_Class
     Dim sData As TextStream
     If Me.Scripts.Count > 0 Then
         For i = 1 To Me.Scripts.Count
             Set curScript = Me.Scripts.Item(i)
-            Set sData = sFolder.CreateTextFile(curScript.Name & ".VbceScript", True)
-            sData.WriteLine "[General]"
-            sData.WriteLine "Script_Name " & curScript.Name
-            sData.WriteLine "[Data]"
-            sData.Write curScript.Data
+            Set sData = sFolder.CreateTextFile(curScript.Name & ".VBS", True)
+            sData.WriteLine curScript.Data
         Next
         sData.Close
     End If

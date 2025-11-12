@@ -31,7 +31,7 @@ Enum DataField
     method = 7
 End Enum
 
-Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, fileName As String, EObject As Object)
+Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, FileName As String, EObject As Object)
     Dim curGObject As GameObject_Class
     Dim curScript As Script_Class
     Dim curScene As Scene_Class
@@ -40,7 +40,7 @@ Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, fileName As String, EObje
     If SaveData = Scene Then
         Set curScene = EObject
         If Not curScene Is Nothing Then
-            Set textFile = fileSystemHandler.CreateTextFile(fileName & ".VBScene", True)
+            Set textFile = fileSystemHandler.CreateTextFile(FileName & ".VBScene", True)
             With curScene
                 textFile.WriteLine "[General]"
                 textFile.WriteLine "Scene_Name " & .Name
@@ -59,7 +59,7 @@ Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, fileName As String, EObje
     ElseIf SaveData = GameObject Then
         Set curGObject = EObject
         If Not curGObject Is Nothing Then
-            Set textFile = fileSystemHandler.CreateTextFile(fileName & ".VBGObject", True)
+            Set textFile = fileSystemHandler.CreateTextFile(FileName & ".VBGObject", True)
             With curGObject
                 textFile.WriteLine "[General]"
                 textFile.WriteLine "Object_Name " & .Name
@@ -99,7 +99,7 @@ Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, fileName As String, EObje
     ElseIf SaveData = Script Then
         Set curScript = EObject
         If Not curScript Is Nothing Then
-            Set textFile = fileSystemHandler.CreateTextFile(fileName & ".VBCEScript", True)
+            Set textFile = fileSystemHandler.CreateTextFile(FileName & ".VBCEScript", True)
             With curScript
                 textFile.WriteLine "[General]"
                 textFile.WriteLine "Script_Name " & .Name
@@ -116,7 +116,7 @@ Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, fileName As String, EObje
     MsgBox "File Save Complete", vbInformation
     textFile.Close
 End Sub
-Sub SaveObjectToDiskXML(SaveData As SavingEnums, fileName As String, EObject As Object)
+Sub SaveObjectToDiskXML(SaveData As SavingEnums, FileName As String)
     Dim XMLO As New DOMDocument30
     Dim XMLElement As IXMLDOMElement
     Dim XMLNode As IXMLDOMNode
@@ -124,7 +124,7 @@ Sub SaveObjectToDiskXML(SaveData As SavingEnums, fileName As String, EObject As 
     Dim curGObject As GameObject_Class
     Dim curScript As Script_Class
     Dim curScene As Scene_Class
-    
+    'Set XMLElement = XMLO
     
     If SaveData = Scene Then
         Set curScene = EObject
@@ -140,15 +140,14 @@ Sub SaveObjectToDiskXML(SaveData As SavingEnums, fileName As String, EObject As 
         Set curScript = EObject
         
     ElseIf SaveData = GameObject Then
-        Set curGObject = EObject
+    
     Else
     
     End If
-    XMLO.Save fileName
-    XMLO.abort
+    XMLO.Save FileName
 End Sub
 
-Function LoadObjectFromDiskVBCFormat(ByRef LoadData As SavingEnums, fileName As String) As Object
+Function LoadObjectFromDiskVBCFormat(ByRef LoadData As SavingEnums, FileName As String) As Object
     Dim objectFolderPath As String
     Dim tempObject As Object
     Dim dataStream As TextStream
@@ -166,13 +165,13 @@ Function LoadObjectFromDiskVBCFormat(ByRef LoadData As SavingEnums, fileName As 
     Dim msgboxChoise As VbMsgBoxResult
     msgboxChoise = vbIgnore
     
-    If Not fileSystemHandler.FileExists(fileName) Then
+    If Not fileSystemHandler.FileExists(FileName) Then
         Exit Function
     End If
     
     If LoadData = Scene Then
         Set curScene = New Scene_Class
-        Set dataStream = fileSystemHandler.OpenTextFile(fileName, ForReading)
+        Set dataStream = fileSystemHandler.OpenTextFile(FileName, ForReading)
         
         Do Until dataStream.AtEndOfStream
             curLine = dataStream.ReadLine
@@ -245,7 +244,7 @@ Function LoadObjectFromDiskVBCFormat(ByRef LoadData As SavingEnums, fileName As 
     
     ElseIf LoadData = GameObject Then 'Lataa Peli Objektin
         Set curGObject = New GameObject_Class
-        Set dataStream = fileSystemHandler.OpenTextFile(fileName, ForReading)
+        Set dataStream = fileSystemHandler.OpenTextFile(FileName, ForReading)
         
         Do Until dataStream.AtEndOfStream
             curLine = dataStream.ReadLine

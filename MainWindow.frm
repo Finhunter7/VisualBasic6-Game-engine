@@ -64,7 +64,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            Key             =   ""
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -115,7 +115,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -126,7 +125,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -483,7 +481,6 @@ Begin VB.MDIForm MainWindow
       End
       Begin VB.Menu mnuSaveProject1 
          Caption         =   "Save Project..."
-         Enabled         =   0   'False
       End
       Begin VB.Menu mnuSpace3 
          Caption         =   "-"
@@ -1073,7 +1070,8 @@ Private Sub mnuSaveAs1_Click()
 End Sub
 
 Private Sub mnuSaveProject1_Click()
-    Engine.SaveProject
+    'Engine.SaveProject
+    Engine.SaveLoadGameClass.SaveObjectToDiskXML GameObject, FileBrowser1.SaveFile(Me)
 End Sub
 
 Private Sub mnuSaveW1_Click()
