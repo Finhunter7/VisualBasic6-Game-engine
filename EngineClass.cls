@@ -774,7 +774,7 @@ Function SaveProject()
         fileSystemHandler.CreateFolder Me.ProjectPath
     End If
     
-    Set projectFile = fileSystemHandler.CreateTextFile(Me.ProjectPath & "\" & Me.ProjectName & ".VbceProject", True)
+    Set projectFile = fileSystemHandler.CreateTextFile(Me.ProjectPath & "\" & Me.ProjectName & ".VBCEProject", True)
     SaveProjectGeneralInfo projectFile
     
     If fileSystemHandler.FolderExists(Me.ProjectPath & "\Scripts") Then
@@ -914,7 +914,9 @@ Private Function SaveProjectGeneralInfo(TStream As TextStream)
     TStream.WriteLine "'InactiveScenes"
     
     For i = 1 To Me.ScenesInactive.Count
-        TStream.WriteLine ".CreateNewScene " & Me.ScenesInactive.Item(i).Name
+        TStream.WriteLine "Set TScene = .CreateNewScene(" & Me.ScenesInactive.Item(i).Name & ")"
+        TStream.WriteLine "TScene.Name = " & Me.ScenesInactive.Item(i).Name
+        
     Next
     TStream.WriteLine "'ActiveScenes"
     For i = 1 To Me.Scenes.Count
