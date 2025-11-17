@@ -34,6 +34,7 @@ Begin VB.Form Scene_Browser
             Bevel           =   0
             Text            =   "Item Type:"
             TextSave        =   "Item Type:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -41,6 +42,7 @@ Begin VB.Form Scene_Browser
             Bevel           =   0
             Text            =   "Item Class:"
             TextSave        =   "Item Class:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -210,7 +212,7 @@ Private Sub mnuCircle1_Click()
                 NewObjectName = InputBox("Child Object Name")
                 
                 Dim newChild As New GameObject_Class
-                Set newChild.Position = thisScene.Objects(.text).Position
+                'Set newChild.Position = thisScene.Objects(.text).Position
                 Set curObject = thisScene.Objects(.text)
                 Set newChild.ParentObject = curObject
                 newChild.Name = NewObjectName
@@ -253,7 +255,7 @@ Private Sub mnuEmpty1_Click()
                 NewObjectName = InputBox("Child Object Name")
                 
                 Dim newChild As New GameObject_Class
-                Set newChild.Position = thisScene.Objects(TreeView1.selectedItem.text).Position
+                'Set newChild.Position = thisScene.Objects(TreeView1.selectedItem.text).Position
                 Set curObject = thisScene.Objects(TreeView1.selectedItem.text)
                 Set newChild.ParentObject = curObject
                 newChild.Name = NewObjectName
@@ -294,7 +296,7 @@ Function AddObject(PresetNum As ObjectPresets)
                 NewObjectName = InputBox("Child Object Name")
                 
                 Dim newChild As New GameObject_Class
-                Set newChild.Position = thisScene.Objects(.text).Position
+                'Set newChild.Position = thisScene.Objects(.text).Position
                 Set curObject = thisScene.Objects(.text)
                 Set newChild.ParentObject = curObject
                 newChild.Name = NewObjectName

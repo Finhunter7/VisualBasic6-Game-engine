@@ -41,6 +41,12 @@ Function Count() As Long
     Count = ColEvents.Count
 End Function
 
+Sub Reload()
+    For Each EItem In ColEvents
+        EItem.Clear
+    Next
+End Sub
+
 Sub Clear()
     For i = 1 To ColEvents.Count
         ColEvents.Remove i

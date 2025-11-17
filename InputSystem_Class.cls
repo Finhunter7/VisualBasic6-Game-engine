@@ -23,8 +23,9 @@ Public MouseY As Single
 Public MouseButtonDown As Integer
 
 ' Events For VBS And JS
-Public OnMouseDownEvent As New EngineEvent_Class
-Public OnKeyDownEvent As New EngineEvent_Class
+Public Events As New EventManager_Class
+'Public OnMouseDownEvent As New EngineEvent_Class
+'Public OnKeyDownEvent As New EngineEvent_Class
 
 Public Enum InputSystemKeyConstants
     IKeyUp = 38
@@ -66,16 +67,20 @@ End Function
 
 Private Sub Class_Initialize()
     ' Create Events
-    OnMouseDownEvent.EventClassName = "InputSystem"
-    OnMouseDownEvent.ExecuteProc = "OnMouseDown"
-    OnKeyDownEvent.EventClassName = "InputSystem"
-    OnKeyDownEvent.ExecuteProc = "OnKeyDown"
+    Me.Events.MyClass = "InputSystem"
+    Me.Events.CreateEvent "OnMouseDown"
+    Me.Events.CreateEvent "OnKeyDown"
+    'OnMouseDownEvent.EventClassName = "InputSystem"
+    'OnMouseDownEvent.ExecuteProc = "OnMouseDown"
+    'OnKeyDownEvent.EventClassName = "InputSystem"
+    'OnKeyDownEvent.ExecuteProc = "OnKeyDown"
 End Sub
 
 Private Sub GameEngine_KeyDown(KeyCode As Integer)
     On Error Resume Next
     Me.KeysDown.Add KeyCode, "Key_" & KeyCode
-    OnKeyDownEvent.Invoke KeyCode
+    'OnKeyDownEvent.Invoke KeyCode
+    Me.Events.Item("OnKeyDown").Invoke KeyCode
 End Sub
 
 Private Sub GameEngine_KeyUp(KeyCode As Integer)
@@ -85,7 +90,7 @@ End Sub
 
 Private Sub GameEngine_MouseDown(Button As Integer, X As Single, Y As Single)
     MouseButtonDown = Button
-    OnMouseDownEvent.Invoke Button, X, Y
+    Me.Events.Item("OnMouseDown").Invoke Button, X, Y
 End Sub
 
 Private Sub GameEngine_MouseMove(Button As Integer, X As Single, Y As Single)
@@ -98,8 +103,7 @@ Private Sub GameEngine_MouseUp(Button As Integer, X As Single, Y As Single)
 End Sub
 
 Private Sub GameEngine_OnGameEnd()
-    Me.OnMouseDownEvent.Clear
-    Me.OnKeyDownEvent.Clear
+    Me.Events.Reload
 End Sub
 
 Private Sub GameEngine_OnGameStop()

@@ -45,7 +45,7 @@ Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, FileName As String, EObje
                 textFile.WriteLine "[General]"
                 textFile.WriteLine "Scene_Name " & .Name
                 textFile.WriteLine "Scene_Index " & .Index
-                textFile.WriteLine "Scene_Layer " & .Layer
+                'textFile.WriteLine "Scene_Layer " & .Layer
                 textFile.WriteLine "[Collection]"
                 For i = 1 To .Objects.Count
                     textFile.WriteLine "AddObject " & .Objects.Item(i).Name

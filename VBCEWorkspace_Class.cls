@@ -127,6 +127,8 @@ Private Sub CreateProjectTree(TreeViewTarget As Object)
     curNode.Tag = "Folder"
     Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Textures", "Textures", 1, 1)
     curNode.Tag = "Folder"
+    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Components", "Components", 1, 1)
+    curNode.Tag = "Folder"
     
     With GameEngine
         For Each Item In .Mesh_Scripts
@@ -157,6 +159,8 @@ Sub BrowseEngineData(TargetTreeView As Object)
         Set thisNode = TargetTreeView.Nodes.Add("F_Scenes", 4, "Sc_" & Item.Name, Item.Name, 17, 17)
         thisNode.Tag = "Scene"
         Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name, 4, "Sc_" & Item.Name & "_ObjectFolder", "Objects", 1, 1)
+        thisNode.Tag = "Folder"
+        Set thisNode = TargetTreeView.Nodes.Add("Sc_" & Item.Name, 4, "Sc_" & Item.Name & "_SavedObjects", "SavedObjects", 1, 1)
         thisNode.Tag = "Folder"
         'Set thisNode = TargetTreeView.Nodes.Add("F_GameObjects", 4, Item.Name & "_Objects", Item.Name, 17, 17)
         'thisNode.Tag = "Folder"

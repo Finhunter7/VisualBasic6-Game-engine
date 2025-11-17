@@ -21,12 +21,13 @@ Public Name As String
 Attribute Name.VB_VarUserMemId = 0
 Attribute Name.VB_VarProcData = ";Text"
 Public Index As Long
-Public Layer As Long
+Private Layers(1 To 20) As Boolean
 
 Public GameEngine As EngineClass
 Attribute GameEngine.VB_VarHelpID = -1
 Public Objects As New Collection
 Private CopyObjects As New Collection
+Public SavedObjects As New Collection
 'Public Scripts As New Collection
 
 Public WorldCenterPos As New Vector_Class
@@ -46,7 +47,7 @@ Sub CreateFromScene(SceneObj As Scene_Class)
     With SceneObj
         Me.Name = .Name
         Me.Index = .Index
-        Me.Layer = .Layer
+        'Me.Layer = .Layer
         
         For Each Item In .Objects
             Me.Objects.Add Item, Item.Name
@@ -97,12 +98,15 @@ Private Sub LoadMeshCode(BEngine As ScriptControl)
     'Next
 End Sub
 
-Sub UpdateThis(BEngine As ScriptControl)
+Sub Update(BEngine As ScriptControl)
     'Dim GObject As GameObject_Class
-    'For i = 1 To Me.Objects.Count()
-        'Set GObject = Me.Objects.Item(i)
-        'GObject.Update BEngine
-    'Next
+    For Each Item In Me.Objects
+        Item.Update
+    Next
+End Sub
+
+Sub DrawObjects()
+    
 End Sub
 
 Sub ReDrawObjects(BEngine As ScriptControl)
@@ -239,9 +243,9 @@ Function CreateObject(ExSceneAndName As String, Optional CallerObject As GameObj
             CallerObject.MyScene.Objects.Add EXObject, EXObject.Name
         End If
         If SpawnPos Is Nothing Then
-            Set EXObject.Position = Me.WorldCenterPos
+            EXObject.Position.SetV Me.WorldCenterPos
         Else
-            Set EXObject.Position = SpawnPos
+            EXObject.Position.SetV SpawnPos
         End If
     End If
     
@@ -255,7 +259,7 @@ Private Sub OnSceneLoad()
     Me.Gravity.SetVector 0, 9.81, 0
     Me.CameraPos.SetVector 0, 0, 10
     Me.SunAngle.SetVector 20, 0, 0
-    Me.Layer = 0
+    Layers(1) = True
 End Sub
 
 Private Sub GameEngine_OnDataChanged()
