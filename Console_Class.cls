@@ -12,7 +12,6 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private textBuffer As String
-
 Public Console As New Console
 
 Function WriteLine(text)

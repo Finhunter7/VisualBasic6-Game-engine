@@ -197,6 +197,9 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
                     Me.EditorWindow.Print "Object X: " & SceneObject.Position.X
                     Me.EditorWindow.Print "Object Y: " & SceneObject.Position.Y
                     Me.EditorWindow.Print "Object Z: " & SceneObject.Position.Z
+                    Me.EditorWindow.Print "Object Scene X: " & SceneObject.ScenePosition.X
+                    Me.EditorWindow.Print "Object Scene Y: " & SceneObject.ScenePosition.Y
+                    Me.EditorWindow.Print "Object Scene Z: " & SceneObject.ScenePosition.Z
                     Me.EditorWindow.Print "Object Scale: X:" & SceneObject.SScale.X & " Y:" & SceneObject.SScale.Y & " Z:" & SceneObject.SScale.Z
                     Me.EditorWindow.Print "Object Size: " & SceneObject.Size
                     Me.EditorWindow.Line (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2))-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)), vbGreen, B
@@ -1149,6 +1152,7 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
             thisScript.MyModule.Run "Load"
         End If
     Next
+    
     loadStatusDialog.Hide
     Me.EngineTimer.Start
     Exit Function
@@ -1213,6 +1217,9 @@ Private Function EngineUpdate()
     SimulationTime = SimulationTime + Me.GetFrameTime()
     Me.DrawClass.PrintText 1, 1, "FPS: " & Me.GetFrameRate()
     Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetRealFrameTime()
+    'If Me.Scenes.Count < 1 Then
+        'Me.DrawClass.PrintText Me.GetWindowCenter().X, Me.GetWindowCenter().Y, "No Active Scenes", 20
+    'End If
 End Function
 
 Function RenderScene(Frames As Long, Optional DestinationPath As String)

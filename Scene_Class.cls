@@ -119,9 +119,9 @@ Sub SetCamera(CObjectPos As Vector_Class)
 End Sub
 
 Sub ChangeCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
-    For Each Obj In Me.Objects
-        Obj.Position.AddVector -AddX, -AddY, -AddZ
-    Next
+    'For Each Obj In Me.Objects
+        'Obj.Position.AddVector -AddX, -AddY, -AddZ
+    'Next
     Me.CameraPos.AddVector AddX, AddY, AddZ
     ReDrawObjects Me.GameEngine.CodeEngine
 End Sub
@@ -153,7 +153,7 @@ Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, O
     If SpawnPos Is Nothing Then
         CnewObject.Position.SetVectorV Me.WorldCenterPos
     Else
-        Set CnewObject.Position = SpawnPos.VClone
+        CnewObject.Position.SetV SpawnPos
     End If
     
     On Error Resume Next

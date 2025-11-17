@@ -26,7 +26,8 @@ Public Mass As Double
 Public ParentObject As GameObject_Class
 Public Child As New Collection ' of GameObject_Class
 Public Transform As New Transform_Class ' Yhdistelm‰ Sijainista , Pyˆrimisest‰ ja Koosta
-Public Position As New Vector_Class
+Private IPosition As New Vector_Class
+Public ScenePosition As New Vector_Class ' Scene's Camera position affects this
 Public Rotation As New Matrix_Class
 Public SScale As New Vector_Class
 Public Size As Double 'Kokonais Mittakoko
@@ -39,6 +40,10 @@ Public MyPropertites As New PropertyBag ' K‰ytet‰‰n kun objektista tehd‰‰n pelis
 Private IVisible As Boolean
 Private IActive As Boolean
 Public text As Variant ' K‰ytet‰‰n Teksti Objekteissa
+
+Public Property Get Position() As Vector_Class
+    Set Position = IPosition
+End Property
 
 Private Sub Initialize()
     IVisible = True
