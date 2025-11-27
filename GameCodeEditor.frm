@@ -3,10 +3,10 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form CodeEditor 
    Caption         =   "Code Editor"
-   ClientHeight    =   5415
+   ClientHeight    =   6270
    ClientLeft      =   165
    ClientTop       =   210
-   ClientWidth     =   4470
+   ClientWidth     =   6435
    BeginProperty Font 
       Name            =   "MS Sans Serif"
       Size            =   9.75
@@ -19,8 +19,8 @@ Begin VB.Form CodeEditor
    Icon            =   "GameCodeEditor.frx":0000
    LinkTopic       =   "Form3"
    MDIChild        =   -1  'True
-   ScaleHeight     =   5415
-   ScaleWidth      =   4470
+   ScaleHeight     =   6270
+   ScaleWidth      =   6435
    Tag             =   "CodeEditor"
    Begin ComctlLib.Toolbar Toolbar2 
       Align           =   1  'Align Top
@@ -28,8 +28,8 @@ Begin VB.Form CodeEditor
       Left            =   0
       TabIndex        =   5
       Top             =   0
-      Width           =   4470
-      _ExtentX        =   7885
+      Width           =   6435
+      _ExtentX        =   11351
       _ExtentY        =   741
       ButtonWidth     =   635
       ButtonHeight    =   582
@@ -63,6 +63,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   7
          EndProperty
          BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -80,6 +81,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   10
          EndProperty
          BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -91,6 +93,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   11
          EndProperty
          BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             Style           =   3
             MixedState      =   -1  'True
@@ -102,6 +105,7 @@ Begin VB.Form CodeEditor
             ImageIndex      =   8
          EndProperty
          BeginProperty Button12 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.ToolTipText     =   "Check For Errors"
             Object.Tag             =   ""
             ImageIndex      =   13
@@ -126,8 +130,8 @@ Begin VB.Form CodeEditor
       Left            =   0
       TabIndex        =   2
       Top             =   420
-      Width           =   4470
-      _ExtentX        =   7885
+      Width           =   6435
+      _ExtentX        =   11351
       _ExtentY        =   688
       _Version        =   327682
       Begin VB.ComboBox ScriptCombo1 
@@ -154,9 +158,9 @@ Begin VB.Form CodeEditor
       Height          =   255
       Left            =   0
       TabIndex        =   1
-      Top             =   5160
-      Width           =   4470
-      _ExtentX        =   7885
+      Top             =   6015
+      Width           =   6435
+      _ExtentX        =   11351
       _ExtentY        =   450
       SimpleText      =   ""
       _Version        =   327682
@@ -166,11 +170,13 @@ Begin VB.Form CodeEditor
             Style           =   1
             Enabled         =   0   'False
             TextSave        =   "CAPS"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Style           =   2
             TextSave        =   "NUM"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -178,25 +184,28 @@ Begin VB.Form CodeEditor
             Object.Width           =   2778
             Text            =   "Exposed Object:       "
             TextSave        =   "Exposed Object:       "
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel4 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Line:"
             TextSave        =   "Line:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
    End
    Begin RichTextLib.RichTextBox Text1 
-      Height          =   4095
+      Height          =   4935
       Left            =   0
       TabIndex        =   0
       Top             =   960
-      Width           =   4455
-      _ExtentX        =   7858
-      _ExtentY        =   7223
+      Width           =   6375
+      _ExtentX        =   11245
+      _ExtentY        =   8705
       _Version        =   393217
+      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -525,7 +534,7 @@ End Sub
 Private Function AddColor()
     On Error Resume Next
     Dim OldPos As Integer
-    Dim pos As Integer
+    Dim Pos As Integer
     Dim TChanged As Boolean
     
     TChanged = cChanged
@@ -536,17 +545,17 @@ Private Function AddColor()
     Text1.SelColor = vbBlack
     
     For Item = 1 To KeyWordsCount
-        pos = 0
+        Pos = 0
         For ILine = 1 To Len(Text1.text)
-            pos = Text1.Find(items(Item), ILine, , rtfWholeWord)
-            If pos > 0 Then
-                Text1.SelStart = pos
+            Pos = Text1.Find(items(Item), ILine, , rtfWholeWord)
+            If Pos > 0 Then
+                Text1.SelStart = Pos
                 Text1.SelLength = 1
                 Text1.SelText = UCase(Text1.SelText)
-                Text1.SelStart = pos
+                Text1.SelStart = Pos
                 Text1.SelLength = Len(items(Item))
                 Text1.SelColor = vbBlue
-                ILine = pos '+ Len(Items(Item)) - 1
+                ILine = Pos '+ Len(Items(Item)) - 1
             Else
                 Exit For
             End If

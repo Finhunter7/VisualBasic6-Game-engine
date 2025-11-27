@@ -750,7 +750,7 @@ Private Function OnGameStop()
     'For Each Item In Me.Scenes
         'Item.OnGameStop
     'Next
-    
+    ReloadCodeEngine
     RaiseEvent OnGameStop
 End Function
 
@@ -758,8 +758,12 @@ Sub SaveObjectToDisk(SaveData As SavingEnums, FileName As String, EObject As Obj
     SaveLoadGameClass.SaveObjectToDiskVBCFormat SaveData, FileName, EObject
 End Sub
 
-Function SaveProject()
+Function SaveProject(Path As String)
     
+End Function
+
+Function BuildProject(Path As String)
+
 End Function
 
 Function ClearGameEngineData()
@@ -1030,7 +1034,7 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     
     OnGameLoad
     Me.GameWindow.Cls
-    ReloadCodeEngine ' Resetoi Koodimoottorin
+    'ReloadCodeEngine ' Resetoi Koodimoottorin
     'CreateModules
     
     On Error GoTo GlobalError
