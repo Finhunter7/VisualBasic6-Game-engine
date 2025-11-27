@@ -69,25 +69,16 @@ Function EndScene() As Boolean
 End Function
 
 Sub OnLoad(GameCodeEngine As ScriptControl)
-    Dim GameObject As GameObject_Class
-    LoadMeshCode GameCodeEngine
-    For i = 1 To CopyObjects.Count
-        CopyObjects.Remove i
-    Next
-    For i = 1 To Me.Objects.Count
-        Set GameObject = New GameObject_Class
-        GameObject.BuildFromObject Me.Objects.Item(i)
-        CopyObjects.Add GameObject, GameObject.Name
-    Next
+
 End Sub
 
 Sub OnGameStop()
-    For i = 1 To Me.Objects.Count
-        Me.Objects.Remove i
-    Next
-    For i = 1 To CopyObjects.Count
-        Me.Objects.Add CopyObjects.Item(i), CopyObjects.Item(i).Name
-    Next
+    'For i = 1 To Me.Objects.Count
+        'Me.Objects.Remove i
+    'Next
+    'For i = 1 To CopyObjects.Count
+        'Me.Objects.Add CopyObjects.Item(i), CopyObjects.Item(i).Name
+    'Next
 End Sub
 
 Private Sub LoadMeshCode(BEngine As ScriptControl)
@@ -110,10 +101,10 @@ Sub DrawObjects()
 End Sub
 
 Sub ReDrawObjects(BEngine As ScriptControl)
-    Dim GObject As GameObject_Class
-    For i = 1 To Me.Objects.Count()
-        Set GObject = Me.Objects.Item(i)
-        GObject.EditorCallDraw BEngine
+    'Dim GObject As Object
+    For Each Item In Me.Objects
+        On Error Resume Next
+        CallByName Item, "EditorCallDraw", VbMethod
     Next
 End Sub
 

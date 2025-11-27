@@ -64,7 +64,7 @@ Attribute GameWindow.VB_VarHelpID = -1
 Private newGameWindow As Form
 Public WithEvents EditorWindow As Form
 Attribute EditorWindow.VB_VarHelpID = -1
-Private EditorSelectedObject As GameObject_Class
+Private EditorSelectedObject As Object
 'Public EngineTimer As Timer
 
 Public ProjectBrowser As Form
@@ -173,8 +173,9 @@ Function GetReference(NameOrID) As Object
 End Function
 
 Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
+    On Error Resume Next
     Dim curScene As Scene_Class
-    Dim SceneObject As GameObject_Class
+    Dim SceneObject As Object
     If Me.IsEngineRunning Then
         Set EditorSelectedObject = Nothing
         Exit Function
@@ -183,29 +184,27 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
         Set curScene = Me.Scenes(i)
         For o = 1 To curScene.Objects.Count
             Set SceneObject = curScene.Objects(o)
-            If MPosX > (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2)) And MPosX < (SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2)) Then
-                If MPosY > (SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2)) And MPosY < (SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)) Then
+            'If MPosX > (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2)) And MPosX < (SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2)) Then
+                'If MPosY > (SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2)) And MPosY < (SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)) Then
+            If MPosX > (SceneObject.Position.X - 125) And MPosX < (SceneObject.Position.X + 125) Then
+                If MPosY > (SceneObject.Position.Y - 125) And MPosY < (SceneObject.Position.Y + 125) Then
                     Me.EditorRefreshScenes
                     Me.EditorWindow.FontSize = 8
                     Me.EditorWindow.ForeColor = &HFFFFFF
-                    Me.GameWindow.CurrentX = 0
-                    Me.GameWindow.CurrentY = 0
+                    'Me.GameWindow.CurrentX = 0
+                    'Me.GameWindow.CurrentY = 0
                     Me.EditorWindow.Print "Object Name: " & SceneObject.Name
-                    Me.EditorWindow.Print "Object Scene: " & SceneObject.MyScene.Name
-                    Me.EditorWindow.Print "Object Tag: " & SceneObject.Tag
+                    'Me.EditorWindow.Print "Object Scene: " & SceneObject.MyScene.Name
+                    'Me.EditorWindow.Print "Object Tag: " & SceneObject.Tag
                     Me.EditorWindow.Print "Object X: " & SceneObject.Position.X
                     Me.EditorWindow.Print "Object Y: " & SceneObject.Position.Y
-                    Me.EditorWindow.Print "Object Z: " & SceneObject.Position.Z
-                    Me.EditorWindow.Print "Object Scene X: " & SceneObject.ScenePosition.X
-                    Me.EditorWindow.Print "Object Scene Y: " & SceneObject.ScenePosition.Y
-                    Me.EditorWindow.Print "Object Scene Z: " & SceneObject.ScenePosition.Z
-                    Me.EditorWindow.Print "Object Scale: X:" & SceneObject.SScale.X & " Y:" & SceneObject.SScale.Y & " Z:" & SceneObject.SScale.Z
-                    Me.EditorWindow.Print "Object Size: " & SceneObject.Size
-                    Me.EditorWindow.Line (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2))-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)), vbGreen, B
-                    Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X), SceneObject.Position.Y), vbRed
-                    Me.EditorWindow.Print "X"
-                    Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X, SceneObject.Position.Y + SceneObject.EditorColliderSize.Y), vbGreen
-                    Me.EditorWindow.Print "Y"
+                    'Me.EditorWindow.Print "Object Z: " & SceneObject.Position.Z
+                    'Me.EditorWindow.Print "Object Scene X: " & SceneObject.ScenePosition.X
+                    'Me.EditorWindow.Print "Object Scene Y: " & SceneObject.ScenePosition.Y
+                    'Me.EditorWindow.Print "Object Scene Z: " & SceneObject.ScenePosition.Z
+                    'Me.EditorWindow.Print "Object Scale: X:" & SceneObject.SScale.X & " Y:" & SceneObject.SScale.Y & " Z:" & SceneObject.SScale.Z
+                    'Me.EditorWindow.Print "Object Size: " & SceneObject.Size
+                    DrawSelectedLines SceneObject
                     Set EditorSelectedObject = SceneObject
                     Exit Function
                 End If
@@ -218,16 +217,36 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
     Set EditorSelectedObject = Nothing
 End Function
 
-Function GetSelectedObject() As GameObject_Class
+Function GetSelectedObject() As Object
     Set GetSelectedObject = EditorSelectedObject
 End Function
 
-Function SelectObject(GameObject As GameObject_Class)
+Sub DrawSelectedLines(SceneObject As Object)
+    On Error Resume Next
+    'If Not IsEmpty(SceneObject.EditorColliderSize) Then
+        'Me.EditorWindow.Line (SceneObject.Position.X - (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y - (SceneObject.EditorColliderSize.Y / 2))-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X / 2), SceneObject.Position.Y + (SceneObject.EditorColliderSize.Y / 2)), vbGreen, B
+        'Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X), SceneObject.Position.Y), vbRed
+        'Me.EditorWindow.Print "X"
+        'Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X, SceneObject.Position.Y + SceneObject.EditorColliderSize.Y), vbGreen
+        'Me.EditorWindow.Print "Y"
+    'Else
+        Me.EditorWindow.Line (SceneObject.Position.X - 125, SceneObject.Position.Y - 125)-(SceneObject.Position.X + 125, SceneObject.Position.Y + 125), vbGreen, B
+        Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X + 250, SceneObject.Position.Y), vbRed
+        Me.EditorWindow.Print "X"
+        Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X, SceneObject.Position.Y + 250), vbGreen
+        Me.EditorWindow.Print "Y"
+    'End If
+End Sub
+
+Function SelectObject(GameObject As Object)
     If Me.IsEngineRunning Then
         Exit Function
     End If
     Me.EditorRefreshScenes
-    Me.EditorWindow.Line (GameObject.Position.X - (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y - (GameObject.EditorColliderSize.Y / 2))-(GameObject.Position.X + (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y + (GameObject.EditorColliderSize.Y / 2)), vbGreen, B
+    DrawSelectedLines GameObject
+    'Me.EditorWindow.Line (GameObject.Position.X - (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y - (GameObject.EditorColliderSize.Y / 2))-(GameObject.Position.X + (GameObject.EditorColliderSize.X / 2), GameObject.Position.Y + (GameObject.EditorColliderSize.Y / 2)), vbGreen, B
+    'Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X + (SceneObject.EditorColliderSize.X), SceneObject.Position.Y), vbRed
+    'Me.EditorWindow.Line (SceneObject.Position.X, SceneObject.Position.Y)-(SceneObject.Position.X, SceneObject.Position.Y + SceneObject.EditorColliderSize.Y), vbGreen
     Set EditorSelectedObject = GameObject
 End Function
 
@@ -1140,9 +1159,9 @@ Private Function EngineUpdate()
     On Error Resume Next
     For Each curScene In Me.Scenes
         For Each curGObject In curScene.Objects
-            Set baseObject = curGObject
-            If baseObject.Active Then
-                baseObject.Update
+            'Set baseObject = curGObject
+            If curGObject.Active Then
+                curGObject.Update
             End If
         Next
     Next

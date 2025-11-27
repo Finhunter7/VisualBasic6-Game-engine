@@ -230,13 +230,7 @@ Private Sub Update()
     UpdatePhysics
 End Sub
 
-Function ChangeMeshCode(NewCode As String, GameCodeEngine As ScriptControl)
-    On Error Resume Next
-    'Me.MeshCode = NewCode
-    'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_MeshCode").AddCode MeshCode
-End Function
-
-Function EditorCallDraw(GameCodeEngine As ScriptControl) ' K‰ytet‰‰n Kun Editorin Tarvitsee Piirt‰‰ Objekti Uudelleen
+Sub EditorCallDraw() ' K‰ytet‰‰n Kun Editorin Tarvitsee Piirt‰‰ Objekti Uudelleen
     On Error Resume Next
     For Each Comp In Me.Components
         If Comp.Tag = "RendererScript" Then
@@ -245,9 +239,9 @@ Function EditorCallDraw(GameCodeEngine As ScriptControl) ' K‰ytet‰‰n Kun Editori
         End If
         'Comp.EditorDraw
     Next
-End Function
+End Sub
 
-Private Function Draw()
+Sub Draw()
     On Error Resume Next
     If Visible Then
         For Each Comp In Me.Components
@@ -258,11 +252,7 @@ Private Function Draw()
             'Comp.Draw
         Next
     End If
-End Function
-
-Private Function CallUpdate()
-    'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_Code").Run "Update"
-End Function
+End Sub
 
 Private Sub InitializeComponents()
     On Error Resume Next
