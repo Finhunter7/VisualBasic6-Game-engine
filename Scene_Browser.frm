@@ -554,7 +554,7 @@ Function Update()
 End Function
 
 Function UpdateSceneBrowser()
-    Me.GameEngine.WorkspaceUtilClass.UpdateSceneBrowser Me.TreeView1
+    'Me.GameEngine.WorkspaceUtilClass.UpdateSceneBrowser Me.TreeView1
 End Function
 
 Private Sub TreeView1_DblClick()

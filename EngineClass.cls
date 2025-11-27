@@ -46,7 +46,6 @@ Public GameWindowScaleY As Long
 
 ' Editor Utils
 Public IsInEditor As Boolean
-Public WorkspaceUtilClass As Object
 
 Public BaseScene As Integer
 Public EngineRefrences As New Collection
@@ -624,8 +623,6 @@ Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As For
         Set Me.SceneBrowser = TSceneBrowser
         Set Me.ProjectBrowser.GameEngine = Me
         Set Me.SceneBrowser.GameEngine = Me
-        Set Me.WorkspaceUtilClass = New VBCEWorkspace_Class
-        Me.WorkspaceUtilClass.LoadDeveloperTools Me
     End If
     
     Set Me.InputSystem.GameEngine = Me
@@ -762,49 +759,7 @@ Sub SaveObjectToDisk(SaveData As SavingEnums, FileName As String, EObject As Obj
 End Sub
 
 Function SaveProject()
-    'Dim fileSystemHandler As New Scripting.FileSystemObject
-    Dim ProjectFile As TextStream
-    Dim dataFolder As Folder
-    Dim setProjectPath As String
     
-    If Me.ProjectPath = "" Then
-        setProjectPath = FileBrowser1.SaveToDir(MainWindow)
-        If Len(setProjectPath) = 0 Then
-            Exit Function
-        End If
-        Me.ProjectPath = setProjectPath
-        
-        If Not fileSystemHandler.FolderExists(Me.ProjectPath) Then
-            fileSystemHandler.CreateFolder Me.ProjectPath
-        End If
-    ElseIf fileSystemHandler.FolderExists(Me.ProjectPath) Then
-        
-    Else
-        fileSystemHandler.CreateFolder Me.ProjectPath
-    End If
-    
-    Set ProjectFile = fileSystemHandler.CreateTextFile(Me.ProjectPath & "\" & Me.ProjectName & ".VBCEProject", True)
-    SaveProjectGeneralInfo ProjectFile
-    
-    If fileSystemHandler.FolderExists(Me.ProjectPath & "\Scripts") Then
-        fileSystemHandler.DeleteFolder Me.ProjectPath & "\Scripts", True
-        Set dataFolder = fileSystemHandler.CreateFolder(Me.ProjectPath & "\Scripts")
-        SaveProjectScriptData dataFolder
-    Else
-        Set dataFolder = fileSystemHandler.CreateFolder(Me.ProjectPath & "\Scripts")
-        SaveProjectScriptData dataFolder
-    End If
-    
-    If fileSystemHandler.FolderExists(Me.ProjectPath & "\Scenes") Then
-        fileSystemHandler.DeleteFolder Me.ProjectPath & "\Scenes"
-        Set dataFolder = fileSystemHandler.CreateFolder(Me.ProjectPath & "\Scenes")
-        SaveProjectSceneData dataFolder
-    Else
-        Set dataFolder = fileSystemHandler.CreateFolder(Me.ProjectPath & "\Scenes")
-        SaveProjectSceneData dataFolder
-    End If
-    
-    ProjectFile.Close
 End Function
 
 Function ClearGameEngineData()
@@ -878,6 +833,7 @@ Function OpenProject(FileName As String, localPath As Boolean)
                 End If
             End If
         Loop
+        Me.ProjectPath = ProjectFile.ParentFolder.Path
         ProjectFileDataStream.Close
     End If
     

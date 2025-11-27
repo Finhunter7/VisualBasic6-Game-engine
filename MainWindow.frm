@@ -64,6 +64,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -114,6 +115,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -124,6 +126,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -765,6 +768,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public WithEvents Engine As EngineClass
 Attribute Engine.VB_VarHelpID = -1
+Private EditorClass As New VBCEWorkspace_Class
 
 Private Sub List1_Click()
 
@@ -777,9 +781,9 @@ End Sub
 Private Sub BmnuRemove1_Click()
     With Me.SolutionBrowser1.selectedItem
         If .Key = "TProjectB" Then
-            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, ProjectBrowser, RemoveItem
+            EditorClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, ProjectBrowser, RemoveItem
         ElseIf .Key = "TSceneBrowser" Then
-            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, SceneBrowser, RemoveItem
+            EditorClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, SceneBrowser, RemoveItem
         End If
     End With
 End Sub
@@ -810,6 +814,7 @@ End Sub
 
 Private Sub MDIForm_Load()
     Set Engine = New EngineClass
+    EditorClass.LoadDeveloperTools Engine
     Form1.Show
     ProjectTypeSelectorDialog.Show vbModal, Me
     Engine.LoadEngine True, Form1, Console, VBCEGameProject, Form1, Form2, Scene_Browser, Nothing
@@ -1136,8 +1141,16 @@ End Sub
 
 Private Sub SolutionBrowser1_Click()
     Me.TreeViewBrowser2.Nodes.Clear
+    
+    Me.ToolbarRightCaptionBar1.Buttons(1).ToolTipText = "Create New Item"
+    Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open File From Disk"
+    Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Item To Disk"
+    Me.ToolbarRightCaptionBar1.Buttons(4).ToolTipText = "Remove Item From Project"
+    Me.ToolbarRightCaptionBar1.Buttons(8).Visible = False
+    Me.ToolbarRightCaptionBar1.Buttons(9).Visible = False
+    
     If Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
-        Me.Engine.WorkspaceUtilClass.UpdateSceneBrowser Me.TreeViewBrowser2
+        EditorClass.UpdateSceneBrowser Me.TreeViewBrowser2
         Me.ToolbarRightCaptionBar1.Buttons(1).ToolTipText = "Create New Object"
         Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open Object/Scene From Disk"
         Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Object/Scene To Disk"
@@ -1151,13 +1164,9 @@ Private Sub SolutionBrowser1_Click()
     
             
     ElseIf Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
-        Me.Engine.WorkspaceUtilClass.BrowseEngineData Me.TreeViewBrowser2
-        Me.ToolbarRightCaptionBar1.Buttons(1).ToolTipText = "Create New Item"
-        Me.ToolbarRightCaptionBar1.Buttons(2).ToolTipText = "Open File From Disk"
-        Me.ToolbarRightCaptionBar1.Buttons(3).ToolTipText = "Save Item To Disk"
-        Me.ToolbarRightCaptionBar1.Buttons(4).ToolTipText = "Remove Item From Project"
-        Me.ToolbarRightCaptionBar1.Buttons(8).Visible = False
-        Me.ToolbarRightCaptionBar1.Buttons(9).Visible = False
+        EditorClass.BrowseEngineData Me.TreeViewBrowser2
+    ElseIf Me.SolutionBrowser1.selectedItem.Key = "TFolderB1" Then
+        EditorClass.UpdateFolderBrowser Me.TreeViewBrowser2
     End If
 End Sub
 
@@ -1207,9 +1216,9 @@ End Sub
 Private Sub SBTHandler(Action As SBTActions)
     With Me.SolutionBrowser1.selectedItem
         If .Key = "TProjectB" Then
-            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, ProjectBrowser, Action
+            EditorClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, ProjectBrowser, Action
         ElseIf .Key = "TSceneBrowser" Then
-            Me.Engine.WorkspaceUtilClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, SceneBrowser, Action
+            EditorClass.TreeViewBrowserHandleActions Me.TreeViewBrowser2, SceneBrowser, Action
         End If
     End With
     
@@ -1244,14 +1253,14 @@ End Sub
 
 Private Sub TreeViewBrowser2_DblClick()
     If Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
-        Me.Engine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, ProjectBrowser
+        EditorClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, ProjectBrowser
     ElseIf Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
-        Me.Engine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, SceneBrowser
+        EditorClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, SceneBrowser
     End If
 End Sub
 
 Private Sub TreeViewBrowser2_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Button = 2 Then
-        Me.Engine.WorkspaceUtilClass.TreeViewRightClick Me, Me.TreeViewBrowser2, Browsermnu1
+        EditorClass.TreeViewRightClick Me, Me.TreeViewBrowser2, Browsermnu1
     End If
 End Sub

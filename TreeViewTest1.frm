@@ -462,7 +462,7 @@ Private Sub TreeView1_Click()
 End Sub
 
 Private Sub TreeView1_DblClick()
-    Me.GameEngine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick Me.TreeView1, ProjectBrowser
+    'Me.GameEngine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick Me.TreeView1, ProjectBrowser
 End Sub
 
 Function Update()
@@ -470,7 +470,7 @@ Function Update()
 End Function
 
 Function UpdateProjectBrowser()
-    Me.GameEngine.WorkspaceUtilClass.BrowseEngineData Me.TreeView1
+    'Me.GameEngine.WorkspaceUtilClass.BrowseEngineData Me.TreeView1
 End Function
 
 Private Sub TreeView1_OLEStartDrag(Data As ComctlLib.DataObject, AllowedEffects As Long)
