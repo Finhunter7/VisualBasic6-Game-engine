@@ -64,7 +64,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -996,7 +995,7 @@ Private Sub mnuObjectMesh1_Click()
 End Sub
 
 Private Sub mnuOpenProject1_Click()
-    Engine.OpenProject FileBrowser1.OpenFile(Me)
+    Engine.OpenProject FileBrowser1.OpenFile(Me), False
 End Sub
 
 Private Sub mnuPause1_Click()

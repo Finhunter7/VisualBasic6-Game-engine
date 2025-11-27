@@ -459,28 +459,26 @@ Sub EditScript(Name As String)
     
 End Sub
 
-Sub SceneAddObject(PresetNum As ObjectPresets, Optional Scene As Scene_Class)
-    Dim thisScene As Scene_Class
-    Dim objectName As String
+Function CreateGameObject(Name As String, SceneID) As GameObject_Class
+    Dim TargetScene As Scene_Class
+    Dim NGObject As New GameObject_Class
     
-    Set thisScene = Scene
-    If thisScene Is Nothing Then
-        Set thisScene = Me.GetCurrentScene()
-    End If
-    If thisScene Is Nothing Then
-        MsgBox "No Active Scenes Found", vbExclamation
-        Exit Sub
-    End If
+    Set TargetScene = Me.ScenesInactive.Item(SceneID)
     
-    objectName = InputBox("Give Object Name")
-    If Len(objectName) = 0 Then
-        Exit Sub
-    End If
+    NGObject.Name = Name
+    NGObject.MyScene = TargetScene
     
-    Set newObject = thisScene.CreateNewObject(objectName, , , PresetNum)
-    Set newObject.MyScene = thisScene
-    RaiseEvent OnDataChanged
-End Sub
+    Set CreateGameObject = NGObject
+End Function
+
+Function CreateCustomGameObject(GObject As Variant, SceneID) As Object
+    Dim TargetScene As Scene_Class
+    Set TargetScene = Me.ScenesInactive.Item(SceneID)
+    
+    TargetScene.Objects.Add GObject, GObject.Name
+    
+    Set CreateCustomGameObject = GObject
+End Function
 
 Sub EditObjectCode(Edit As CodeEditorEnums, Object As GameObject_Class, Optional Scene As Scene_Class)
     
@@ -570,10 +568,18 @@ Private Function OnProjectLoad(Com As String)
     
     Commands = Split(Com, " ")
     
-    If Commands(0) = "/P" Then
-        
-    ElseIf Commands(0) = "/C" Then
-        LoadStartupCode Commands(1)
+    If UBound(Commands) > 0 Then
+        If Commands(0) = "-P" Then
+            If UBound(Commands) > 1 Then
+                OpenProject Commands(1), True
+            End If
+        ElseIf Commands(0) = "-C" Then
+            If UBound(Commands) > 1 Then
+                LoadStartupCode Commands(1)
+            End If
+        Else
+            OpenProject Commands(0), False
+        End If
     End If
 End Function
 Private Sub LoadStartupCode(FilePath As String)
@@ -837,22 +843,42 @@ Private Sub ReloadCodeEngine()
     Next
 End Sub
 
-Function OpenProject(FileName As String)
+Function OpenProject(FileName As String, localPath As Boolean)
     Dim FileSystem As New FileSystemObject
     Dim ScriptFile As file
+    Dim ScriptFileDataStream As TextStream
     Dim ProjectFile As file
-    Dim DataStream As TextStream
+    Dim ProjectFileDataStream As TextStream
     Dim Data As String
+    Dim SModule As Module
+    
     
     If FileSystem.FileExists(FileName) Then
         Set ProjectFile = FileSystem.GetFile(FileName)
-        Set DataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
-        Do Until DataStream.AtEndOfStream
-            Data = DataStream.ReadLine()
-            If FileSystem.FileExists(Data) Then
-                Set ScriptFile = FileSystem.GetFile(Data)
+        Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
+        Do Until ProjectFileDataStream.AtEndOfStream
+            Data = ProjectFileDataStream.ReadLine()
+            If localPath Then
+                If FileSystem.FileExists(Me.GetGamePath() & Data) Then
+                    Set ScriptFile = FileSystem.GetFile(Me.GetGamePath() & Data)
+                    Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
+                    Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_" & Me.CodeEngine.Modules.Count)
+                    SModule.AddCode ScriptFileDataStream.ReadAll()
+                    SModule.Run "Initialize"
+                    ScriptFileDataStream.Close
+                End If
+            Else
+                If FileSystem.FileExists(ProjectFile.ParentFolder.Path & Data) Then
+                    Set ScriptFile = FileSystem.GetFile(ProjectFile.ParentFolder.Path & Data)
+                    Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
+                    Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_" & Me.CodeEngine.Modules.Count)
+                    SModule.AddCode ScriptFileDataStream.ReadAll()
+                    SModule.Run "Initialize"
+                    ScriptFileDataStream.Close
+                End If
             End If
         Loop
+        ProjectFileDataStream.Close
     End If
     
 End Function
@@ -1038,8 +1064,8 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     Dim thisScript As Script_Class
     Dim thisModule As Module
     Dim curScene As Scene_Class
-    Dim baseObject As IObject_Class
-    Dim curGObject As GameObject_Class
+    'Dim baseObject As IObject_Class
+    Dim curGObject As Object
     
     If Me.IsInEditor Then
         Dim loadStatusDialog As StatusDialog
@@ -1057,9 +1083,9 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     For i = 1 To Me.Scripts.Count ' Käsittelee Kaikki Skriptit, Luo Koodinsuoritus Moottorille Moduulin Ja Tekee Skriptille Referensin Tähän Moduuliin Josta Sitä On Helppo Ohjata
         Set thisScript = Me.Scripts.Item(i)
         If thisScript.MyObject Is Nothing Then ' Tämä On Myös Hyvä Kun Tätä Operoidaan Windows 9x Käyttöjärjestelmissä
-            Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript)
+            Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & Me.CodeEngine.Modules.Count, thisScript)
         Else
-            Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript.MyObject)
+            Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & Me.CodeEngine.Modules.Count, thisScript.MyObject)
         End If
         Set thisScript.MyModule = thisModule
         If Me.IsInEditor Then
@@ -1072,9 +1098,9 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     For i = 1 To Me.Mesh_Scripts.Count
         Set thisScript = Me.Mesh_Scripts.Item(i)
         If thisScript.MyObject Is Nothing Then
-            Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript)
+            Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name & "_" & Me.CodeEngine.Modules.Count, thisScript)
         Else
-            Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name & "_" & CLng(Rnd(1) * 10000), thisScript.MyObject)
+            Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name & "_" & Me.CodeEngine.Modules.Count, thisScript.MyObject)
         End If
         Set thisScript.MyModule = thisModule
         If Me.IsInEditor Then
@@ -1088,9 +1114,7 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
         curScene.OnLoad Me.CodeEngine
         For o = i To curScene.Objects.Count
             Set curGObject = curScene.Objects(o)
-            
-            Set baseObject = curGObject
-            baseObject.Load Me.CodeEngine
+            curGObject.Load 'Me.CodeEngine
         Next
     Next
     'On Error GoTo SError
@@ -1138,7 +1162,7 @@ CodeLoadError:
 End Function
 
 Private Function EngineUpdate()
-    Dim baseObject As IObject_Class
+    Dim baseObject As Object
     'Dim thisScript As Script_Class
     'Dim curScene As Scene_Class
     'Dim curGObject As GameObject_Class
@@ -1159,7 +1183,7 @@ Private Function EngineUpdate()
         For Each curGObject In curScene.Objects
             Set baseObject = curGObject
             If baseObject.Active Then
-                baseObject.Update Me.CodeEngine
+                baseObject.Update
             End If
         Next
     Next

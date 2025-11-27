@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
-Implements IObject_Class
+'Implements IObject_Class
 
 Public Name As String 'Read Only
 Attribute Name.VB_VarUserMemId = 0
@@ -36,9 +36,8 @@ Public Velocity As New Vector_Class '
 Public MyComponents As New Collection ' Kaikki Komponentit Jotka Objekti luo
 Public Components As New Collection
 Public MyPropertites As New PropertyBag ' K‰ytet‰‰n kun objektista tehd‰‰n peliss‰ kopioita
-'Public MeshCode As Script_Class ' Referenssi Scriptiin
-Private IVisible As Boolean
-Private IActive As Boolean
+Public Visible As Boolean
+Public Active As Boolean
 Public text As Variant ' K‰ytet‰‰n Teksti Objekteissa
 
 Public Property Get Position() As Vector_Class
@@ -46,8 +45,8 @@ Public Property Get Position() As Vector_Class
 End Property
 
 Private Sub Initialize()
-    IVisible = True
-    IActive = True
+    Visible = True
+    Active = True
     Me.Mass = 1
     Me.Size = 1
     Me.SScale.SetVector 1, 1, 1
@@ -193,14 +192,14 @@ Public Sub AddComponent(NComponent As Script_Class)
     End If
 End Sub
 
-Private Sub Load(GameCodeEngine As ScriptControl)
+Private Sub Load()
     Me.EditorColliderSize.SetVector 500 * Size, 500 * Size, 500 * Size
     Me.ResetPhysics
     'LoadMeshCode GameCodeEngine
     'LoadCode GameCodeEngine
     'InitializeComponents
-    LoadComponents GameCodeEngine
-    Draw GameCodeEngine
+    LoadComponents 'GameCodeEngine
+    Draw 'GameCodeEngine
 End Sub
 
 Sub ResetPhysics()
@@ -213,21 +212,21 @@ Sub SetPosition(NewX As Double, Optional NewY As Double, Optional NewZ As Double
     Me.Position.Z = NewZ
 End Sub
 
-Private Sub LoadMeshCode(GameCodeEngine As ScriptControl)
+Private Sub LoadMeshCode()
     On Error Resume Next
     'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_MeshCode").AddCode MeshCode
 End Sub
 
-Private Sub LoadCode(GameCodeEngine As ScriptControl)
+Private Sub LoadCode()
     On Error Resume Next
     'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_Code").AddCode MyScript.Data
     'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_Code").Run "Load"
 End Sub
 
-Private Sub Update(GameCodeEngine As ScriptControl)
-    Draw GameCodeEngine
-    CallUpdate GameCodeEngine
-    UpdateComponents GameCodeEngine
+Private Sub Update()
+    Draw 'GameCodeEngine
+    CallUpdate 'GameCodeEngine
+    UpdateComponents 'GameCodeEngine
     UpdatePhysics
 End Sub
 
@@ -248,9 +247,9 @@ Function EditorCallDraw(GameCodeEngine As ScriptControl) ' K‰ytet‰‰n Kun Editori
     Next
 End Function
 
-Private Function Draw(GameCodeEngine As ScriptControl)
+Private Function Draw()
     On Error Resume Next
-    If IVisible Then
+    If Visible Then
         For Each Comp In Me.Components
             If Comp.Tag = "RendererScript" Then
                 Comp.MyModule.Run "Draw"
@@ -261,7 +260,7 @@ Private Function Draw(GameCodeEngine As ScriptControl)
     End If
 End Function
 
-Private Function CallUpdate(GameCodeEngine As ScriptControl)
+Private Function CallUpdate()
     'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_Code").Run "Update"
 End Function
 
@@ -275,14 +274,14 @@ Private Sub InitializeComponents()
     Next
 End Sub
 
-Private Function LoadComponents(CodeEngine As ScriptControl)
+Private Function LoadComponents()
     On Error Resume Next
     For Each Item In Me.Components
         Item.Load
     Next
 End Function
 
-Private Function UpdateComponents(CodeEngine As ScriptControl)
+Private Function UpdateComponents()
     On Error Resume Next
     For Each Item In Me.Components
         Item.Update
@@ -322,27 +321,3 @@ End Function
 Private Sub Class_Initialize()
     Initialize
 End Sub
-
-Private Property Let IObject_Class_Active(ByVal RHS As Boolean)
-    IActive = RHS
-End Property
-
-Private Property Get IObject_Class_Active() As Boolean
-    IObject_Class_Active = IActive
-End Property
-
-Private Sub IObject_Class_Load(CEngine As MSScriptControl.IScriptControl)
-    Load CEngine
-End Sub
-
-Private Sub IObject_Class_Update(CEngine As MSScriptControl.IScriptControl)
-    Update CEngine
-End Sub
-
-Private Property Let IObject_Class_Visible(ByVal RHS As Boolean)
-    IVisible = RHS
-End Property
-
-Private Property Get IObject_Class_Visible() As Boolean
-    IObject_Class_Visible = IVisible
-End Property
