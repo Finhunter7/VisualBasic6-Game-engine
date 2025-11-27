@@ -466,16 +466,16 @@ Function CreateGameObject(Name As String, SceneID) As GameObject_Class
     Set TargetScene = Me.ScenesInactive.Item(SceneID)
     
     NGObject.Name = Name
-    NGObject.MyScene = TargetScene
-    
+    Set NGObject.MyScene = TargetScene
+    TargetScene.Objects.Add NGObject, NGObject.Name
     Set CreateGameObject = NGObject
 End Function
 
-Function CreateCustomGameObject(GObject As Variant, SceneID) As Object
+Function CreateCustomGameObject(GObject As Variant, Name As String, SceneID) As Object
     Dim TargetScene As Scene_Class
     Set TargetScene = Me.ScenesInactive.Item(SceneID)
     
-    TargetScene.Objects.Add GObject, GObject.Name
+    TargetScene.Objects.Add GObject, Name
     
     Set CreateCustomGameObject = GObject
 End Function
@@ -852,7 +852,7 @@ Function OpenProject(FileName As String, localPath As Boolean)
     Dim Data As String
     Dim SModule As Module
     
-    
+    On Error Resume Next
     If FileSystem.FileExists(FileName) Then
         Set ProjectFile = FileSystem.GetFile(FileName)
         Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
@@ -1108,7 +1108,7 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
         End If
         thisModule.AddCode thisScript.Data
     Next
-    
+    On Error Resume Next
     For i = 1 To Me.Scenes.Count
         Set curScene = Me.Scenes.Item(i)
         curScene.OnLoad Me.CodeEngine
@@ -1118,7 +1118,6 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
         Next
     Next
     'On Error GoTo SError
-    On Error Resume Next
     For i = 1 To Me.Scripts.Count
         Set thisScript = Me.Scripts.Item(i)
         If thisScript.Active Then
