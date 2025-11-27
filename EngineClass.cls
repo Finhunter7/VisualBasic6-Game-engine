@@ -757,7 +757,7 @@ End Sub
 
 Function SaveProject()
     'Dim fileSystemHandler As New Scripting.FileSystemObject
-    Dim projectFile As TextStream
+    Dim ProjectFile As TextStream
     Dim dataFolder As Folder
     Dim setProjectPath As String
     
@@ -777,8 +777,8 @@ Function SaveProject()
         fileSystemHandler.CreateFolder Me.ProjectPath
     End If
     
-    Set projectFile = fileSystemHandler.CreateTextFile(Me.ProjectPath & "\" & Me.ProjectName & ".VBCEProject", True)
-    SaveProjectGeneralInfo projectFile
+    Set ProjectFile = fileSystemHandler.CreateTextFile(Me.ProjectPath & "\" & Me.ProjectName & ".VBCEProject", True)
+    SaveProjectGeneralInfo ProjectFile
     
     If fileSystemHandler.FolderExists(Me.ProjectPath & "\Scripts") Then
         fileSystemHandler.DeleteFolder Me.ProjectPath & "\Scripts", True
@@ -798,7 +798,7 @@ Function SaveProject()
         SaveProjectSceneData dataFolder
     End If
     
-    projectFile.Close
+    ProjectFile.Close
 End Function
 
 Function ClearGameEngineData()
@@ -838,74 +838,23 @@ Private Sub ReloadCodeEngine()
 End Sub
 
 Function OpenProject(FileName As String)
-    Const projectVarsCount = 2
-    Dim ProjectVars(projectVarsCount) As String
-    Dim projectFile As file
-    Dim projectFileTextStream As TextStream
-    Dim sceneFileTextStream As TextStream
-    Dim curLine As String
-    Dim curDataSelector As Integer
-    Dim curScene As Scene_Class
-    ProjectVars(1) = "Project_Name"
-    ProjectVars(2) = "Project_Path"
+    Dim FileSystem As New FileSystemObject
+    Dim ScriptFile As file
+    Dim ProjectFile As file
+    Dim DataStream As TextStream
+    Dim Data As String
     
-    If fileSystemHandler.FileExists(FileName) Then
-        Set projectFile = fileSystemHandler.GetFile(FileName)
-        Set projectFileTextStream = projectFile.OpenAsTextStream(ForReading, TristateUseDefault)
-        
-        curLine = projectFileTextStream.ReadLine()
-        
-        If curLine = "VBCE_ProjectFile                      " Then
-            ClearGameEngineData
-        Else
-            MsgBox "File Is Not VBCE ProjectFile. Open Canceled", vbExclamation
-            projectFileTextStream.Close
-            Exit Function
-        End If
-        
-        Do Until projectFileTextStream.AtEndOfStream
-            curLine = projectFileTextStream.ReadLine()
-            If RTrim(curLine) = "[Project]" Then
-                curDataSelector = 1
-                curLine = projectFileTextStream.ReadLine()
+    If FileSystem.FileExists(FileName) Then
+        Set ProjectFile = FileSystem.GetFile(FileName)
+        Set DataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
+        Do Until DataStream.AtEndOfStream
+            Data = DataStream.ReadLine()
+            If FileSystem.FileExists(Data) Then
+                Set ScriptFile = FileSystem.GetFile(Data)
             End If
-            If RTrim(curLine) = "[InactiveScenes]" Then
-                curDataSelector = 3
-                curLine = projectFileTextStream.ReadLine()
-            End If
-            If RTrim(curLine) = "[ActiveScenes]" Then
-                curDataSelector = 2
-                curLine = projectFileTextStream.ReadLine()
-            End If
-            If RTrim(curLine) = "}" Or RTrim(curLine) = "[Objects]" Then
-                curDataSelector = 0
-                curLine = projectFileTextStream.ReadLine()
-            End If
-            
-            If curDataSelector = 1 Then
-                For i = 1 To projectVarsCount
-                    Select Case Left(curLine, Len(ProjectVars(i)))
-                    
-                        Case "Project_Name"
-                            Me.ProjectName = RTrim(Replace(curLine, "Project_Name", ""))
-                        Case "Project_Path"
-                            Me.ProjectPath = RTrim(Replace(curLine, "Project_Path", ""))
-                        Case ""
-                            
-                    End Select
-                Next
-            ElseIf curDataSelector = 3 Then
-                Set curScene = Me.CreateNewScene(curLine)
-            ElseIf curDataSelector = 2 Then
-                Me.AddScene curLine
-            End If
-            
         Loop
-        projectFileTextStream.Close
-    Else
-        MsgBox "Projectfile Is Invalid", vbExclamation
-        Exit Function
     End If
+    
 End Function
 
 Private Function SaveProjectGeneralInfo(TStream As TextStream)
