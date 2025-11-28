@@ -191,8 +191,8 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single)
                     Me.EditorRefreshScenes
                     Me.EditorWindow.FontSize = 8
                     Me.EditorWindow.ForeColor = &HFFFFFF
-                    'Me.GameWindow.CurrentX = 0
-                    'Me.GameWindow.CurrentY = 0
+                    Me.GameWindow.CurrentX = 0
+                    Me.GameWindow.CurrentY = 0
                     Me.EditorWindow.Print "Object Name: " & SceneObject.Name
                     'Me.EditorWindow.Print "Object Scene: " & SceneObject.MyScene.Name
                     'Me.EditorWindow.Print "Object Tag: " & SceneObject.Tag
@@ -727,8 +727,12 @@ Function GetRealTime() As Double
     GetRealTime = Timer - RenderStart
 End Function
 
+Function GetAppPath() As String
+    GetAppPath = App.Path
+End Function
+
 Function GetGamePath() As String
-    GetGamePath = App.Path
+    GetGamePath = Me.ProjectPath
 End Function
 
 Function GetWindowCenter() As Vector_Class
@@ -833,6 +837,7 @@ Function OpenProject(FileName As String, localPath As Boolean)
     On Error Resume Next
     If FileSystem.FileExists(FileName) Then
         Set ProjectFile = FileSystem.GetFile(FileName)
+        Me.ProjectPath = ProjectFile.ParentFolder.Path
         Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
         Do Until ProjectFileDataStream.AtEndOfStream
             Data = ProjectFileDataStream.ReadLine()
@@ -856,7 +861,6 @@ Function OpenProject(FileName As String, localPath As Boolean)
                 End If
             End If
         Loop
-        Me.ProjectPath = ProjectFile.ParentFolder.Path
         ProjectFileDataStream.Close
     End If
     
@@ -885,7 +889,7 @@ Private Function SaveProjectGeneralInfo(TStream As TextStream)
     
 End Function
 
-Private Function GetTextFromFile(FileName As String) As String
+Function GetTextFromFile(FileName As String) As String
     Dim FileObj As New FileSystemObject
     Dim Data As TextStream
     Set Data = FileObj.OpenTextFile(FileName, ForReading, False)
