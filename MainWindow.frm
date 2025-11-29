@@ -65,6 +65,7 @@ Begin VB.MDIForm MainWindow
             AutoSize        =   2
             Bevel           =   0
             TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -115,6 +116,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -125,6 +127,7 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -854,11 +857,11 @@ Private Sub mnuAddFile1_Click()
     Dim curObject As GameObject_Class
     curFile = FileBrowser1.OpenFile(Me, "Open", "*.*|*.VBGObject|*.VBScene|*.VBCEProject")
     If FileBrowser1.GetFormat() = "VBScene" Then
-        Set TScene = Me.Engine.SaveLoadGameClass.LoadObjectFromDiskVBCFormat(Scene, curFile)
-        Me.Engine.ScenesInactive.Add TScene, TScene.Name
+        'Set TScene = Me.Engine.SaveLoadGameClass.LoadObjectFromDiskVBCFormat(Scene, curFile)
+        'Me.Engine.ScenesInactive.Add TScene, TScene.Name
     ElseIf FileBrowser1.GetFormat() = "VBGObject" Then
-        Set TScene = Me.Engine.GetCurrentScene()
-        Set curObject = Me.Engine.SaveLoadGameClass.LoadObjectFromDiskVBCFormat(GameObject, curFile)
+        'Set TScene = Me.Engine.GetCurrentScene()
+        'Set curObject = Me.Engine.SaveLoadGameClass.LoadObjectFromDiskVBCFormat(GameObject, curFile)
         'TScene.AddObject Me.Engine, curObject, curObject.Name
     End If
 End Sub
@@ -878,9 +881,9 @@ End Sub
 Private Sub mnuBox1_Click()
     On Error Resume Next
     If Me.ActiveForm.Tag = "SceneBrowser" Then
-        Me.ActiveForm.AddObject 2
+        'Me.ActiveForm.AddObject 2
     Else
-        Me.Engine.SceneAddObject 2
+        'Me.Engine.SceneAddObject 2
     End If
 End Sub
 
@@ -895,9 +898,9 @@ End Sub
 Private Sub mnuCircle1_Click()
     On Error Resume Next
     If Me.ActiveForm.Tag = "SceneBrowser" Then
-        Me.ActiveForm.AddObject SCircle
+        'Me.ActiveForm.AddObject SCircle
     Else
-        Me.Engine.SceneAddObject SCircle
+        'Me.Engine.SceneAddObject SCircle
     End If
 End Sub
 
@@ -926,18 +929,18 @@ End Sub
 Private Sub mnuCube1_Click()
     On Error Resume Next
     If Me.ActiveForm.Tag = "SceneBrowser" Then
-        Me.ActiveForm.AddObject Cube
+        'Me.ActiveForm.AddObject Cube
     Else
-        Me.Engine.SceneAddObject Cube
+        'Me.Engine.SceneAddObject Cube
     End If
 End Sub
 
 Private Sub mnuEmpty1_Click()
     On Error Resume Next
     If Me.ActiveForm.Tag = "SceneBrowser" Then
-        Me.ActiveForm.AddObject SEmpty
+        'Me.ActiveForm.AddObject SEmpty
     Else
-        Me.Engine.SceneAddObject SEmpty
+        Me.Engine.CreateGameObject InputBox("Object Name"), Me.Engine.GetCurrentScene().Name
     End If
 End Sub
 
@@ -1042,9 +1045,9 @@ End Sub
 Private Sub mnuPlane1_Click()
     On Error Resume Next
     If Me.ActiveForm.Tag = "SceneBrowser" Then
-        Me.ActiveForm.AddObject SPlane
+        'Me.ActiveForm.AddObject SPlane
     Else
-        Me.Engine.SceneAddObject SPlane
+        'Me.Engine.SceneAddObject SPlane
     End If
 End Sub
 
@@ -1130,7 +1133,7 @@ End Sub
 
 Private Sub mnuScene1_Click()
     Engine.CreateNewScene InputBox("Scene Name")
-    Engine.ProjectBrowser.Update
+    'Engine.ProjectBrowser.Update
 End Sub
 
 Private Sub mnuSceneBrowser1_Click()

@@ -225,7 +225,7 @@ End Sub
 
 Private Sub Update()
     Draw 'GameCodeEngine
-    CallUpdate 'GameCodeEngine
+    'CallUpdate 'GameCodeEngine
     UpdateComponents 'GameCodeEngine
     UpdatePhysics
 End Sub

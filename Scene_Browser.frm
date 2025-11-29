@@ -357,7 +357,7 @@ Sub EditObjectCode(EditData As CodeEditorEnums)
         If selObject.Tag = "Object" Then
             Set thisScene = GameEngine.Scenes(selObject.Parent)
             Set thisGameObject = thisScene.Objects(selObject.text)
-            Me.GameEngine.EditObjectCode EditData, thisGameObject, thisScene
+            GameEngine.EditObjectCode EditData, thisGameObject, thisScene
             'CodeEditorInstance.EditData ThisGameObject.MyScript.Data, ThisGameObject.Name, "GameObjectCode", Me.GameEngine, ThisGameObject
         End If
     Else
@@ -413,10 +413,10 @@ Sub SaveAs()
     If selObject.Tag = "Object" Then
         Set thisScene = GameEngine.Scenes(selObject.Parent)
         Set thisGameObject = thisScene.Objects(selObject.text)
-        Me.GameEngine.SaveObjectToDisk GameObject, FileName, thisGameObject
+        'GameEngine.SaveObjectToDisk GameObject, FileName, thisGameObject
     ElseIf selObject.Tag = "Scene" Then
         Set thisScene = GameEngine.Scenes(selObject.text)
-        Me.GameEngine.SaveObjectToDisk Scene, FileName, thisScene
+        'GameEngine.SaveObjectToDisk Scene, FileName, thisScene
     Else
     
     End If

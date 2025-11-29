@@ -303,10 +303,10 @@ Private Sub mnuInfo1_Click()
     With TreeView1.selectedItem
         Select Case .Tag
             Case "Script"
-               Set This_Object = Me.GameEngine.Scripts.Item(.text)
+               Set This_Object = GameEngine.Scripts.Item(.text)
                
             Case "Scene"
-                Set This_Object = Me.GameEngine.ScenesInactive.Item(.text)
+                Set This_Object = GameEngine.ScenesInactive.Item(.text)
                 MsgBox This_Object.Name
             Case "CodeEngine"
                 
@@ -340,13 +340,13 @@ Sub RemoveItem()
     With TreeView1.selectedItem
         Select Case .Tag
             Case "Script"
-                Me.GameEngine.RemoveScript .text
+                GameEngine.RemoveScript .text
             Case "Scene"
-                Me.GameEngine.UnloadScene .text
+                GameEngine.UnloadScene .text
             Case "CodeEngine"
                 MsgBox "CodeEngine Cannot Be Removed", vbExclamation
             Case "GameObject"
-                Me.GameEngine.UnloadGameObject .text
+                GameEngine.UnloadGameObject .text
         End Select
     End With
     Me.Update
@@ -371,21 +371,21 @@ Sub SaveAs()
             Exit Sub
         End If
         Set thisScene = GameEngine.ScenesInactive(selObject.text)
-        Me.GameEngine.SaveObjectToDisk Scene, FileName, thisScene
+        'GameEngine.SaveObjectToDisk Scene, FileName, thisScene
     ElseIf selObject.Tag = "Script" Then
         FileName = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBCEScript")
         If Len(FileName) = 0 Then
             Exit Sub
         End If
         Set thisScript = GameEngine.Scripts(selObject.text)
-        Me.GameEngine.SaveObjectToDisk Script, FileName, thisScript
+        'Me.GameEngine.SaveObjectToDisk Script, FileName, thisScript
     ElseIf selObject.Tag = "GameObject" Then
         FileName = FileBrowser1.SaveFile(MainWindow, selObject.text, "*.VBGObject")
         If Len(FileName) = 0 Then
             Exit Sub
         End If
         Set thisGameObject = GameEngine.GameObjects(selObject.text)
-        Me.GameEngine.SaveObjectToDisk GameObject, FileName, thisGameObject
+        'Me.GameEngine.SaveObjectToDisk GameObject, FileName, thisGameObject
     Else
         MsgBox selObject.text & " Item Cannot Be Save On Disk", vbExclamation
     End If
@@ -421,9 +421,9 @@ Private Sub TreeView1_AfterLabelEdit(Cancel As Integer, NewString As String)
                 If .Tag = "Script" Then
                     
                 ElseIf .Tag = "Scene" Then
-                    Me.GameEngine.RenameScene .text, NewString
+                    GameEngine.RenameScene .text, NewString
                 ElseIf .Tag = "Project" Then
-                    Me.GameEngine.ProjectName = NewString
+                    GameEngine.ProjectName = NewString
                 End If
             End If
         
