@@ -179,7 +179,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Public GameEngine As EngineClass
+Private GameEngine As EngineClass
+Private EditorClass As VBCEWorkspace_Class
+
+Sub InitializeThis(GEngine As Object, WorkSpaceClass As Object)
+    Set GameEngine = GEngine
+    Set EditorClass = WorkSpaceClass
+End Sub
 
 Private Sub Form_Load()
     'Set GameEngine = Form1.engClass
@@ -554,7 +560,7 @@ Function Update()
 End Function
 
 Function UpdateSceneBrowser()
-    'Me.GameEngine.WorkspaceUtilClass.UpdateSceneBrowser Me.TreeView1
+    EditorClass.UpdateSceneBrowser Me.TreeView1
 End Function
 
 Private Sub TreeView1_DblClick()
@@ -563,8 +569,8 @@ Private Sub TreeView1_DblClick()
     On Error Resume Next
     If TreeView1.selectedItem.Tag = "Scene" Then
     ElseIf TreeView1.selectedItem.Tag = "Object" Then
-        Set thisScene = Me.GameEngine.Scenes.Item(TreeView1.selectedItem.Parent)
+        Set thisScene = GameEngine.Scenes.Item(TreeView1.selectedItem.Parent)
         Set selObject = thisScene.Objects.Item(TreeView1.selectedItem.text)
-        Me.GameEngine.SelectObject selObject
+        GameEngine.SelectObject selObject
     End If
 End Sub

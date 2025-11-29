@@ -34,6 +34,7 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Item: None"
             TextSave        =   "Item: None"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -41,6 +42,7 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "Type: Test_Class "
             TextSave        =   "Type: Test_Class "
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
@@ -48,6 +50,7 @@ Begin VB.Form Form2
             Bevel           =   0
             Text            =   "In Scene:"
             TextSave        =   "In Scene:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -256,7 +259,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Public GameEngine As EngineClass
+Private GameEngine As EngineClass
+Private EditorClass As VBCEWorkspace_Class
+
+Sub InitializeThis(GEngine As Object, WorkSpaceClass As Object)
+    Set GameEngine = GEngine
+    Set EditorClass = WorkSpaceClass
+End Sub
 
 Private Sub Form_Load()
     'Me.CreateProjectTree
@@ -451,7 +460,7 @@ Private Sub TreeView1_Click()
             Me.StatusBar1.Panels(2).text = "Class: MSScriptControl"
         ElseIf .Tag = "GameObject" Then
             Me.StatusBar1.Panels(2).text = "Class: GameObject_Class"
-            Set SelGObject = Me.GameEngine.GameObjects.Item(.text)
+            Set SelGObject = GameEngine.GameObjects.Item(.text)
             If Not SelGObject.MyScene Is Nothing Then
                 Me.StatusBar1.Panels(3).text = "In Scene: " & SelGObject.MyScene.Name
             End If
@@ -462,7 +471,7 @@ Private Sub TreeView1_Click()
 End Sub
 
 Private Sub TreeView1_DblClick()
-    'Me.GameEngine.WorkspaceUtilClass.TreeViewBrowsersOnItemClick Me.TreeView1, ProjectBrowser
+    EditorClass.TreeViewBrowsersOnItemClick Me.TreeView1, ProjectBrowser
 End Sub
 
 Function Update()
@@ -470,7 +479,7 @@ Function Update()
 End Function
 
 Function UpdateProjectBrowser()
-    'Me.GameEngine.WorkspaceUtilClass.BrowseEngineData Me.TreeView1
+    EditorClass.BrowseEngineData Me.TreeView1
 End Function
 
 Private Sub TreeView1_OLEStartDrag(Data As ComctlLib.DataObject, AllowedEffects As Long)

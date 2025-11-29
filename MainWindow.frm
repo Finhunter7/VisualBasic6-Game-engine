@@ -64,7 +64,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            Key             =   ""
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -115,7 +115,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -126,7 +125,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -478,6 +476,9 @@ Begin VB.MDIForm MainWindow
          Caption         =   "Add Project..."
          Enabled         =   0   'False
       End
+      Begin VB.Menu mnuCloseProject1 
+         Caption         =   "Close Project"
+      End
       Begin VB.Menu mnuSpace11 
          Caption         =   "-"
       End
@@ -814,10 +815,17 @@ End Sub
 
 Private Sub MDIForm_Load()
     Set Engine = New EngineClass
+    OnLoad
+End Sub
+
+Private Sub OnLoad()
     EditorClass.LoadDeveloperTools Engine
+    Form2.InitializeThis Engine, EditorClass
+    Scene_Browser.InitializeThis Engine, EditorClass
+    
     Form1.Show
     ProjectTypeSelectorDialog.Show vbModal, Me
-    Engine.LoadEngine True, Form1, Console, VBCEGameProject, Form1, Form2, Scene_Browser, Nothing
+    Engine.LoadEngine True, Form1, Console, VBCEGameProject, Form1, Nothing
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
 End Sub
@@ -884,6 +892,14 @@ Private Sub mnuCircle1_Click()
         Me.ActiveForm.AddObject SCircle
     Else
         Me.Engine.SceneAddObject SCircle
+    End If
+End Sub
+
+Private Sub mnuCloseProject1_Click()
+    If Not Me.Engine Is Nothing Then
+        If MsgBox("Are you sure", vbYesNo, "Close Project") = vbYes Then
+            Set Engine = Nothing
+        End If
     End If
 End Sub
 
@@ -954,11 +970,18 @@ Private Sub SetAcForm()
 End Sub
 
 Private Sub mnuNewProject1_Click()
-    Engine.ClearGameEngineData
+    If MsgBox("Make new project", vbYesNo) = vbYes Then
+        Set Engine = Nothing
+        Set Engine = New EngineClass
+        OnLoad
+    Else
     
-    Do Until Me.ActiveForm Is Nothing
-    Unload Me.ActiveForm
-    Loop
+    End If
+    'Engine.ClearGameEngineData
+    
+    'Do Until Me.ActiveForm Is Nothing
+    'Unload Me.ActiveForm
+    'Loop
 End Sub
 
 Private Sub mnuObjectCode1_Click()
@@ -1019,10 +1042,10 @@ Private Sub mnuPlane1_Click()
 End Sub
 
 Private Sub mnuProjectBrowser1_Click()
-    Engine.ProjectBrowser.Show
-    Engine.ProjectBrowser.Update
-    If Engine.ProjectBrowser.WindowState = 1 Then
-        Engine.ProjectBrowser.WindowState = 0
+    Form2.Show
+    Form2.Update
+    If Form2.WindowState = 1 Then
+        Form2.WindowState = 0
     End If
     SetAcForm
 End Sub
@@ -1089,10 +1112,10 @@ Private Sub mnuScene1_Click()
 End Sub
 
 Private Sub mnuSceneBrowser1_Click()
-    Engine.SceneBrowser.Show
-    Engine.SceneBrowser.Update
-    If Engine.SceneBrowser.WindowState = 1 Then
-        Engine.SceneBrowser.WindowState = 0
+    Scene_Browser.Show
+    Scene_Browser.Update
+    If Scene_Browser.WindowState = 1 Then
+        Scene_Browser.WindowState = 0
     End If
     SetAcForm
 End Sub

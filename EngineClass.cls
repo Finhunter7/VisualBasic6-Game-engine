@@ -35,8 +35,10 @@ Public Event KeyDown(KeyCode As Integer)
 Public Event KeyUp(KeyCode As Integer)
 
 ' Project
+Private m_ProjectFile As String
 Public ProjectName As String
 Public ProjectPath As String
+Private IsProjectOpened As Boolean
 Public ProjectCodeLanguage As String
 Public ProjectType As ProjectTypes
 Public GameWindowSizeX As Long
@@ -67,8 +69,8 @@ Attribute EditorWindow.VB_VarHelpID = -1
 Private EditorSelectedObject As Object
 'Public EngineTimer As Timer
 
-Public ProjectBrowser As Form
-Public SceneBrowser As Form
+'Public ProjectBrowser As Form
+'Public SceneBrowser As Form
 Public SettingsWindow As Form
 Public EConsole As Form
 
@@ -89,7 +91,7 @@ Public SaveLoadGameClass As New GameLoader_Class
 
 Public Scenes As New Collection ' Aktiiviset Scenet
 Public ScenesInactive As New Collection
-Private SceneRestorePoint As New Collection
+'Private SceneRestorePoint As New Collection
 
 Public Forms As New Collection
 Public GameObjects As New Collection
@@ -259,8 +261,8 @@ Function EditorRefreshScenes()
     Next
 End Function
 Function RefreshChanges()
-    Me.ProjectBrowser.Update
-    Me.SceneBrowser.Update
+    'Me.ProjectBrowser.Update
+    'Me.SceneBrowser.Update
     Me.EditorRefreshScenes
     RaiseEvent OnDataChanged
 End Function
@@ -293,10 +295,11 @@ Function CreateNewScene(thisName As String) As Scene_Class ' Luo uuden Scenen Sc
     RaiseEvent OnSceneCreated
 End Function
 
-Sub AddGlobalObject(Name As String, TObject As Object)
+Sub AddGlobalObject(Name As String, TObject As Object, Optional AddMembers As Boolean = False)
     Dim newObject As New CodeEngineObject_Class
     newObject.Build Name, TObject
     Me.GlobalObjects.Add newObject, Name
+    'Me.CodeEngine.AddObject Name, TObject, AddMembers
 End Sub
 
 Function RenameScene(SceneName As String, NewName As String)
@@ -498,6 +501,12 @@ Function CreateCustomGameObject(GObject As Variant, Name As String, SceneID) As 
     Set CreateCustomGameObject = GObject
 End Function
 
+Sub SetGlobalScriptData(Data As String)
+    On Error Resume Next
+    Me.GlobalScript.Data = Data
+    Me.CodeEngine.AddCode Data
+End Sub
+
 Sub EditObjectCode(Edit As CodeEditorEnums, Object As GameObject_Class, Optional Scene As Scene_Class)
     
 End Sub
@@ -627,7 +636,7 @@ Private Sub LoadStartupCode(FilePath As String)
     End If
 End Sub
 
-Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As Form, Optional TProjectType As ProjectTypes = 0, Optional TEditorWindow As Form, Optional TProjectBrowser As Form, Optional TSceneBrowser As Form, Optional TSettingsWindow As Form)
+Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As Form, Optional TProjectType As ProjectTypes = 0, Optional TEditorWindow As Form, Optional TSettingsWindow As Form)
     Me.IsInEditor = TIsInEditor
     Set Me.GameWindow = TGameWindow
     If Me.IsInEditor Then
@@ -638,10 +647,6 @@ Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As For
         'Set Me.EngineTimer = New EngineTimer_Class
         Set newGameWindow = New GameWindow
         Set Me.SettingsWindow = TSettingsWindow
-        Set Me.ProjectBrowser = TProjectBrowser
-        Set Me.SceneBrowser = TSceneBrowser
-        Set Me.ProjectBrowser.GameEngine = Me
-        Set Me.SceneBrowser.GameEngine = Me
     End If
     
     Set Me.InputSystem.GameEngine = Me
@@ -773,7 +778,12 @@ Private Function OnGameStop()
     'For Each Item In Me.Scenes
         'Item.OnGameStop
     'Next
-    ReloadCodeEngine
+    If IsProjectOpened Then
+        ClearGameEngineData
+    Else
+        ReloadCodeEngine
+    End If
+    
     RaiseEvent OnGameStop
 End Function
 
@@ -790,6 +800,7 @@ Function BuildProject(Path As String)
 End Function
 
 Function ClearGameEngineData()
+    Me.ProjectName = "Untiled"
     For i = 1 To Me.Scenes.Count
         Me.Scenes.Remove i
     Next
@@ -823,6 +834,9 @@ Private Sub ReloadCodeEngine()
             Set Ref.Refrence = CreateObject(Ref.RefrenceClass, Ref.Server)
         End If
     Next
+    If IsProjectOpened Then
+        Me.OpenProject m_ProjectFile, False
+    End If
 End Sub
 
 Function OpenProject(FileName As String, localPath As Boolean)
@@ -838,6 +852,8 @@ Function OpenProject(FileName As String, localPath As Boolean)
     If FileSystem.FileExists(FileName) Then
         Set ProjectFile = FileSystem.GetFile(FileName)
         Me.ProjectPath = ProjectFile.ParentFolder.Path
+        m_ProjectFile = FileName
+        IsProjectOpened = True
         Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
         Do Until ProjectFileDataStream.AtEndOfStream
             Data = ProjectFileDataStream.ReadLine()
@@ -1061,7 +1077,9 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     'CreateModules
     
     On Error GoTo GlobalError
-    Me.CodeEngine.AddCode Me.GlobalScript.Data
+    If IsProjectOpened = False Then
+        Me.CodeEngine.AddCode Me.GlobalScript.Data
+    End If
     On Error GoTo CodeLoadError
     For i = 1 To Me.Scripts.Count ' Käsittelee Kaikki Skriptit, Luo Koodinsuoritus Moottorille Moduulin Ja Tekee Skriptille Referensin Tähän Moduuliin Josta Sitä On Helppo Ohjata
         Set thisScript = Me.Scripts.Item(i)
