@@ -30,10 +30,13 @@ Enum SBTActions
     SBTBringBack = 5
 End Enum
 
-
 Public Sub LoadDeveloperTools(TargetGameEngine As EngineClass)
     Set GameEngine = TargetGameEngine
     Set FileSystem = New FileSystemObject
+End Sub
+
+Public Sub SaveProject(TargetPath As String)
+
 End Sub
 
 Private Sub CreateProjectTree(TreeViewTarget As Object)

@@ -117,34 +117,7 @@ Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, FileName As String, EObje
     textFile.Close
 End Sub
 Sub SaveObjectToDiskXML(SaveData As SavingEnums, FileName As String)
-    Dim XMLO As New DOMDocument30
-    Dim XMLElement As IXMLDOMElement
-    Dim XMLNode As IXMLDOMNode
-    Dim XMLTextNode As IXMLDOMText
-    Dim curGObject As GameObject_Class
-    Dim curScript As Script_Class
-    Dim curScene As Scene_Class
-    'Set XMLElement = XMLO
     
-    If SaveData = Scene Then
-        Set curScene = EObject
-        If Not curScene Is Nothing Then
-            With curScene
-                
-            End With
-        Else
-            XMLO.abort
-            Exit Sub
-        End If
-    ElseIf SaveData = Script Then
-        Set curScript = EObject
-        
-    ElseIf SaveData = GameObject Then
-    
-    Else
-    
-    End If
-    XMLO.Save FileName
 End Sub
 
 Function LoadObjectFromDiskVBCFormat(ByRef LoadData As SavingEnums, FileName As String) As Object

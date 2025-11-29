@@ -87,7 +87,7 @@ Private Direct1LIB As Object
 
 Private EngineUtil_Class As New EngineUtils_Class
 
-Public SaveLoadGameClass As New GameLoader_Class
+'Public SaveLoadGameClass As New GameLoader_Class
 
 Public Scenes As New Collection ' Aktiiviset Scenet
 Public ScenesInactive As New Collection
@@ -785,18 +785,6 @@ Private Function OnGameStop()
     End If
     
     RaiseEvent OnGameStop
-End Function
-
-Sub SaveObjectToDisk(SaveData As SavingEnums, FileName As String, EObject As Object)
-    SaveLoadGameClass.SaveObjectToDiskVBCFormat SaveData, FileName, EObject
-End Sub
-
-Function SaveProject(Path As String)
-    
-End Function
-
-Function BuildProject(Path As String)
-
 End Function
 
 Function ClearGameEngineData()
