@@ -65,7 +65,6 @@ Begin VB.MDIForm MainWindow
             AutoSize        =   2
             Bevel           =   0
             TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -116,7 +115,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -127,7 +125,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -482,6 +479,9 @@ Begin VB.MDIForm MainWindow
       Begin VB.Menu mnuCloseProject1 
          Caption         =   "Close Project"
       End
+      Begin VB.Menu mnuReloadProject1 
+         Caption         =   "Reload Project"
+      End
       Begin VB.Menu mnuSpace11 
          Caption         =   "-"
       End
@@ -822,6 +822,8 @@ End Sub
 Private Sub MDIForm_Load()
     Set Engine = New EngineClass
     OnLoad
+    Form1.Show
+    ProjectTypeSelectorDialog.Show vbModal, Me
 End Sub
 
 Private Sub OnLoad()
@@ -829,8 +831,6 @@ Private Sub OnLoad()
     Form2.InitializeThis Engine, EditorClass
     Scene_Browser.InitializeThis Engine, EditorClass
     
-    Form1.Show
-    ProjectTypeSelectorDialog.Show vbModal, Me
     Engine.LoadEngine True, Form1, Console, VBCEGameProject, Form1, Nothing
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
@@ -980,6 +980,7 @@ Private Sub mnuNewProject1_Click()
         Set Engine = Nothing
         Set Engine = New EngineClass
         OnLoad
+        ProjectTypeSelectorDialog.Show vbModal, Me
     Else
     
     End If
@@ -1029,7 +1030,7 @@ Private Sub mnuObjectMesh1_Click()
 End Sub
 
 Private Sub mnuOpenProject1_Click()
-    Engine.OpenProject FileBrowser1.OpenFile(Me), False
+    Engine.OpenProject FileBrowser1.OpenFile(Me, "Open Project", "*.VBCEProject|*.*"), False
 End Sub
 
 Private Sub mnuPause1_Click()
@@ -1067,6 +1068,21 @@ End Sub
 Private Sub mnuRefresh1_Click()
     On Error Resume Next
     Me.ActiveForm.Update
+End Sub
+
+Private Sub mnuReloadProject1_Click()
+    Dim ProjectPath As String
+    If Engine.IsProjectOnDisk Then
+        If MsgBox("Are you sure", vbYesNo + vbQuestion, "Reload Project") = vbYes Then
+            ProjectPath = Me.Engine.ProjectFilePath
+            Set Engine = Nothing
+            Set Engine = New EngineClass
+            OnLoad
+            Engine.OpenProject ProjectPath, False
+        End If
+    Else
+        MsgBox "Reload is not avaible in editor projects", vbInformation
+    End If
 End Sub
 
 Private Sub mnuRemove1_Click()

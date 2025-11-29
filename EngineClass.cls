@@ -680,6 +680,14 @@ Function PauseGame()
     RaiseEvent OnGamePause
 End Function
 
+Public Property Get IsProjectOnDisk() As Boolean
+    IsProjectOnDisk = IsProjectOpened
+End Property
+
+Public Property Get ProjectFilePath() As String
+    ProjectFilePath = m_ProjectFile
+End Property
+
 Function ResumeGame()
     RaiseEvent OnGameResume
     RenderStart = Timer
@@ -827,7 +835,7 @@ Private Sub ReloadCodeEngine()
     End If
 End Sub
 
-Function OpenProject(FileName As String, localPath As Boolean)
+Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Dim FileSystem As New FileSystemObject
     Dim ScriptFile As file
     Dim ScriptFileDataStream As TextStream
@@ -866,6 +874,9 @@ Function OpenProject(FileName As String, localPath As Boolean)
             End If
         Loop
         ProjectFileDataStream.Close
+        OpenProject = True
+    Else
+        OpenProject = False
     End If
     
 End Function
