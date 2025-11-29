@@ -277,6 +277,7 @@ Function EditorMoveCamera(DirX As Double, DirY As Double)
 End Function
 
 Function CreateNewScene(thisName As String) As Scene_Class ' Luo uuden Scenen ScenesInactive kokoelmaan Scene luokan pohjalta
+Attribute CreateNewScene.VB_Description = "Creates New Inactive Scene"
     Dim newScene As New Scene_Class
     
     If thisName = "" Then
@@ -322,6 +323,7 @@ Function RenameScene(SceneName As String, NewName As String)
 End Function
 
 Function AddScene(Name, Optional OverOrUnder As SceneConstants) As Scene_Class ' Lis‰‰ uuden Scenen ScenesInactive kokoelmasta Scenes kokoelmaan
+Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
     On Error Resume Next
     Dim newScene As Scene_Class
     If Me.ScenesInactive.Count < 1 Then
@@ -835,23 +837,25 @@ Private Sub ReloadCodeEngine()
     End If
 End Sub
 
-Function CreateModuleFromFile(Filename As String, Optional ExposedObject As Object = Nothing) As Module
-    Dim FileSystem As New FileSystemObject
-    Dim ScriptFile As file
-    Dim ScriptFileDataStream As TextStream
-    Dim SModule As Module
+Function CreateModuleFromFile(FileName As String, Optional ExposedObject As Object = Nothing) As Module
+Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module From File"
+    Dim FSystem As New FileSystemObject
+    Dim SFile As file
+    Dim dataStream As TextStream
+    Dim CModule As Module
+    
     On Error Resume Next
-    If FileSystem.FileExists(Filename) Then
-        Set ScriptFile = FileSystem.GetFile(Filename)
-        Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
-        Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_FileResource_" & Me.CodeEngine.Modules.Count, ExposedObject)
-        SModule.AddCode ScriptFileDataStream.ReadAll()
-        ScriptFileDataStream.Close
-        Set CreateModuleFromFile = SModule
+    If FSystem.FileExists(FileName) Then
+        Set SFile = FSystem.GetFile(FileName)
+        Set dataStream = SFile.OpenAsTextStream(ForReading, TristateUseDefault)
+        Set CModule = Me.CodeEngine.Modules.Add(SFile.Name & "_FileResource_" & Me.CodeEngine.Modules.Count, ExposedObject)
+        CModule.AddCode dataStream.ReadAll()
+        Set CreateModuleFromFile = CModule
+        dataStream.Close
     End If
 End Function
 
-Function OpenProject(Filename As String, localPath As Boolean) As Boolean
+Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Dim FileSystem As New FileSystemObject
     Dim ScriptFile As file
     Dim ScriptFileDataStream As TextStream
@@ -861,10 +865,10 @@ Function OpenProject(Filename As String, localPath As Boolean) As Boolean
     Dim SModule As Module
     
     On Error Resume Next
-    If FileSystem.FileExists(Filename) Then
-        Set ProjectFile = FileSystem.GetFile(Filename)
+    If FileSystem.FileExists(FileName) Then
+        Set ProjectFile = FileSystem.GetFile(FileName)
         Me.ProjectPath = ProjectFile.ParentFolder.Path
-        m_ProjectFile = Filename
+        m_ProjectFile = FileName
         IsProjectOpened = True
         Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
         Do Until ProjectFileDataStream.AtEndOfStream
@@ -897,10 +901,10 @@ Function OpenProject(Filename As String, localPath As Boolean) As Boolean
     
 End Function
 
-Function GetTextFromFile(Filename As String) As String
+Function GetTextFromFile(FileName As String) As String
     Dim FileObj As New FileSystemObject
     Dim Data As TextStream
-    Set Data = FileObj.OpenTextFile(Filename, ForReading, False)
+    Set Data = FileObj.OpenTextFile(FileName, ForReading, False)
     GetTextFromFile = Data.ReadAll()
     Data.Close
 End Function

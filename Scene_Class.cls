@@ -104,7 +104,7 @@ Sub ReDrawObjects(BEngine As ScriptControl)
     'Dim GObject As Object
     For Each Item In Me.Objects
         On Error Resume Next
-        CallByName Item, "EditorCallDraw", VbMethod
+        Item.EditorCallDraw
     Next
 End Sub
 

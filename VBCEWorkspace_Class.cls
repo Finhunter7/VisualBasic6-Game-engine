@@ -293,6 +293,15 @@ Sub UpdateFolderBrowser(TreeViewObject As Object)
                 thisNode.Tag = "File"
             Next
         End If
+        If FileSystem.FolderExists(GameEngine.ProjectPath & "\Assets") Then
+            Set FFolder = FileSystem.GetFolder(GameEngine.ProjectPath & "\Assets")
+            Set thisNode = TreeViewObject.Nodes.Add("Project_" & GameEngine.ProjectName, 4, "Project_Assets", "Assets", 1, 1)
+            thisNode.Tag = "Folder"
+            For Each Item In FFolder.Files
+                Set thisNode = TreeViewObject.Nodes.Add("Project_Assets", 4, Item.Name, Item.Name, 38, 38)
+                thisNode.Tag = "File"
+            Next
+        End If
     Else
         TreeViewObject.Nodes.Add , 0, "None", "Project Folder Is Not Set", 0, 0
     End If
