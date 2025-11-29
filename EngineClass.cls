@@ -835,7 +835,23 @@ Private Sub ReloadCodeEngine()
     End If
 End Sub
 
-Function OpenProject(FileName As String, localPath As Boolean) As Boolean
+Function CreateModuleFromFile(Filename As String, Optional ExposedObject As Object = Nothing) As Module
+    Dim FileSystem As New FileSystemObject
+    Dim ScriptFile As file
+    Dim ScriptFileDataStream As TextStream
+    Dim SModule As Module
+    On Error Resume Next
+    If FileSystem.FileExists(Filename) Then
+        Set ScriptFile = FileSystem.GetFile(Filename)
+        Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
+        Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_FileResource_" & Me.CodeEngine.Modules.Count, ExposedObject)
+        SModule.AddCode ScriptFileDataStream.ReadAll()
+        ScriptFileDataStream.Close
+        Set CreateModuleFromFile = SModule
+    End If
+End Function
+
+Function OpenProject(Filename As String, localPath As Boolean) As Boolean
     Dim FileSystem As New FileSystemObject
     Dim ScriptFile As file
     Dim ScriptFileDataStream As TextStream
@@ -845,10 +861,10 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Dim SModule As Module
     
     On Error Resume Next
-    If FileSystem.FileExists(FileName) Then
-        Set ProjectFile = FileSystem.GetFile(FileName)
+    If FileSystem.FileExists(Filename) Then
+        Set ProjectFile = FileSystem.GetFile(Filename)
         Me.ProjectPath = ProjectFile.ParentFolder.Path
-        m_ProjectFile = FileName
+        m_ProjectFile = Filename
         IsProjectOpened = True
         Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
         Do Until ProjectFileDataStream.AtEndOfStream
@@ -881,70 +897,12 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     
 End Function
 
-Private Function SaveProjectGeneralInfo(TStream As TextStream)
-    Dim curScene As Scene_Class
-    TStream.WriteLine "'VBCE_ProjectFile Version 1.0"
-    TStream.WriteLine "With Engine"
-    TStream.WriteLine ".Name = " & Chr(34) & Me.ProjectName & Chr(34)
-    TStream.WriteLine ".ProjectType = " & Me.ProjectType
-    TStream.WriteLine "End With"
-    TStream.WriteLine "'---- Scripts ----"
-    For i = 1 To Me.Scripts.Count
-        TStream.WriteLine "Set Script = Engine.CreateNewScript(" & Chr(34) & Me.Scripts.Item(i).Name & Chr(34) & ")"
-        TStream.WriteLine "Script.Data = Engine.GetTextFromFile(" & "Engine.GetGamePath()" & Chr(34) & "\Scripts\" & Me.Scripts.Item(i).Name & ".VBS" & Chr(34) & ")"
-    Next
-    
-    For i = 1 To Me.ScenesInactive.Count
-        TStream.WriteLine "Set TScene = Engine.CreateNewScene(" & Chr(34) & Me.ScenesInactive.Item(i).Name & Chr(34) & ")"
-        'TStream.WriteLine "TScene.Name = " & Me.ScenesInactive.Item(i).Name
-    Next
-    For i = 1 To Me.Scenes.Count
-        TStream.WriteLine "Engine.AddScene " & Chr(34) & Me.Scenes.Item(i).Name & Chr(34)
-    Next
-    
-End Function
-
-Function GetTextFromFile(FileName As String) As String
+Function GetTextFromFile(Filename As String) As String
     Dim FileObj As New FileSystemObject
     Dim Data As TextStream
-    Set Data = FileObj.OpenTextFile(FileName, ForReading, False)
+    Set Data = FileObj.OpenTextFile(Filename, ForReading, False)
     GetTextFromFile = Data.ReadAll()
     Data.Close
-End Function
-
-Private Function SaveProjectScriptData(sFolder As Folder)
-    Dim curScript As Script_Class
-    Dim sData As TextStream
-    If Me.Scripts.Count > 0 Then
-        For i = 1 To Me.Scripts.Count
-            Set curScript = Me.Scripts.Item(i)
-            Set sData = sFolder.CreateTextFile(curScript.Name & ".VBS", True)
-            sData.WriteLine curScript.Data
-        Next
-        sData.Close
-    End If
-End Function
-
-Private Function SaveProjectSceneData(scFolder As Folder)
-    Dim curScene As Scene_Class
-    Dim sData As TextStream
-    If Me.ScenesInactive.Count > 0 Then
-        For i = 1 To Me.ScenesInactive.Count
-            Set curScene = Me.ScenesInactive.Item(i)
-            Set sData = scFolder.CreateTextFile(curScene.Name & ".VbceScene", True)
-            sData.WriteLine "[General]"
-            sData.WriteLine "Scene_Name " & curScene.Name
-            sData.WriteLine "[Gravity]"
-            sData.WriteLine "X " & curScene.Gravity.X
-            sData.WriteLine "Y " & curScene.Gravity.Y
-            sData.WriteLine "Z " & curScene.Gravity.Z
-            sData.WriteLine "[Objects]"
-            For o = 1 To curScene.Objects.Count
-                sData.WriteLine curScene.Objects.Item(o).Name
-            Next
-        Next
-        sData.Close
-    End If
 End Function
 
 Private Function OnGameLoad()

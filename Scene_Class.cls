@@ -121,18 +121,29 @@ Sub ChangeCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
     ReDrawObjects Me.GameEngine.CodeEngine
 End Sub
 
-Function AddObject(Name As String) As GameObject_Class
-    Dim newObject As New GameObject_Class
-    For Each Item In Me.GameEngine.GameObjects
-        If Item.Name = Name Then
-            'newObject.BuildFromObject Item
-            Me.Objects.Add newObject, newObject.Name
-            Set AddObject = newObject
-            Exit Function
-        End If
-    Next
-    Set AddObject = Nothing
+Function AddObjectByName(Name As String)
+
 End Function
+
+Function AddObject(Obj As Variant, Optional Name As String = "")
+    On Error Resume Next
+    If Name = "" Then
+        Me.Objects.Add Obj, "Object_" & Me.Objects.Count ' Tämä Tulee Muuttumaan
+        Obj.Name = "Object_" & Me.Objects.Count
+    ElseIf Name = "#ObjectName" Then
+        Me.Objects.Add Obj, Obj.Name & "_" & Me.Objects.Count
+        Obj.Name = Obj.Name & "_" & Me.Objects.Count
+    Else
+        Me.Objects.Add Obj, Name
+        Obj.Name = Name
+    End If
+    Set Obj.MyScene = Me
+End Function
+
+Sub EndObject(ID)
+    On Error Resume Next
+    Me.Objects.Remove ID
+End Sub
 
 Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, Optional Parent As GameObject_Class, Optional Preset As ObjectPresets) As GameObject_Class ' Käytä Tätä Vain Uuden Luomisessa
     Dim CnewObject As New GameObject_Class
