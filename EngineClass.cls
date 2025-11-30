@@ -82,8 +82,7 @@ Private EVectorClass As New Vector_Class
 Private MathClass As New Math_Class
 Private AudioSystem As New AudioSystem_Class
 Private fileSystemHandler As Object 'FileSystemObject
-Public Direct8Lib As Object
-Private Direct1LIB As Object
+Public Direct11Lib As Object
 
 Private EngineUtil_Class As New EngineUtils_Class
 
@@ -540,6 +539,12 @@ Private Sub ScriptEngine_Intialize()
     If fileSystemHandler Is Nothing Then
         MsgBox "Scripting.FileSystemObject ActiveX Component Failed To Load", vbExclamation
     End If
+    Set Direct11Lib = New DirectX11_Class
+    Direct11Lib.Initialize Me
+    If Direct11Lib Is Nothing Then
+        MsgBox "DirectX11 Component Failed To Load", vbExclamation
+    End If
+    
     AudioSystem.Build Me
     Me.SetCodeLaunguage "VBScript"
     Me.CodeEngine.AddObject "Engine", Me, True
