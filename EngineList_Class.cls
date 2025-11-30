@@ -17,17 +17,17 @@ Sub Build(VBCEEngine As EngineClass)
     Set GEngine = VBCEEngine
 End Sub
 
-Public Function CList(ParamArray Items() As Variant) As Collection
+Public Function CList(ParamArray items() As Variant) As Collection
     Dim newCol As New Collection
-    For Each Item In Items
+    For Each Item In items
         newCol.Add Item
     Next
     Set CList = newCol
 End Function
-Public Function List(ListOfWhat As VbVarType, ParamArray Items() As Variant) As CList_Class
+Public Function List(ListOfWhat As VbVarType, ParamArray items() As Variant) As CList_Class
     Dim newList As New CList_Class
     newList.SetListType ListOfWhat
-    For Each Item In Items
+    For Each Item In items
         newList.Add Item
     Next
     Set List = newList
@@ -39,6 +39,12 @@ Public Function CreateEvent(FromCName As String, ProcName As String) As Object
     NEvent.EventClassName = FromCName
     NEvent.ExecuteProc = ProcName
     Set CreateEvent = NEvent
+End Function
+
+Public Function CreateEventManager(ClassName As String) As EventManager_Class
+    Dim NEventManager As New EventManager_Class
+    NEventManager.ChangeClassName ClassName
+    Set CreateEventManager = NEventManager
 End Function
 
 Public Sub EventAddUser(TEvent As EngineEvent_Class, TargetObj As Object) 'Param 1. "Script What Contains The Event" Param 2. "Event Var Name" Param 3. "Script What Uses The Event"

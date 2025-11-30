@@ -121,24 +121,21 @@ Sub ChangeCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
     ReDrawObjects Me.GameEngine.CodeEngine
 End Sub
 
-Function AddObjectByName(Name As String)
-
-End Function
-
-Function AddObject(Obj As Variant, Optional Name As String = "")
+Sub AddObject(Obj As Variant, Optional Name As String = "")
+Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Object Name"
     On Error Resume Next
     If Name = "" Then
-        Me.Objects.Add Obj, "Object_" & Me.Objects.Count ' Tämä Tulee Muuttumaan
         Obj.Name = "Object_" & Me.Objects.Count
+        Me.Objects.Add Obj, Obj.Name ' Tämä Tulee Muuttumaan
     ElseIf Name = "#ObjectName" Then
-        Me.Objects.Add Obj, Obj.Name & "_" & Me.Objects.Count
         Obj.Name = Obj.Name & "_" & Me.Objects.Count
+        Me.Objects.Add Obj, Obj.Name
     Else
-        Me.Objects.Add Obj, Name
         Obj.Name = Name
+        Me.Objects.Add Obj, Obj.Name
     End If
     Set Obj.MyScene = Me
-End Function
+End Sub
 
 Sub EndObject(ID)
     On Error Resume Next

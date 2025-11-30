@@ -12,6 +12,27 @@ Begin VB.MDIForm MainWindow
    LinkTopic       =   "MDIForm1"
    NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin ComctlLib.Toolbar Toolbar2 
+      Align           =   2  'Align Bottom
+      Height          =   420
+      Left            =   0
+      TabIndex        =   6
+      Top             =   8595
+      Width           =   14205
+      _ExtentX        =   25056
+      _ExtentY        =   741
+      ButtonWidth     =   635
+      ButtonHeight    =   582
+      Appearance      =   1
+      ImageList       =   "ImageList1"
+      _Version        =   327682
+      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
+         NumButtons      =   1
+         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.Tag             =   ""
+         EndProperty
+      EndProperty
+   End
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
       Height          =   420
@@ -64,8 +85,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -73,10 +92,10 @@ Begin VB.MDIForm MainWindow
    Begin VB.PictureBox SolutionBrowserBar1 
       Align           =   4  'Align Right
       BorderStyle     =   0  'None
-      Height          =   8595
+      Height          =   8175
       Left            =   10575
       Negotiate       =   -1  'True
-      ScaleHeight     =   8595
+      ScaleHeight     =   8175
       ScaleWidth      =   3630
       TabIndex        =   0
       Top             =   420
@@ -116,7 +135,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -127,7 +145,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4

@@ -99,6 +99,7 @@ Public Scripts As New Collection
 Public Mesh_Scripts As New Collection
 Public Textures As New Collection
 Public VBCETextures As New Collection
+Public Components As New Collection
 
 Public IsEngineRunning As Boolean
 Public RunGameInEditor As Boolean
@@ -294,6 +295,11 @@ Attribute CreateNewScene.VB_Description = "Creates New Inactive Scene"
     Set CreateNewScene = newScene
     RaiseEvent OnDataChanged
     RaiseEvent OnSceneCreated
+End Function
+
+Function CreateCustomScene(SceneObject As Object)
+    
+    Me.ScenesInactive.Add SceneObject, SceneObject.Name
 End Function
 
 Sub AddGlobalObject(Name As String, TObject As Object, Optional AddMembers As Boolean = False)
@@ -525,7 +531,7 @@ Private Sub ScriptEngine_Intialize()
         Me.CodeEngine.Reset
     End If
     If Me.CodeEngine Is Nothing Then
-        MsgBox "This Program Requires MSScriptControl.ScriptControl ActiveX Object. Unable To Load VBCE", vbExclamation
+        MsgBox "This Program Requires MSScriptControl.ScriptControl ActiveX/COM Object. Unable To Load VBCE", vbExclamation
         MsgBox "MSScriptControl Failed To Load. Unable To Load VBCE", vbExclamation
         'Unload Me
         End
@@ -811,6 +817,9 @@ Function ClearGameEngineData()
     For i = 1 To Me.Scripts.Count
         Me.Scripts.Remove i
     Next
+    For i = 1 To Me.Components.Count
+        Me.Components.Remove i
+    Next
     ReloadCodeEngine
     RefreshChanges
 End Function
@@ -864,7 +873,7 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Dim Data As String
     Dim SModule As Module
     
-    On Error Resume Next
+    On Error GoTo FError
     If FileSystem.FileExists(FileName) Then
         Set ProjectFile = FileSystem.GetFile(FileName)
         Me.ProjectPath = ProjectFile.ParentFolder.Path
@@ -898,7 +907,9 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Else
         OpenProject = False
     End If
-    
+    Exit Function
+FError:
+    Return
 End Function
 
 Function GetTextFromFile(FileName As String) As String

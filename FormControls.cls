@@ -11,7 +11,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-
 Function CreateForm(Name As String) As FormForVBS_Class
     Dim CForm As New FormForVBS_Class
     CForm.Name = Name

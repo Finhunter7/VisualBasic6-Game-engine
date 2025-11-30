@@ -149,6 +149,10 @@ Private Sub CreateProjectTree(TreeViewTarget As Object)
             Set curNode = TreeViewTarget.Nodes.Add("F_Textures", 4, "Texture_" & Item.Name, Item.Name, 14, 14)
             curNode.Tag = "Texture"
         Next
+        For Each Item In .Components
+            Set curNode = TreeViewTarget.Nodes.Add("F_Components", 4, "Component_" & Item.Name, Item.Name, 5, 5)
+            curNode.Tag = "Component"
+        Next
     End With
     
 End Sub

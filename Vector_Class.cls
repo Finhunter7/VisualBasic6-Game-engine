@@ -35,9 +35,10 @@ Attribute To_Collection.VB_Description = "Converts Vector To Collection"
     Set To_Collection = NCol
 End Function
 
-Function Distance(PointA As Vector_Class, PointB As Vector_Class) As Double
-    Distance = 1
+Function DistanceToVector(TargetVector As Vector_Class) As Double
+    Distance = Sqr(((TargetVector.X - Me.X) * (TargetVector.X - Me.X)) + ((TargetVector.Y - Me.Y) * (TargetVector.Y - Me.Y)) + ((TargetVector.Z - Me.Z) * (TargetVector.Z - Me.Z)))
 End Function
+
 Function VClone() As Vector_Class ' Luo Kopion Vektorista
     Dim CVector As New Vector_Class
     CVector.X = Me.X
