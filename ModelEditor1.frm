@@ -39,48 +39,58 @@ Begin VB.Form ModelEditor1
       BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
          NumButtons      =   10
          BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   3
             Style           =   1
          EndProperty
          BeginProperty Button2 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   1
             Style           =   1
          EndProperty
          BeginProperty Button3 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   4
             Style           =   1
          EndProperty
          BeginProperty Button4 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   2
             Style           =   1
          EndProperty
          BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   10
          EndProperty
          BeginProperty Button6 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   5
             Style           =   1
          EndProperty
          BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   6
             Style           =   1
          EndProperty
          BeginProperty Button8 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   7
          EndProperty
          BeginProperty Button9 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   8
          EndProperty
          BeginProperty Button10 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
             ImageIndex      =   9
          EndProperty
@@ -121,18 +131,21 @@ Begin VB.Form ModelEditor1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             Text            =   "Current Frame:"
             TextSave        =   "Current Frame:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Mouse X:"
             TextSave        =   "Mouse X:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel3 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Text            =   "Mouse Y:"
             TextSave        =   "Mouse Y:"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty

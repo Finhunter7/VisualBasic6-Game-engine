@@ -139,8 +139,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
+Private Engine As EngineClass
 Option Explicit
+
+Sub OpenThis(MMainWindow As MDIForm, GameEngine As EngineClass)
+    Set Engine = GameEngine
+    Me.Show vbModal, MMainWindow
+End Sub
 
 Private Sub CancelButton_Click()
     Me.Hide
@@ -183,7 +188,15 @@ Private Sub ListView1_DblClick()
     End If
     With Me.ListView1.selectedItem
         If .Tag = "VBGame" Then
+            Engine.ProjectType = VBCEGameProject
             Me.Hide
+        ElseIf .Tag = "VBCED11Game" Then
+            If Engine.Direct11Lib Is Nothing Then
+                MsgBox "This Project Type Is Not Supported In Your Computer", vbInformation
+            Else
+                Engine.ProjectType = VBCEDX11GameProject
+                Me.Hide
+            End If
         Else
             MsgBox "Not Yet Supported/Implemented", vbInformation
         End If

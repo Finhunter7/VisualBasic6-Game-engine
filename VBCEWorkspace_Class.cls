@@ -159,11 +159,17 @@ End Sub
 
 Sub BrowseEngineData(TargetTreeView As Object)
     On Error Resume Next
-    TargetTreeView.Nodes.Clear
-    CreateProjectTree TargetTreeView
     Dim thisNode As Object
     Dim thisModule As Module
     Dim thisprocedure As Procedure
+    
+    TargetTreeView.Nodes.Clear
+    If GameEngine Is Nothing Then
+        Set thisNode = TargetTreeView.Nodes.Add(, 0, "None", "No Projects")
+        thisNode.Tag = "None"
+        Exit Sub
+    End If
+    CreateProjectTree TargetTreeView
     
     For Each Item In GameEngine.ScenesInactive
         Set thisNode = TargetTreeView.Nodes.Add("F_Scenes", 4, "Sc_" & Item.Name, Item.Name, 17, 17)
@@ -264,8 +270,13 @@ Sub UpdateSceneBrowser(TreeViewObject As Object)
 End Sub
 
 Sub UpdateFolderBrowser(TreeViewObject As Object)
-    TreeViewObject.Nodes.Clear
+    If GameEngine Is Nothing Then
+        TreeViewObject.Nodes.Add , 0, "None", "Project Folder Is Not Set", 0, 0
+        Exit Sub
+    End If
+    
     Dim FFolder As Folder
+    TreeViewObject.Nodes.Clear
     
     If Not GameEngine.ProjectPath = "" And FileSystem.FolderExists(GameEngine.ProjectPath) Then
         Set thisNode = TreeViewObject.Nodes.Add(, 0, "Project_" & GameEngine.ProjectName, GameEngine.ProjectName, 20, 20)

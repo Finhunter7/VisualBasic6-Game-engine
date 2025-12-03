@@ -36,11 +36,13 @@ Public Event KeyUp(KeyCode As Integer)
 
 ' Project
 Private m_ProjectFile As String
+Public ReloadProjectOnStartup As Boolean
 Public ProjectName As String
 Public ProjectPath As String
 Private IsProjectOpened As Boolean
 Public ProjectCodeLanguage As String
 Public ProjectType As ProjectTypes
+
 Public GameWindowSizeX As Long
 Public GameWindowSizeY As Long
 Public GameWindowScaleX As Long
@@ -327,7 +329,7 @@ Function RenameScene(SceneName As String, NewName As String)
     RaiseEvent OnDataChanged
 End Function
 
-Function AddScene(Name, Optional OverOrUnder As SceneConstants) As Scene_Class ' Lis‰‰ uuden Scenen ScenesInactive kokoelmasta Scenes kokoelmaan
+Function AddScene(Name, Optional OverOrUnder As SceneConstants = Default) As Scene_Class ' Lis‰‰ uuden Scenen ScenesInactive kokoelmasta Scenes kokoelmaan
 Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
     On Error Resume Next
     Dim newScene As Scene_Class
@@ -342,8 +344,8 @@ Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
         Exit Function
     End If
     
-    If OverOrUnder = Default Or Me.Scenes.Count < 1 Then
-        Scenes.Add newScene, newScene.Name
+    If OverOrUnder = Underlay And Me.ScenesInactive.Count > 0 Then
+        Scenes.Add newScene, newScene.Name, 1
         newScene.OnLoad Me.CodeEngine
         Set AddScene = newScene
     ElseIf OverOrUnder = Overlay Then
@@ -351,7 +353,7 @@ Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
         newScene.OnLoad Me.CodeEngine
         Set AddScene = newScene
     Else
-        Scenes.Add newScene, newScene.Name, 1
+        Scenes.Add newScene, newScene.Name
         newScene.OnLoad Me.CodeEngine
         Set AddScene = newScene
     End If
@@ -542,7 +544,7 @@ Private Sub ScriptEngine_Intialize()
     Set Direct11Lib = New DirectX11_Class
     Direct11Lib.Initialize Me
     If Direct11Lib Is Nothing Then
-        MsgBox "DirectX11 Component Failed To Load", vbExclamation
+        MsgBox "DirectX11 Component Failed To Load. DirectX11 Features Will Not Be Usable.", vbExclamation
     End If
     
     AudioSystem.Build Me
@@ -623,30 +625,7 @@ Private Function OnProjectLoad(Com As String)
     End If
 End Function
 Private Sub LoadStartupCode(FilePath As String)
-    Dim Data As String
-    Dim curLine As String
-    Dim curFile As Object
-    'Open (FilePath) For Input As #1
-        'Do Until EOF(1)
-            'Input #1, curLine
-            'Data = Data & curLine & vbCrLf
-        'Loop
-    'Close #1
-    If fileSystemHandler Is Nothing Then
-        Exit Sub
-    End If
-    
-    If fileSystemHandler.FileExists(FilePath) Then
-        Set curFile = fileSystemHandler.OpenTextFile(FilePath, ForReading, False)
-        Do Until curFile.AtEndOfStream
-            curLine = curFile.ReadLine()
-            Data = Data & curLine & vbCrLf
-        Loop
-        curFile.Close
-        Me.CodeEngine.AddCode Data
-    Else
-        MsgBox "File " & FilePath & " Does Not Exists", vbExclamation
-    End If
+    Me.CodeEngine.AddCode Me.GetTextFromFile(FilePath)
 End Sub
 
 Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As Form, Optional TProjectType As ProjectTypes = 0, Optional TEditorWindow As Form, Optional TSettingsWindow As Form)
@@ -864,8 +843,8 @@ Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module Fr
         Set dataStream = SFile.OpenAsTextStream(ForReading, TristateUseDefault)
         Set CModule = Me.CodeEngine.Modules.Add(SFile.Name & "_FileResource_" & Me.CodeEngine.Modules.Count, ExposedObject)
         CModule.AddCode dataStream.ReadAll()
-        Set CreateModuleFromFile = CModule
         dataStream.Close
+        Set CreateModuleFromFile = CModule
     End If
 End Function
 
@@ -920,9 +899,13 @@ End Function
 Function GetTextFromFile(FileName As String) As String
     Dim FileObj As New FileSystemObject
     Dim Data As TextStream
-    Set Data = FileObj.OpenTextFile(FileName, ForReading, False)
-    GetTextFromFile = Data.ReadAll()
-    Data.Close
+    If FileObj.FileExists(FileName) Then
+        Set Data = FileObj.OpenTextFile(FileName, ForReading, False)
+        GetTextFromFile = Data.ReadAll()
+        Data.Close
+    Else
+        
+    End If
 End Function
 
 Private Function OnGameLoad()
