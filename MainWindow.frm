@@ -848,6 +848,10 @@ Private Sub Engine_OnGameStop()
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
 End Sub
 
+Private Sub Engine_OnProjectOpen()
+    Me.StatusBar1.Panels(1).text = ""
+End Sub
+
 Private Sub MDIForm_Load()
     Set Engine = New EngineClass
     OnLoad

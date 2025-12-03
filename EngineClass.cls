@@ -17,6 +17,7 @@ Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 ' This Is The Main Engine Class
 
 'Events
+Public Event OnProjectOpen()
 Public Event OnDataChanged()
 Public Event OnSceneCreated()
 Public Event OnSceneActivated()
@@ -849,6 +850,8 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Dim ProjectFileDataStream As TextStream
     Dim Data As String
     Dim SModule As Module
+    
+    RaiseEvent OnProjectOpen
     
     On Error Resume Next
     If FileSystem.FileExists(FileName) Then
