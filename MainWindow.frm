@@ -86,7 +86,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -864,7 +863,7 @@ Private Sub OnLoad()
     Form2.InitializeThis Engine, EditorClass
     Scene_Browser.InitializeThis Engine, EditorClass
     
-    Engine.LoadEngine True, Form1, Console, VBCEGameProject, Form1, Nothing
+    Engine.LoadEngineInEditorMode Form1, Form1
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
 End Sub

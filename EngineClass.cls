@@ -542,6 +542,7 @@ Private Sub ScriptEngine_Intialize()
     
     Me.GlobalScript.Name = "Global"
     Me.ProjectName = "Project1"
+    Me.ProjectType = VBCEGameProject
     Me.GameWindowSizeX = 640
     Me.GameWindowSizeY = 480
     TargetFramerate = 60
@@ -566,6 +567,13 @@ Private Sub ScriptEngine_Intialize()
     EngineUtil_Class.Build Me
     Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
     
+    Set Me.EConsole = VBCE.Console.CreateNewConsoleInstance(Me)
+    Me.CodeEngine.AddObject "Console", Me.EConsole, True
+    
+    Dim GOConsole As New CodeEngineObject_Class
+    GOConsole.Build "Console", Me.EConsole
+    Me.GlobalObjects.Add GOConsole, GOConsole.Name
+    
     'Set GlobalObject = New CodeEngineObject_Class
     'GlobalObject.Build "VBA", VBA
     'Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
@@ -577,6 +585,13 @@ Private Sub ScriptEngine_Intialize()
     'Set newRef.Refrence = fileSystemHandler
     'Me.EngineRefrences.Add newRef, newRef.Name
     'Me.CodeEngine.AddObject "NullClass", NullObject, True
+    
+    Set Me.InputSystem.GameEngine = Me
+    Set Me.DrawClass.GameEngine = Me
+    Set Me.EngineTimer = New EngineTimer_Class
+    Set newGameWindow = New GameWindow
+    Set Me.GameWindow = newGameWindow
+    
     OnEngineLoad
     
 End Sub
@@ -614,29 +629,10 @@ Private Sub LoadStartupCode(FilePath As String)
     Me.CodeEngine.AddCode Me.GetTextFromFile(FilePath)
 End Sub
 
-Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As Form, Optional TProjectType As ProjectTypes = 0, Optional TEditorWindow As Form, Optional TSettingsWindow As Form)
-    Me.IsInEditor = TIsInEditor
+Function LoadEngineInEditorMode(TGameWindow As Form, Optional TEditorWindow As Form)
+    Me.IsInEditor = True
     Set Me.GameWindow = TGameWindow
-    If Me.IsInEditor Then
-        Me.ProjectType = TProjectType
-        Set Me.EditorWindow = TEditorWindow
-        'Set Me.CodeEngine = ScriptEngine
-        'Set Me.EngineTimer = TEngineTimer
-        'Set Me.EngineTimer = New EngineTimer_Class
-        Set newGameWindow = New GameWindow
-        Set Me.SettingsWindow = TSettingsWindow
-    End If
-    
-    Set Me.InputSystem.GameEngine = Me
-    Set Me.EConsole = VBCE.Console.CreateNewConsoleInstance(Me)
-    
-    Set Me.DrawClass.GameEngine = Me
-    Set Me.EngineTimer = New EngineTimer_Class
-    
-    Me.CodeEngine.AddObject "Console", Me.EConsole, True
-    Dim GOConsole As New CodeEngineObject_Class
-    GOConsole.Build "Console", Me.EConsole
-    Me.GlobalObjects.Add GOConsole, GOConsole.Name
+    Set Me.EditorWindow = TEditorWindow
     
 End Function
 
