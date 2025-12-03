@@ -11,24 +11,24 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Public MyClass As String
+Private MyClass As String
 Private ColEvents As New Collection
 
-Sub AddUserTo(User, EventID As String)
-    ColEvents.Item(EventID).AddUser User
-End Sub
+'Sub AddUserTo(User, EventID As String)
+    'ColEvents.Item(EventID).AddUser User
+'End Sub
 
 Sub CreateEvent(Name As String)
     Dim NEvent As New EngineEvent_Class
     NEvent.Name = Name
     NEvent.ExecuteProc = Name
-    NEvent.EventClassName = Me.MyClass
+    NEvent.EventClassName = MyClass
     ColEvents.Add NEvent, Name
 End Sub
 
-Sub AddEvent(NEvent As EngineEvent_Class)
-    ColEvents.Add NEvent, NEvent.ExecuteProc
-End Sub
+'Sub AddEvent(NEvent As EngineEvent_Class)
+    'ColEvents.Add NEvent, NEvent.ExecuteProc
+'End Sub
 
 Sub ChangeClassName(NewName As String)
     MyClass = NewName
@@ -53,12 +53,8 @@ Sub Clear()
     Next
 End Sub
 
-Sub Remove(ID)
+Sub RemoveEvent(ID)
     ColEvents.Remove ID
-End Sub
-
-Sub InvokeEvent(ID, ParamArray IArgs() As Variant)
-    ColEvents.Item(ID).Raise
 End Sub
 
 Function Item(ID) As EngineEvent_Class

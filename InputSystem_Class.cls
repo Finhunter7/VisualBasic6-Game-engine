@@ -67,7 +67,7 @@ End Function
 
 Private Sub Class_Initialize()
     ' Create Events
-    Me.Events.MyClass = "InputSystem"
+    Me.Events.ChangeClassName "InputSystem"
     Me.Events.CreateEvent "OnMouseDown"
     Me.Events.CreateEvent "OnKeyDown"
     'OnMouseDownEvent.EventClassName = "InputSystem"

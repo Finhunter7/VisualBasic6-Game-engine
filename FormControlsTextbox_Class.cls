@@ -33,7 +33,7 @@ Public Property Let Name(RHS As String)
 End Property
 
 Private Sub Class_Initialize()
-    Events.MyClass = IName
+    Events.ChangeClassName IName
     Events.CreateEvent "OnChange"
 End Sub
 

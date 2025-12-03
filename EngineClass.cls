@@ -28,6 +28,7 @@ Public Event OnGameEnd()
 Public Event OnGamePause()
 Public Event OnGameResume()
 Public Event OnError(Error As Error)
+Public Event OnTimeout()
 Public Event MouseDown(Button As Integer, X As Single, Y As Single)
 Public Event MouseUp(Button As Integer, X As Single, Y As Single)
 Public Event MouseMove(Button As Integer, X As Single, Y As Single)
@@ -298,8 +299,16 @@ Attribute CreateNewScene.VB_Description = "Creates New Inactive Scene"
     RaiseEvent OnSceneCreated
 End Function
 
-Function CreateCustomScene(SceneObject As Object)
-    Me.ScenesInactive.Add SceneObject, SceneObject.Name
+Function CreateCustomScene(SceneObject As Object, Optional Name As String) As Object
+    On Error Resume Next
+    Set SceneObject.MyEngine = Me
+    If Name = "" Then
+        Me.ScenesInactive.Add SceneObject, SceneObject.Name
+    Else
+        SceneObject.Name = Name
+        Me.ScenesInactive.Add SceneObject, SceneObject.Name
+    End If
+    Set CreateCustomScene = SceneObject
 End Function
 
 Sub AddGlobalObject(Name As String, TObject As Object, Optional AddMembers As Boolean = False)
@@ -328,7 +337,7 @@ Function RenameScene(SceneName As String, NewName As String)
     RaiseEvent OnDataChanged
 End Function
 
-Function AddScene(Name, Optional OverOrUnder As SceneConstants = Default) As Scene_Class ' Lisää uuden Scenen ScenesInactive kokoelmasta Scenes kokoelmaan
+Function AddScene(Name, Optional OverOrUnder As SceneConstants = Default) As Object ' Lisää uuden Scenen ScenesInactive kokoelmasta Scenes kokoelmaan
 Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
     On Error Resume Next
     Dim newScene As Scene_Class
@@ -345,17 +354,18 @@ Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
     
     If OverOrUnder = Underlay And Me.ScenesInactive.Count > 0 Then
         Scenes.Add newScene, newScene.Name, 1
-        newScene.OnLoad Me.CodeEngine
-        Set AddScene = newScene
+        'newScene.OnLoad Me.CodeEngine
+        'Set AddScene = newScene
     ElseIf OverOrUnder = Overlay Then
         Scenes.Add newScene, newScene.Name, , Scenes.Count
-        newScene.OnLoad Me.CodeEngine
-        Set AddScene = newScene
+        'newScene.OnLoad Me.CodeEngine
+        'Set AddScene = newScene
     Else
         Scenes.Add newScene, newScene.Name
-        newScene.OnLoad Me.CodeEngine
-        Set AddScene = newScene
+        'newScene.OnLoad Me.CodeEngine
+        'Set AddScene = newScene
     End If
+    Set AddScene = newScene
     
     RaiseEvent OnDataChanged
     RaiseEvent OnSceneActivated
@@ -700,6 +710,7 @@ End Function
 
 Function GetFrameRate() As Double
     GetFrameRate = (((TargetFramerate / (Timer - RenderStart)) * SimulationTime) / 1000)
+    'GetFrameRate = (1000 / Me.GetRealFrameTime())
 End Function
 
 Function GetSimulationTime() As Double
@@ -712,6 +723,10 @@ End Function
 
 Function GetAppPath() As String
     GetAppPath = App.Path
+End Function
+
+Function GetApp() As App
+    Set GetApp = App
 End Function
 
 Function GetGamePath() As String
@@ -882,6 +897,24 @@ Function GetTextFromFile(FileName As String) As String
     Else
         
     End If
+End Function
+
+Function GetFolder(Path As String) As Folder
+    Dim FileObj As New FileSystemObject
+    Dim CFolder As Folder
+    'Dim Files As New Collection
+    
+    If FileObj.FolderExists(Path) Then
+        Set CFolder = FileObj.GetFolder(Path)
+        
+        Set GetFilesInFolder = CFolder
+        'For Each Item In CFolder.Files
+            'Files.Add Item, Item.Name
+        'Next
+    Else
+        Set GetFilesInFolder = Nothing
+    End If
+    'Set GetFilesInFolder = Files
 End Function
 
 Private Function OnGameLoad()
@@ -1098,7 +1131,7 @@ CodeLoadError:
 End Function
 
 Private Function EngineUpdate()
-    Dim baseObject As Object
+    'Dim baseObject As Object
     'Dim thisScript As Script_Class
     'Dim curScene As Scene_Class
     'Dim curGObject As GameObject_Class
@@ -1233,6 +1266,7 @@ Private Sub CodeEngine_Timeout()
     If Me.IsEngineRunning Then
         Me.EndGame
     End If
+    RaiseEvent OnTimeout
 End Sub
 
 Private Sub EditorWindow_KeyDown(KeyCode As Integer, Shift As Integer)

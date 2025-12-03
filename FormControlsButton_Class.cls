@@ -35,6 +35,6 @@ Private Sub Button_Click()
 End Sub
 
 Private Sub Class_Initialize()
-    Events.MyClass = Me.Name
+    Events.ChangeClassName IName
     Events.CreateEvent "OnClick"
 End Sub
