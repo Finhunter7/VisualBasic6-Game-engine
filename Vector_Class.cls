@@ -35,8 +35,8 @@ Attribute To_Collection.VB_Description = "Converts Vector To Collection"
     Set To_Collection = NCol
 End Function
 
-Function DistanceToVector(TargetVector As Vector_Class) As Double
-    Distance = Sqr(((TargetVector.X - Me.X) * (TargetVector.X - Me.X)) + ((TargetVector.Y - Me.Y) * (TargetVector.Y - Me.Y)) + ((TargetVector.Z - Me.Z) * (TargetVector.Z - Me.Z)))
+Function GetDistanceToVector(TargetVector As Vector_Class) As Double
+    GetDistanceToVector = Sqr(((TargetVector.X - Me.X) * (TargetVector.X - Me.X)) + ((TargetVector.Y - Me.Y) * (TargetVector.Y - Me.Y)) + ((TargetVector.Z - Me.Z) * (TargetVector.Z - Me.Z)))
 End Function
 
 Function VClone() As Vector_Class ' Luo Kopion Vektorista
@@ -57,7 +57,7 @@ Attribute NewVector.VB_UserMemId = 0
     Set NewVector = NewVectorInstance
 End Function
 
-Function AddVectorV(Vector As Object) As Vector_Class ' Yhdist‰‰ Vektorin Arvot Ja Palauttaa Muutuneen Vektorin
+Function AddVectorV(Vector As Variant) As Vector_Class ' Yhdist‰‰ Vektorin Arvot Ja Palauttaa Muutuneen Vektorin
     Me.X = Me.X + Vector.X
     Me.Y = Me.Y + Vector.Y
     Me.Z = Me.Z + Vector.Z
@@ -77,14 +77,14 @@ Function SetVector(Optional NewX As Double, Optional NewY As Double, Optional Ne
     Set SetVector = Me
 End Function
 
-Function SetV(NVector As Object) As Vector_Class
+Function SetV(NVector As Variant) As Vector_Class
     Me.X = NVector.X
     Me.Y = NVector.Y
     Me.Z = NVector.Z
     Set SetV = Me
 End Function
 
-Sub SetVectorV(NVector As Object) ' Legacy feature this will be removed in future updates
+Sub SetVectorV(NVector As Variant) ' Legacy feature this will be removed in future updates
     SetV NVector
 End Sub
 

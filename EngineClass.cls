@@ -27,7 +27,7 @@ Public Event OnGameStop()
 Public Event OnGameEnd()
 Public Event OnGamePause()
 Public Event OnGameResume()
-Public Event OnError()
+Public Event OnError(Error As Error)
 Public Event MouseDown(Button As Integer, X As Single, Y As Single)
 Public Event MouseUp(Button As Integer, X As Single, Y As Single)
 Public Event MouseMove(Button As Integer, X As Single, Y As Single)
@@ -299,7 +299,6 @@ Attribute CreateNewScene.VB_Description = "Creates New Inactive Scene"
 End Function
 
 Function CreateCustomScene(SceneObject As Object)
-    
     Me.ScenesInactive.Add SceneObject, SceneObject.Name
 End Function
 
@@ -422,49 +421,21 @@ Function UnloadGameObject(GameObjectName As String)
     RaiseEvent OnDataChanged
 End Function
 
-Function CreateNewScript(Name As String, SType As ScriptTypes, Optional PresetData As String) As Script_Class
+Function CreateNewScript(Name As String, Optional ExposedObject As Object = Nothing, Optional Priority As Long = 0) As Script_Class
     Dim newClass As New Script_Class
     Dim SClass As Script_Class
     Dim EXObject As GameObject_Class
     Dim modul As Module
 
     newClass.Name = Name
-    
-    If SType = DefaultScript Then
-        newClass.Data = vbNewLine + "Sub Load() 'Called Before First Frame" + vbNewLine + vbNewLine + "End Sub" + vbNewLine + vbNewLine + "Sub Update() 'Called On Every Frame Update" + vbNewLine + vbNewLine + "End Sub"
-        newClass.Tag = "Script"
+    Set newClass.MyObject = ExposedObject
+    newClass.Tag = "Script"
+    If Priority = 0 Or Me.Scripts.Count = 0 Then
         Me.Scripts.Add newClass, Name
-    ElseIf SType = MeshScript Then
-        newClass.Data = vbNewLine & "Sub Draw() 'Same as Update but executed after Update" & vbNewLine & "" & vbNewLine & "End Sub" & vbNewLine & vbNewLine & "Sub EditorDraw()" & vbNewLine & "" & vbNewLine & "End Sub"
-        newClass.Tag = "MeshScript"
-        Me.Mesh_Scripts.Add newClass, Name
-    ElseIf SType = ComponentScript Then
-        newClass.Data = vbNewLine & _
-        "Class CustomComponent" & vbNewLine & vbNewLine & _
-        vbTab & "Public Name" & vbNewLine & _
-        vbTab & "Public self" & vbNewLine & vbNewLine & _
-        vbTab & "Private Sub Class_Initialize()" & vbNewLine & _
-        vbTab & vbTab & "'Name = " & vbNewLine & _
-        vbTab & "End Sub" & vbNewLine & vbNewLine & _
-        vbTab & "Private Sub Class_Terminate()" & vbNewLine & _
-        vbNewLine & _
-        vbTab & "End Sub" & vbNewLine & vbNewLine & _
-        vbTab & "Sub Load()" & vbNewLine & _
-        vbNewLine & _
-        vbTab & "End Sub" & vbNewLine & vbNewLine & _
-        vbTab & "Sub Update()" & vbNewLine & _
-        vbNewLine & _
-        vbTab & "End Sub" & vbNewLine & _
-        vbNewLine & "End Class" & vbNewLine & _
-        "Set Component = New CustomComponent"
-        newClass.Tag = "ComponentScript"
-        Me.Scripts.Add newClass, Name
-    End If
-    If Not PresetData = "" Then
-        newClass.Data = PresetData
+    Else
+        Me.Scripts.Add newClass, Name, Priority
     End If
     
-    'Me.ProjectBrowser.UpdateProjectBrowser
     Set CreateNewScript = newClass
     RaiseEvent OnDataChanged
 End Function
@@ -504,17 +475,21 @@ End Function
 Function CreateCustomGameObject(GObject As Variant, Name As String, SceneID) As Object
     Dim TargetScene As Scene_Class
     Set TargetScene = Me.ScenesInactive.Item(SceneID)
-    
-    TargetScene.Objects.Add GObject, Name
-    
+    TargetScene.AddObject GObject, Name
     Set CreateCustomGameObject = GObject
 End Function
 
-Sub SetGlobalScriptData(Data As String)
+Function SetGlobalScriptData(Data As String) As Boolean
     On Error Resume Next
     Me.GlobalScript.Data = Data
-    Me.CodeEngine.AddCode Data
-End Sub
+    Me.CodeEngine.AddCode Me.GlobalScript.Data
+End Function
+
+Function AddGlobalScriptData(Data As String) As Boolean
+    On Error Resume Next
+    Me.GlobalScript.Data = Me.GlobalScript.Data & Data & vbCrLf
+    Me.CodeEngine.AddCode Me.GlobalScript.Data
+End Function
 
 Sub EditObjectCode(Edit As CodeEditorEnums, Object As GameObject_Class, Optional Scene As Scene_Class)
     
@@ -642,8 +617,7 @@ Function LoadEngine(TIsInEditor As Boolean, TGameWindow As Form, TConsole As For
     End If
     
     Set Me.InputSystem.GameEngine = Me
-    Set Me.EConsole = VBCE.Console
-    Set Me.EConsole.GameEngine = Me
+    Set Me.EConsole = VBCE.Console.CreateNewConsoleInstance(Me)
     
     Set Me.DrawClass.GameEngine = Me
     Set Me.EngineTimer = New EngineTimer_Class
@@ -695,6 +669,10 @@ Function SetCodeLaunguage(Language As String)
     Me.CodeEngine.Language = Language
     ProjectCodeLanguage = Language
     RaiseEvent OnDataChanged
+End Function
+
+Function SetProjectType(PType As ProjectTypes)
+    Me.ProjectType = PType
 End Function
 
 Function SetTargetFramerate(Framerate As Integer)
@@ -857,7 +835,7 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Dim Data As String
     Dim SModule As Module
     
-    On Error GoTo FError
+    On Error Resume Next
     If FileSystem.FileExists(FileName) Then
         Set ProjectFile = FileSystem.GetFile(FileName)
         Me.ProjectPath = ProjectFile.ParentFolder.Path
@@ -892,8 +870,6 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
         OpenProject = False
     End If
     Exit Function
-FError:
-    Return
 End Function
 
 Function GetTextFromFile(FileName As String) As String
@@ -1072,11 +1048,11 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     On Error Resume Next
     For i = 1 To Me.Scenes.Count
         Set curScene = Me.Scenes.Item(i)
-        curScene.OnLoad Me.CodeEngine
-        For o = i To curScene.Objects.Count
-            Set curGObject = curScene.Objects(o)
-            curGObject.Load 'Me.CodeEngine
-        Next
+        curScene.Load
+        'For o = i To curScene.Objects.Count
+            'Set curGObject = curScene.Objects(o)
+            'curGObject.Load 'Me.CodeEngine
+        'Next
     Next
     'On Error GoTo SError
     For i = 1 To Me.Scripts.Count
@@ -1140,6 +1116,7 @@ Private Function EngineUpdate()
     'On Error GoTo DErr32
     On Error Resume Next
     For Each curScene In Me.Scenes
+        curScene.Update
         For Each curGObject In curScene.Objects
             'Set baseObject = curGObject
             If curGObject.Active Then
@@ -1248,11 +1225,8 @@ SaveError:
 End Function
 
 Private Sub CodeEngine_Error()
-    If Me.IsInEditor Then
-        MainWindow.StatusBar1.Panels(1).text = Me.CodeEngine.Error.Source & " " & CodeEngine.Error.Description & " In Line " & CodeEngine.Error.Line
-    End If
     Me.EConsole.WriteLine "Warning. " & Me.CodeEngine.Error.Source & " " & Me.CodeEngine.Error.Description & " In Line " & CodeEngine.Error.Line
-    RaiseEvent OnError
+    RaiseEvent OnError(Me.CodeEngine.Error)
 End Sub
 
 Private Sub CodeEngine_Timeout()

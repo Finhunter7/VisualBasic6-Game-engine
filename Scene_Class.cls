@@ -89,11 +89,18 @@ Private Sub LoadMeshCode(BEngine As ScriptControl)
     'Next
 End Sub
 
-Sub Update(BEngine As ScriptControl)
-    'Dim GObject As GameObject_Class
+Sub Load()
+    On Error Resume Next
     For Each Item In Me.Objects
-        Item.Update
+        Item.Load
     Next
+End Sub
+
+Sub Update()
+    'On Error Resume Next
+    'For Each Item In Me.Objects
+        'Item.Update
+    'Next
 End Sub
 
 Sub DrawObjects()
@@ -121,7 +128,7 @@ Sub ChangeCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
     ReDrawObjects Me.GameEngine.CodeEngine
 End Sub
 
-Sub AddObject(Obj As Variant, Optional Name As String = "")
+Function AddObject(Obj As Variant, Optional Name As String = "") As Object
 Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Object Name"
     On Error Resume Next
     If Name = "" Then
@@ -135,7 +142,8 @@ Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Objec
         Me.Objects.Add Obj, Obj.Name
     End If
     Set Obj.MyScene = Me
-End Sub
+    Set AddObject = Obj
+End Function
 
 Sub EndObject(ID)
     On Error Resume Next

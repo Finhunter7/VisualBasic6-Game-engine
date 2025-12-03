@@ -12,6 +12,27 @@ Begin VB.MDIForm MainWindow
    LinkTopic       =   "MDIForm1"
    NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin ComctlLib.Toolbar Toolbar2 
+      Align           =   2  'Align Bottom
+      Height          =   420
+      Left            =   0
+      TabIndex        =   6
+      Top             =   8595
+      Width           =   14205
+      _ExtentX        =   25056
+      _ExtentY        =   741
+      ButtonWidth     =   635
+      ButtonHeight    =   582
+      Appearance      =   1
+      ImageList       =   "ImageList1"
+      _Version        =   327682
+      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
+         NumButtons      =   1
+         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.Tag             =   ""
+         EndProperty
+      EndProperty
+   End
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
       Height          =   420
@@ -48,28 +69,6 @@ Begin VB.MDIForm MainWindow
          EndProperty
       EndProperty
    End
-   Begin ComctlLib.Toolbar Toolbar2 
-      Align           =   2  'Align Bottom
-      Height          =   420
-      Left            =   0
-      TabIndex        =   6
-      Top             =   8595
-      Width           =   14205
-      _ExtentX        =   25056
-      _ExtentY        =   741
-      ButtonWidth     =   635
-      ButtonHeight    =   582
-      Appearance      =   1
-      ImageList       =   "ImageList1"
-      _Version        =   327682
-      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
-         NumButtons      =   1
-         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
-            Object.Tag             =   ""
-         EndProperty
-      EndProperty
-   End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
       Height          =   300
@@ -86,7 +85,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            Key             =   ""
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -137,7 +136,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -148,7 +146,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -827,6 +824,10 @@ Private Sub Engine_OnDataChanged()
     'ProjectChanged = True
 End Sub
 
+Private Sub Engine_OnError(Error As MSScriptControl.Error)
+    Me.StatusBar1.Panels(1).text = Error.Source & " " & Error.Description & " In Line " & Error.Line
+End Sub
+
 Private Sub Engine_OnGamePause()
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [Paused]"
 End Sub
@@ -869,7 +870,26 @@ Private Sub mnuAcScene1_Click()
 End Sub
 
 Private Sub mnuAddComScript1_Click()
-    Engine.CreateNewScript InputBox("Script Name"), ComponentScript
+    Dim TScript As Script_Class
+    Set TScript = Engine.CreateNewScript(InputBox("Script Name"))
+    TScript.Data = vbNewLine & _
+        "Class CustomComponent" & vbNewLine & vbNewLine & _
+        vbTab & "Public Name" & vbNewLine & _
+        vbTab & "Public self" & vbNewLine & vbNewLine & _
+        vbTab & "Private Sub Class_Initialize()" & vbNewLine & _
+        vbTab & vbTab & "'Name = " & vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & vbNewLine & _
+        vbTab & "Private Sub Class_Terminate()" & vbNewLine & _
+        vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & vbNewLine & _
+        vbTab & "Sub Load()" & vbNewLine & _
+        vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & vbNewLine & _
+        vbTab & "Sub Update()" & vbNewLine & _
+        vbNewLine & _
+        vbTab & "End Sub" & vbNewLine & _
+        vbNewLine & "End Class" & vbNewLine & _
+        "Set Component = New CustomComponent"
 End Sub
 
 Private Sub mnuAddFile1_Click()
@@ -892,11 +912,13 @@ Private Sub mnuAddForm1_Click()
 End Sub
 
 Private Sub mnuAddMeshScript1_Click()
-    Engine.CreateNewScript InputBox("Script Name"), MeshScript
+    'Engine.CreateNewScript InputBox("Script Name")
 End Sub
 
 Private Sub mnuAddScript1_Click()
-    Engine.CreateNewScript InputBox("Script Name"), DefaultScript
+    Dim TScript As Script_Class
+    Set TScript = Engine.CreateNewScript(InputBox("Script Name"))
+    TScript.Data = vbNewLine + "Sub Load() 'Called Before First Frame" + vbNewLine + vbNewLine + "End Sub" + vbNewLine + vbNewLine + "Sub Update() 'Called On Every Frame Update" + vbNewLine + vbNewLine + "End Sub"
 End Sub
 
 Private Sub mnuBox1_Click()

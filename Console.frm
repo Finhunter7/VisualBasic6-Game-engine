@@ -3,8 +3,8 @@ Begin VB.Form Console
    BackColor       =   &H00000000&
    Caption         =   "Console"
    ClientHeight    =   5805
-   ClientLeft      =   165
-   ClientTop       =   810
+   ClientLeft      =   225
+   ClientTop       =   870
    ClientWidth     =   8055
    BeginProperty Font 
       Name            =   "Terminal"
@@ -48,7 +48,7 @@ Private StatementHook As String
 Private curText As Long
 'Private line() As Long
 Private LinesCount As Integer
-Public GameEngine As EngineClass
+Private WithEvents GameEngine As EngineClass
 
 Private Sub Form_KeyPress(KeyAscii As Integer)
     On Error Resume Next
@@ -65,7 +65,7 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
         End If
     Else
         textBuffer = textBuffer & vbNewLine
-        Me.GameEngine.CodeEngine.ExecuteStatement InputBuffer
+        GameEngine.CodeEngine.ExecuteStatement InputBuffer
         InputBuffer = ""
     End If
 End Sub
@@ -130,10 +130,10 @@ Function Clear()
         Me.Caption = "Console - " & StatementHook
     End If
 End Function
-Function CreateNewConsoleInstance() As Console
+Function CreateNewConsoleInstance(Engine As EngineClass) As Console
     Dim newConsole As New Console
+    Set GameEngine = Engine
     Set CreateNewConsoleInstance = newConsole
-    newConsole.Show
 End Function
 
 Private Sub mnuClear1_Click()
