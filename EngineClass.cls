@@ -1138,30 +1138,23 @@ Private Function EngineUpdate()
     CurrentFrame = CurrentFrame + 1
     'On Error GoTo SErr32
     On Error Resume Next
-    For Each thisScript In Me.Scripts
+    For Each Item In Me.Scripts
         'Me.CodeEngine.Modules.Item("Script_" & thisScript.Name).Run "Update"
-        If thisScript.Active Then
-            thisScript.MyModule.Run "Update"
+        If Item.Active Then
+            Item.MyModule.Run "Update"
         End If
     Next
-    
-    'On Error GoTo DErr32
-    On Error Resume Next
-    For Each curScene In Me.Scenes
-        curScene.Update
-        For Each curGObject In curScene.Objects
-            'Set baseObject = curGObject
-            If curGObject.Active Then
-                curGObject.Update
+    For Each cScene In Me.Scenes
+        cScene.Update
+        For Each cObject In cScene.Objects
+            If cObject.Active Then
+                cObject.Update
             End If
         Next
     Next
     SimulationTime = SimulationTime + Me.GetFrameTime()
     Me.DrawClass.PrintText 1, 1, "FPS: " & Me.GetFrameRate()
     Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetRealFrameTime()
-    'If Me.Scenes.Count < 1 Then
-        'Me.DrawClass.PrintText Me.GetWindowCenter().X, Me.GetWindowCenter().Y, "No Active Scenes", 20
-    'End If
 End Function
 
 Function RenderScene(Frames As Long, Optional DestinationPath As String)

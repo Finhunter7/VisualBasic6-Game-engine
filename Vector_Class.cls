@@ -35,8 +35,12 @@ Attribute To_Collection.VB_Description = "Converts Vector To Collection"
     Set To_Collection = NCol
 End Function
 
-Function GetDistanceToVector(TargetVector As Vector_Class) As Double
+Function GetDistanceToVector(TargetVector As Variant) As Double
     GetDistanceToVector = Sqr(((TargetVector.X - Me.X) * (TargetVector.X - Me.X)) + ((TargetVector.Y - Me.Y) * (TargetVector.Y - Me.Y)) + ((TargetVector.Z - Me.Z) * (TargetVector.Z - Me.Z)))
+End Function
+
+Function GetDistanceToVector2(TargetVector As Variant) As Double
+    GetDistanceToVector2 = Sqr(((TargetVector.X - Me.X) * (TargetVector.X - Me.X)) + ((TargetVector.Y - Me.Y) * (TargetVector.Y - Me.Y)))
 End Function
 
 Function VClone() As Vector_Class ' Luo Kopion Vektorista

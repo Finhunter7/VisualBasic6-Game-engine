@@ -12,6 +12,25 @@ Begin VB.MDIForm MainWindow
    LinkTopic       =   "MDIForm1"
    NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin ComctlLib.Toolbar Toolbar2 
+      Align           =   2  'Align Bottom
+      Height          =   420
+      Left            =   0
+      TabIndex        =   6
+      Top             =   8595
+      Width           =   14205
+      _ExtentX        =   25056
+      _ExtentY        =   741
+      Appearance      =   1
+      ImageList       =   "ImageList1"
+      _Version        =   327682
+      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
+         NumButtons      =   1
+         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.Tag             =   ""
+         EndProperty
+      EndProperty
+   End
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
       Height          =   420
@@ -21,8 +40,6 @@ Begin VB.MDIForm MainWindow
       Width           =   14205
       _ExtentX        =   25056
       _ExtentY        =   741
-      ButtonWidth     =   635
-      ButtonHeight    =   582
       Appearance      =   1
       ImageList       =   "ImageList1"
       _Version        =   327682
@@ -48,28 +65,6 @@ Begin VB.MDIForm MainWindow
          EndProperty
       EndProperty
    End
-   Begin ComctlLib.Toolbar Toolbar2 
-      Align           =   2  'Align Bottom
-      Height          =   420
-      Left            =   0
-      TabIndex        =   6
-      Top             =   8595
-      Width           =   14205
-      _ExtentX        =   25056
-      _ExtentY        =   741
-      ButtonWidth     =   635
-      ButtonHeight    =   582
-      Appearance      =   1
-      ImageList       =   "ImageList1"
-      _Version        =   327682
-      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
-         NumButtons      =   1
-         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
-            Object.Tag             =   ""
-         EndProperty
-      EndProperty
-   End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
       Height          =   300
@@ -86,7 +81,7 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            Key             =   ""
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -111,7 +106,6 @@ Begin VB.MDIForm MainWindow
          _ExtentX        =   6165
          _ExtentY        =   688
          ButtonWidth     =   609
-         ButtonHeight    =   582
          ImageList       =   "ImageList1"
          _Version        =   327682
          BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
@@ -137,7 +131,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   14
             EndProperty
             BeginProperty Button5 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                MixedState      =   -1  'True
@@ -148,7 +141,6 @@ Begin VB.MDIForm MainWindow
                ImageIndex      =   15
             EndProperty
             BeginProperty Button7 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-               Key             =   ""
                Object.Tag             =   ""
                Style           =   3
                Object.Width           =   1e-4
@@ -588,6 +580,9 @@ Begin VB.MDIForm MainWindow
       Begin VB.Menu mnuConsole1 
          Caption         =   "Console..."
       End
+      Begin VB.Menu mnuLogicEditor1 
+         Caption         =   "Logic Editor..."
+      End
       Begin VB.Menu mnuErrors1 
          Caption         =   "Errors..."
       End
@@ -1012,6 +1007,10 @@ End Sub
 
 Private Sub SetAcForm()
     
+End Sub
+
+Private Sub mnuLogicEditor1_Click()
+    LogicEditor_Window.EditorOpen Engine
 End Sub
 
 Private Sub mnuNewProject1_Click()

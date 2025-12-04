@@ -31,3 +31,9 @@ Function AddTextBox(Form As Form, Name As String) As FormControlsTextbox_Class
     Set CTextBox.TextBox = Form.Controls.Add("VB.TextBox", Name)
     Set AddTextBox = CTextBox
 End Function
+
+Function AddUserControl(Form As Form, Name As String) As Object
+    Dim CUserControl As Object
+    Set CUserControl = Form.Controls.Add("VB.UserControl", Name)
+    Set AddUserControl = CUserControl
+End Function
