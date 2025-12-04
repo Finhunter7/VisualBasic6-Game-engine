@@ -58,3 +58,4 @@ FormForVBS_Class = 130, 130, 1298, 780, C
 FormControlsButton_Class = 78, 78, 1246, 728, C
 ProjectTypeSelectorDialog = 104, 104, 1272, 754, C, 130, 130, 966, 634, C
 DirectX11_Class = 26, 26, 1194, 676, C
+Script_LogicBrick = 78, 78, 1246, 728, C, 26, 26, 1194, 676, C

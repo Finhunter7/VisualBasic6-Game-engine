@@ -65,6 +65,7 @@ Class=FormForVBS_Class; FormForVBS_Class.cls
 Class=FormControlsButton_Class; FormControlsButton_Class.cls
 Form=ProjectTypeSelectorDialog.frm
 Class=DirectX11_Class; DirectX11_Class.cls
+UserControl=Script_LogicBrick.ctl
 IconForm="MainWindow"
 Startup="Sub Main"
 HelpFile=""
