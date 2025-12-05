@@ -693,16 +693,16 @@ Function GetTargetFramerate() As Integer
     GetTargetFramerate = TargetFramerate
 End Function
 
-Function GetFrameTime() As Double
-    GetFrameTime = FrameTime
+Function GetTargetFrameTime() As Double
+    GetTargetFrameTime = FrameTime
 End Function
 
 Function GetRenderedFrames() As Long
     GetRenderedFrames = CurrentFrame
 End Function
 
-Function GetRealFrameTime() As Double
-    GetRealFrameTime = Me.EngineTimer.GetRealIntervalTime()
+Function GetFrameTime() As Double
+    GetFrameTime = Me.EngineTimer.GetRealIntervalTime()
 End Function
 
 Function GetFrameRate() As Double
@@ -770,6 +770,7 @@ Private Function OnGameStop()
     'Next
     If IsProjectOpened Then
         ClearGameEngineData
+        Me.OpenProject m_ProjectFile, False
     Else
         ReloadCodeEngine
     End If
@@ -778,19 +779,27 @@ Private Function OnGameStop()
 End Function
 
 Function ClearGameEngineData()
+    On Error Resume Next
     Me.ProjectName = "Untiled"
+    'ReloadCodeEngine
     For i = 1 To Me.Scenes.Count
         Me.Scenes.Remove i
     Next
+    Set Me.Scenes = Nothing
+    Set Me.ScenesInactive = New Collection
     For i = 1 To Me.ScenesInactive.Count
         Me.ScenesInactive.Remove i
     Next
-    For i = 1 To Me.GameObjects.Count
-        Me.GameObjects.Remove i
-    Next
+    Set Me.ScenesInactive = Nothing
+    Set Me.ScenesInactive = New Collection
+    'For i = 1 To Me.GameObjects.Count
+        'Me.GameObjects.Remove i
+    'Next
     For i = 1 To Me.Scripts.Count
         Me.Scripts.Remove i
     Next
+    Set Me.Scripts = Nothing
+    Set Me.Scripts = New Collection
     For i = 1 To Me.Components.Count
         Me.Components.Remove i
     Next
@@ -815,9 +824,6 @@ Private Sub ReloadCodeEngine()
             Set Ref.Refrence = CreateObject(Ref.RefrenceClass, Ref.Server)
         End If
     Next
-    If IsProjectOpened Then
-        Me.OpenProject m_ProjectFile, False
-    End If
 End Sub
 
 Function CreateModuleFromFile(FileName As String, Optional ExposedObject As Object = Nothing) As Module
@@ -1152,9 +1158,9 @@ Private Function EngineUpdate()
             End If
         Next
     Next
-    SimulationTime = SimulationTime + Me.GetFrameTime()
+    SimulationTime = SimulationTime + Me.GetTargetFrameTime()
     Me.DrawClass.PrintText 1, 1, "FPS: " & Me.GetFrameRate()
-    Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetRealFrameTime()
+    Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetFrameTime()
 End Function
 
 Function RenderScene(Frames As Long, Optional DestinationPath As String)
@@ -1231,7 +1237,7 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
                 IGameObject.Update Me.CodeEngine
             Next
         Next
-        SimulationTime = SimulationTime + Me.GetFrameTime()
+        SimulationTime = SimulationTime + Me.GetTargetFrameTime()
         
         If Not DestinationPath = "" Then
             On Error GoTo SaveError
