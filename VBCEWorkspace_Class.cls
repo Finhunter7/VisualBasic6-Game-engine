@@ -125,7 +125,7 @@ Private Sub CreateProjectTree(TreeViewTarget As Object)
     curNode.Tag = "Folder"
     Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Scripts", "Scripts", 1, 1)
     curNode.Tag = "Folder"
-    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Comp_Scripts", "Component_Scripts", 1, 1)
+    Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Comp_Scripts", "Class_Components", 1, 1)
     curNode.Tag = "Folder"
     Set curNode = TreeViewTarget.Nodes.Add("c_Project_1", 4, "F_Mesh_Scripts", "Mesh_Scripts", 1, 1)
     curNode.Tag = "Folder"
@@ -137,6 +137,10 @@ Private Sub CreateProjectTree(TreeViewTarget As Object)
     curNode.Tag = "Folder"
     
     With GameEngine
+        For Each Item In .ClassComponents
+            Set curNode = TreeViewTarget.Nodes.Add("F_Comp_Scripts", 4, "ClassComponent_" & Item.Name, Item.Name, 5, 5)
+            curNode.Tag = "Class"
+        Next
         For Each Item In .Mesh_Scripts
             Set curNode = TreeViewTarget.Nodes.Add("F_Mesh_Scripts", 4, "Mesh_" & Item.Name, Item.Name, 38, 38)
             curNode.Tag = "Script"

@@ -106,6 +106,7 @@ Public ScenesInactive As New Collection
 Public Forms As New Collection
 Public GameObjects As New Collection
 Public Scripts As New Collection
+Public ClassComponents As New Collection
 Public Mesh_Scripts As New Collection
 Public Textures As New Collection
 Public VBCETextures As New Collection
@@ -196,8 +197,8 @@ Function EditorGetSelectedObject(MPosX As Single, MPosY As Single) As Object
     End If
     For i = 1 To Me.Scenes.Count
         Set curScene = Me.Scenes(i)
-        For o = 1 To curScene.Objects.Count
-            Set SceneObject = curScene.Objects(o)
+        For O = 1 To curScene.Objects.Count
+            Set SceneObject = curScene.Objects(O)
             If MPosX > (SceneObject.Position.X - 125) And MPosX < (SceneObject.Position.X + 125) Then
                 If MPosY > (SceneObject.Position.Y - 125) And MPosY < (SceneObject.Position.Y + 125) Then
                     Me.EditorRefreshScenes
@@ -434,21 +435,27 @@ End Function
 
 Function CreateNewScript(Name As String, Optional ExposedObject As Object = Nothing, Optional Priority As Long = 0) As Script_Class
     Dim newClass As New Script_Class
-    Dim SClass As Script_Class
-    Dim EXObject As GameObject_Class
-    Dim modul As Module
-
+    
     newClass.Name = Name
     Set newClass.MyObject = ExposedObject
     newClass.Tag = "Script"
-    If Priority = 0 Or Me.Scripts.Count = 0 Then
-        Me.Scripts.Add newClass, Name
+    If Priority = 0 Or Scripts.Count = 0 Then
+        Scripts.Add newClass, Name
     Else
-        Me.Scripts.Add newClass, Name, Priority
+        Scripts.Add newClass, Name, Priority
     End If
     
     Set CreateNewScript = newClass
     RaiseEvent OnDataChanged
+End Function
+
+Function CreateNewClassComponent(Obj As Object, Name As String) As Object
+    On Error Resume Next
+    If Not IsEmpty(Obj.Name) Then
+        Obj.Name = Name
+    End If
+    ClassComponents.Add Obj, Name
+    Set CreateNewClassComponent = Obj
 End Function
 
 Sub EditScript(Name As String)
@@ -786,7 +793,7 @@ Function ClearGameEngineData()
         Me.Scenes.Remove i
     Next
     Set Me.Scenes = Nothing
-    Set Me.ScenesInactive = New Collection
+    Set Me.Scenes = New Collection
     For i = 1 To Me.ScenesInactive.Count
         Me.ScenesInactive.Remove i
     Next
@@ -795,13 +802,19 @@ Function ClearGameEngineData()
     'For i = 1 To Me.GameObjects.Count
         'Me.GameObjects.Remove i
     'Next
-    For i = 1 To Me.Scripts.Count
-        Me.Scripts.Remove i
+    For i = 1 To ClassComponents.Count
+        ClassComponents.Remove i
     Next
-    Set Me.Scripts = Nothing
-    Set Me.Scripts = New Collection
-    For i = 1 To Me.Components.Count
-        Me.Components.Remove i
+    Set ClassComponents = Nothing
+    Set ClassComponents = New Collection
+    For i = 1 To Scripts.Count
+        Scripts.Remove i
+    Next
+    Set Scripts = Nothing
+    Set Scripts = New Collection
+    
+    For i = 1 To Components.Count
+        Components.Remove i
     Next
     ReloadCodeEngine
     RefreshChanges
@@ -1207,10 +1220,10 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
     For i = 1 To Me.Scenes.Count
         Set curScene = Me.Scenes.Item(i)
         curScene.OnLoad Me.CodeEngine
-        For o = i To curScene.Objects.Count
-            Set curGObject = curScene.Objects(o)
+        For O = i To curScene.Objects.Count
+            Set curGObject = curScene.Objects(O)
             Set IGameObject = curGObject
-            loadStatusDialog.PRGBar_SetValue CLng(o), CLng(curScene.Objects.Count), "Objects Loading Mesh Code "
+            loadStatusDialog.PRGBar_SetValue CLng(O), CLng(curScene.Objects.Count), "Objects Loading Mesh Code "
             IGameObject.Load Me.CodeEngine
         Next
     Next
@@ -1230,8 +1243,8 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
         Next
         For i = 1 To Me.Scenes.Count
             Set curScene = Me.Scenes.Item(i)
-            For o = 1 To curScene.Objects.Count
-                Set curGObject = curScene.Objects(o)
+            For O = 1 To curScene.Objects.Count
+                Set curGObject = curScene.Objects(O)
                 Set IGameObject = curGObject
                 'curGObject.Update Me.CodeEngine
                 IGameObject.Update Me.CodeEngine

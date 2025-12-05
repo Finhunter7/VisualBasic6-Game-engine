@@ -26,6 +26,7 @@ Private Layers(1 To 20) As Boolean
 Public GameEngine As EngineClass
 Attribute GameEngine.VB_VarHelpID = -1
 Public Objects As New Collection
+Attribute Objects.VB_VarDescription = "Collection/List Of GameObjects To Render And Manipulate In Game. Use AddObject Function To Add Objects"
 Private CopyObjects As New Collection
 Public SavedObjects As New Collection
 'Public Scripts As New Collection
@@ -64,6 +65,7 @@ End Sub
 'Set Intialize() = EndScene
 
 Function EndScene() As Boolean
+Attribute EndScene.VB_Description = "Removes The Scene From GameEngine's Scenes Collection And Makes The Scene Inactive"
     RaiseEvent OnRemove
     EndScene = Me.GameEngine.EndScene(Me.Name)
 End Function
@@ -104,6 +106,7 @@ Sub Update()
 End Sub
 
 Sub DrawObjects()
+Attribute DrawObjects.VB_Description = "Calls GameObject's Draw Methods In Objects Collection"
     
 End Sub
 
@@ -131,21 +134,28 @@ End Sub
 Function AddObject(Obj As Variant, Optional Name As String = "") As Object
 Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Object Name"
     On Error Resume Next
+    Set Obj.MyScene = Me
     If Name = "" Then
-        Obj.Name = "Object_" & Me.Objects.Count
+        Obj.Name = "Object_" & Me.Objects.Count & "_" & Rnd(1) * 10000 ' Don't Do This. This is a tempoary fix
         Me.Objects.Add Obj, Obj.Name ' Tämä Tulee Muuttumaan
     ElseIf Name = "#ObjectName" Then
-        Obj.Name = Obj.Name & "_" & Me.Objects.Count
+        Obj.Name = Obj.Name & "_" & Me.Objects.Count & "_" & Rnd(1) * 10000 ' Don't Do This. This is a tempoary fix
         Me.Objects.Add Obj, Obj.Name
     Else
         Obj.Name = Name
         Me.Objects.Add Obj, Obj.Name
     End If
-    Set Obj.MyScene = Me
+    
     Set AddObject = Obj
 End Function
 
 Sub EndObject(ID)
+    On Error Resume Next
+    Me.Objects.Remove ID
+End Sub
+
+Sub DeleteObject(ID)
+Attribute DeleteObject.VB_Description = "Deletes GameObject From Objects Collection."
     On Error Resume Next
     Me.Objects.Remove ID
 End Sub
