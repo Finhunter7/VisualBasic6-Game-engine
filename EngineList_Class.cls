@@ -33,13 +33,13 @@ Public Function List(ListOfWhat As VbVarType, ParamArray items() As Variant) As 
     Set List = newList
 End Function
 
-Public Function CreateEvent(FromCName As String, ProcName As String) As Object
-    Dim NEvent As New EngineEvent_Class
+'Public Function CreateEvent(FromCName As String, ProcName As String) As Object
+    'Dim NEvent As New EngineEvent_Class
     'NEvent.S_Modules.Add Script.MyModule
-    NEvent.EventClassName = FromCName
-    NEvent.ExecuteProc = ProcName
-    Set CreateEvent = NEvent
-End Function
+    'NEvent.EventClassName = FromCName
+    'NEvent.ExecuteProc = ProcName
+    'Set CreateEvent = NEvent
+'End Function
 
 Public Function CreateEventManager(ClassName As String) As EventManager_Class
     Dim NEventManager As New EventManager_Class
@@ -47,10 +47,10 @@ Public Function CreateEventManager(ClassName As String) As EventManager_Class
     Set CreateEventManager = NEventManager
 End Function
 
-Public Sub EventAddUser(TEvent As EngineEvent_Class, TargetObj As Object) 'Param 1. "Script What Contains The Event" Param 2. "Event Var Name" Param 3. "Script What Uses The Event"
-    On Error Resume Next
-    TEvent.AddUser TargetObj
-End Sub
+'Public Sub EventAddUser(TEvent As EngineEvent_Class, TargetObj As Object) 'Param 1. "Script What Contains The Event" Param 2. "Event Var Name" Param 3. "Script What Uses The Event"
+    'On Error Resume Next
+    'TEvent.AddUser TargetObj
+'End Sub
 
 Public Sub Using(Class As String)
 

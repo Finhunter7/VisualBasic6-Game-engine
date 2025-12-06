@@ -149,6 +149,11 @@ Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Objec
     Set AddObject = Obj
 End Function
 
+Function GetObject(ID) As Object
+    On Error Resume Next
+    Set GetObject = Me.Objects.Item(ID)
+End Function
+
 Sub EndObject(ID)
     On Error Resume Next
     Me.Objects.Remove ID

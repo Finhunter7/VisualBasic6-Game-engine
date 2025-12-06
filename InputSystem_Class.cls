@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
-Public WithEvents GameEngine As EngineClass
+Private WithEvents GameEngine As EngineClass
 Attribute GameEngine.VB_VarHelpID = -1
 Public KeysDown As New Collection
 Public KeysUp As New Collection
@@ -39,6 +39,10 @@ Public Enum InputSystemKeyConstants
     IKeySpace = 32
     
 End Enum
+
+Sub SetEngine(Engine As EngineClass)
+    Set GameEngine = Engine
+End Sub
 
 Function IsKeyDown(Key As Integer) As Boolean
     For i = 1 To Me.KeysDown.Count

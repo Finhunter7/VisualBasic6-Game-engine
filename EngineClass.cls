@@ -593,9 +593,9 @@ Private Sub ScriptEngine_Intialize()
     'Me.EngineRefrences.Add newRef, newRef.Name
     'Me.CodeEngine.AddObject "NullClass", NullObject, True
     
-    Set Me.InputSystem.GameEngine = Me
-    Set Me.DrawClass.GameEngine = Me
-    Set Me.EngineTimer = New EngineTimer_Class
+    Me.InputSystem.SetEngine Me
+    Me.DrawClass.SetEngine Me
+    Set EngineTimer = New EngineTimer_Class
     Set newGameWindow = New GameWindow
     Set Me.GameWindow = newGameWindow
     

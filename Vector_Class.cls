@@ -39,8 +39,8 @@ Function GetDistanceToVector(TargetVector As Variant) As Double
     GetDistanceToVector = Sqr(((TargetVector.X - Me.X) * (TargetVector.X - Me.X)) + ((TargetVector.Y - Me.Y) * (TargetVector.Y - Me.Y)) + ((TargetVector.Z - Me.Z) * (TargetVector.Z - Me.Z)))
 End Function
 
-Function GetDistanceToVector2(TargetVector As Variant) As Double
-    GetDistanceToVector2 = Sqr(((TargetVector.X - Me.X) * (TargetVector.X - Me.X)) + ((TargetVector.Y - Me.Y) * (TargetVector.Y - Me.Y)))
+Function GetDistanceToVector2(TargetVector2 As Variant) As Double
+    GetDistanceToVector2 = Sqr(((TargetVector2.X - Me.X) * (TargetVector2.X - Me.X)) + ((TargetVector2.Y - Me.Y) * (TargetVector2.Y - Me.Y)))
 End Function
 
 Function VClone() As Vector_Class ' Luo Kopion Vektorista
@@ -61,10 +61,10 @@ Attribute NewVector.VB_UserMemId = 0
     Set NewVector = NewVectorInstance
 End Function
 
-Function AddVectorV(Vector As Variant) As Vector_Class ' Yhdist‰‰ Vektorin Arvot Ja Palauttaa Muutuneen Vektorin
-    Me.X = Me.X + Vector.X
-    Me.Y = Me.Y + Vector.Y
-    Me.Z = Me.Z + Vector.Z
+Function AddVectorV(Vector3 As Variant) As Vector_Class ' Yhdist‰‰ Vektorin Arvot Ja Palauttaa Muutuneen Vektorin
+    Me.X = Me.X + Vector3.X
+    Me.Y = Me.Y + Vector3.Y
+    Me.Z = Me.Z + Vector3.Z
     Set AddVectorV = Me
 End Function
 Function AddVector(Optional AddX As Double, Optional AddY As Double, Optional AddZ As Double) As Vector_Class
@@ -81,14 +81,14 @@ Function SetVector(Optional NewX As Double, Optional NewY As Double, Optional Ne
     Set SetVector = Me
 End Function
 
-Function SetV(NVector As Variant) As Vector_Class
-    Me.X = NVector.X
-    Me.Y = NVector.Y
-    Me.Z = NVector.Z
+Function SetV(NVector3 As Variant) As Vector_Class
+    Me.X = NVector3.X
+    Me.Y = NVector3.Y
+    Me.Z = NVector3.Z
     Set SetV = Me
 End Function
 
-Sub SetVectorV(NVector As Variant) ' Legacy feature this will be removed in future updates
-    SetV NVector
+Sub SetVectorV(NVector3 As Variant) ' Legacy feature this will be removed in future updates
+    SetV NVector3
 End Sub
 
