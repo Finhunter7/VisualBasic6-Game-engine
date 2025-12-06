@@ -54,8 +54,8 @@ Sub EditScript(Name As String)
     
     Set thisObj = editableScripts.Item(Name)
     
-    Set CodeEditorInstance.GameEngine = Me
-    CodeEditorInstance.EditData thisObj, Name, ScriptCode, Me
+    Set CodeEditorInstance.GameEngine = GameEngine
+    CodeEditorInstance.EditData thisObj, Name, ScriptCode, GameEngine
     
 End Sub
 

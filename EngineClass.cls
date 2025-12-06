@@ -829,7 +829,7 @@ End Sub
 Function CreateModuleFromFile(FileName As String, Optional ExposedObject As Object = Nothing) As Module
 Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module From File"
     Dim FSystem As New FileSystemObject
-    Dim SFile As File
+    Dim SFile As file
     Dim dataStream As TextStream
     Dim CModule As Module
     
@@ -846,9 +846,9 @@ End Function
 
 Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
     Dim FileSystem As New FileSystemObject
-    Dim ScriptFile As File
+    Dim ScriptFile As file
     Dim ScriptFileDataStream As TextStream
-    Dim ProjectFile As File
+    Dim ProjectFile As file
     Dim ProjectFileDataStream As TextStream
     Dim Data As String
     Dim SModule As Module
@@ -1064,9 +1064,9 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
             Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name & "_" & Me.CodeEngine.Modules.Count, thisScript.MyObject)
         End If
         Set thisScript.MyModule = thisModule
-        If Me.IsInEditor Then
-            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Creating Modules "
-        End If
+        'If Me.IsInEditor Then
+            'loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Creating Modules "
+        'End If
         thisModule.AddCode thisScript.Data
     Next
     
@@ -1079,9 +1079,9 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
             Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name & "_" & Me.CodeEngine.Modules.Count, thisScript.MyObject)
         End If
         Set thisScript.MyModule = thisModule
-        If Me.IsInEditor Then
-            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Mesh_Scripts.Count), "Objects Loading Mesh Code "
-        End If
+        'If Me.IsInEditor Then
+            'loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Mesh_Scripts.Count), "Objects Loading Mesh Code "
+        'End If
         thisModule.AddCode thisScript.Data
     Next
     On Error Resume Next
@@ -1101,24 +1101,24 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
         End If
     Next
     
-    loadStatusDialog.Hide
+    'loadStatusDialog.Hide
     Me.EngineTimer.Start
     Exit Function
     
     
 GlobalError:
     MsgBox Me.CodeEngine.Error.Description & " In Global Script On Col: " & Me.CodeEngine.Error.Column & " In Line: " & Me.CodeEngine.Error.Line, vbExclamation
-    If Me.IsInEditor Then
-        loadStatusDialog.Hide
-    End If
+    'If Me.IsInEditor Then
+        'loadStatusDialog.Hide
+    'End If
     OnGameStop
     Exit Function
 MError:
     MsgBox Me.CodeEngine.Error.Description & " In Object Mesh Code On Line: " & Me.CodeEngine.Error.Line, vbExclamation
     'Me.EConsole.WriteLine Me.CodeEngine.Error.Description & " In Object Mesh Code On Line: " & Me.CodeEngine.Error.Line
-    If Me.IsInEditor Then
-        loadStatusDialog.Hide
-    End If
+    'If Me.IsInEditor Then
+        'loadStatusDialog.Hide
+    'End If
     OnGameStop
     Exit Function
     
@@ -1128,9 +1128,9 @@ SError:
 CodeLoadError:
     MsgBox Me.CodeEngine.Error.Description & " On Line " & Me.CodeEngine.Error.Line, vbExclamation
     'Me.EConsole.WriteLine Me.CodeEngine.Error.Description & " In " & thisScript.Name & " On Line " & Me.CodeEngine.Error.Line
-    If Me.IsInEditor Then
-        loadStatusDialog.Hide
-    End If
+    'If Me.IsInEditor Then
+        'loadStatusDialog.Hide
+    'End If
     OnGameStop
     Exit Function
 
@@ -1246,7 +1246,7 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
         End If
     Next
     MsgBox "Render Complete", vbInformation
-    loadStatusDialog.Hide
+    'loadStatusDialog.Hide
     Me.EditorWindow.Caption = "Render Result"
     RaiseEvent OnRenderEnd
     Exit Function
