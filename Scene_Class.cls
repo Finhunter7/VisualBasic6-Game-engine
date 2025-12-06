@@ -151,7 +151,9 @@ End Function
 
 Function GetObject(ID) As Object
     On Error Resume Next
-    Set GetObject = Me.Objects.Item(ID)
+    If Objects.Count > 0 Then
+        Set GetObject = Me.Objects.Item(ID)
+    End If
 End Function
 
 Sub EndObject(ID)

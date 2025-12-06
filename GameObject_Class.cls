@@ -25,7 +25,7 @@ Public MyScene As Scene_Class ' Asetetaan kun objekti luodaan
 Public Mass As Double
 Public ParentObject As GameObject_Class
 Public Child As New Collection ' of GameObject_Class
-Public Transform As New Transform_Class ' Yhdistelmä Sijainista , Pyörimisestä ja Koosta
+'Public Transform As New Transform_Class ' Yhdistelmä Sijainista , Pyörimisestä ja Koosta
 Private IPosition As New Vector_Class
 Public ScenePosition As New Vector_Class ' Scene's Camera position affects this
 Public Rotation As New Matrix_Class
@@ -51,8 +51,8 @@ Private Sub Initialize()
     Me.Size = 1
     Me.SScale.SetVector 1, 1, 1
     Me.EditorColliderSize.SetVector 500 * Me.SScale.X, 500 * Me.SScale.Y, 500 * Me.SScale.Z
-    Set Me.Transform.Position = Me.Position
-    Set Me.Transform.SScale = Me.SScale
+    'Set Me.Transform.Position = Me.Position
+    'Set Me.Transform.SScale = Me.SScale
     'Me.MeshCode = vbNewLine & "Sub Draw() 'Same As Update But Executed After Update" & vbNewLine & vbNewLine & "End Sub" & vbNewLine & vbNewLine & "Sub EditorDraw()" & vbNewLine & "Draw()" & vbNewLine & "End Sub"
     'Me.MyScript.Data = vbNewLine & "Set This = Me.MyObjects.Item(1)" & vbNewLine & "Sub Load()" & vbNewLine & vbNewLine & "End Sub" & vbNewLine & vbNewLine & "Sub Update()" & vbNewLine & vbNewLine & "End Sub"
 End Sub

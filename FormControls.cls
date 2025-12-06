@@ -18,6 +18,18 @@ Function CreateForm(Name As String) As FormForVBS_Class
     Set CreateForm = CForm
 End Function
 
+Function AddLabel(Form As Form, Name As String) As Label
+    Dim CLabel As Label
+    Set CLabel = Form.Controls.Add("VB.Label")
+    Set AddLabel = CLabel
+End Function
+
+Function AddFrame(Form As Form, Name As String) As Frame
+    Dim CFrame As Frame
+    Set CFrame = Form.Controls.Add("VB.Frame")
+    Set AddFrame = CFrame
+End Function
+
 Function AddButton(Form As Form, Name As String) As FormControlsButton_Class
     Dim CButton As New FormControlsButton_Class
     CButton.Build Name

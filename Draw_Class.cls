@@ -95,11 +95,11 @@ Sub DrawBoxCV(SVector, EVector, Optional Color As Long = vbWhite, Optional Rotat
     GameEngine.GameWindow.Line (SVector.X, EVector.Y)-(EVector.X, EVector.Y), Color
 End Sub
 
-Sub DrawVBCETexture(VBCEArrayImage As VBCEArrayImage_Class, Position As Variant, SizeX As Double, SizeY As Double, Optional Rotation As Matrix_Class)
+Sub DrawVBCETexture(VBCEArrayImage As Object, Position As Variant, SizeX As Double, SizeY As Double, Optional Rotation As Matrix_Class)
     'VBCEArrayImage.RenderTo GameEngine.GameWindow, Position, SizeX, SizeY
 End Sub
 
-Sub DrawTextureV(Texture As Texture_Class, Position As Variant, Optional Size As Variant)
+Sub DrawTextureV(Texture As Object, Position As Variant, Optional Size As Variant)
     GameEngine.GameWindow.PaintPicture Texture.Texture, Position.X, Position.Y, Size.X, Size.Y
 End Sub
 

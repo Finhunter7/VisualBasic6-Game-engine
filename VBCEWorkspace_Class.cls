@@ -39,6 +39,26 @@ Public Sub SaveProject(TargetPath As String)
 
 End Sub
 
+Sub EditScript(Name As String)
+    Dim editableScripts As New Collection
+    Dim CodeEditorInstance As New CodeEditor
+    Dim thisObj As Script_Class
+    
+    editableScripts.Add GameEngine.GlobalScript, GameEngine.GlobalScript.Name
+    For Each Item In GameEngine.Scripts
+        editableScripts.Add Item, Item.Name
+    Next
+    For Each Item In GameEngine.Mesh_Scripts
+        editableScripts.Add Item, Item.Name
+    Next
+    
+    Set thisObj = editableScripts.Item(Name)
+    
+    Set CodeEditorInstance.GameEngine = Me
+    CodeEditorInstance.EditData thisObj, Name, ScriptCode, Me
+    
+End Sub
+
 Private Sub CreateProjectTree(TreeViewTarget As Object)
     Dim curNode As Object
     
@@ -335,7 +355,7 @@ Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As Browser
     If BrowserType = ProjectBrowser Then
         With TreeViewObject.selectedItem
             If .Tag = "Script" Then
-                GameEngine.EditScript .text
+                Me.EditScript .text
             ElseIf .Tag = "Scene" Then
     
             ElseIf .Tag = "Module" Then

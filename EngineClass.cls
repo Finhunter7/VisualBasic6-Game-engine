@@ -170,6 +170,13 @@ Enum TextureClases
     PictureOrImage = 2
 End Enum
 
+Function GetScene(ID) As Object
+    On Error Resume Next
+    If Me.Scenes.Count > 0 Then
+        Set GetScene = Scenes.Item(ID)
+    End If
+End Function
+
 Function GetCurrentScene() As Scene_Class ' Palauttaa ensimmäisen Scenen
     If Me.Scenes.Count < 1 Then
         Set GetCurrentScene = Nothing
@@ -458,26 +465,6 @@ Function CreateNewClassComponent(Obj As Object, Name As String) As Object
     Set CreateNewClassComponent = Obj
 End Function
 
-Sub EditScript(Name As String)
-    Dim editableScripts As New Collection
-    Dim CodeEditorInstance As New CodeEditor
-    Dim thisObj As Script_Class
-    
-    editableScripts.Add Me.GlobalScript, Me.GlobalScript.Name
-    For Each Item In Me.Scripts
-        editableScripts.Add Item, Item.Name
-    Next
-    For Each Item In Me.Mesh_Scripts
-        editableScripts.Add Item, Item.Name
-    Next
-    
-    Set thisObj = editableScripts.Item(Name)
-    
-    Set CodeEditorInstance.GameEngine = Me
-    CodeEditorInstance.EditData thisObj, Name, ScriptCode, Me
-    
-End Sub
-
 Function CreateGameObject(Name As String, SceneID) As GameObject_Class
     Dim TargetScene As Scene_Class
     Dim NGObject As New GameObject_Class
@@ -506,7 +493,6 @@ End Function
 Function AddGlobalScriptData(Data As String) As Boolean
     On Error Resume Next
     Me.GlobalScript.Data = Me.GlobalScript.Data & Data & vbCrLf
-    Me.CodeEngine.AddCode Me.GlobalScript.Data
 End Function
 
 Sub EditObjectCode(Edit As CodeEditorEnums, Object As GameObject_Class, Optional Scene As Scene_Class)
@@ -534,11 +520,11 @@ Private Sub ScriptEngine_Intialize()
     If fileSystemHandler Is Nothing Then
         MsgBox "Scripting.FileSystemObject ActiveX Component Failed To Load", vbExclamation
     End If
-    Set Direct11Lib = New DirectX11_Class
-    Direct11Lib.Initialize Me
-    If Direct11Lib Is Nothing Then
-        MsgBox "DirectX11 Component Failed To Load. DirectX11 Features Will Not Be Usable.", vbExclamation
-    End If
+    'Set Direct11Lib = New DirectX11_Class
+    'Direct11Lib.Initialize Me
+    'If Direct11Lib Is Nothing Then
+        'MsgBox "DirectX11 Component Failed To Load. DirectX11 Features Will Not Be Usable.", vbExclamation
+    'End If
     
     AudioSystem.Build Me
     Me.SetCodeLaunguage "VBScript"
@@ -554,6 +540,9 @@ Private Sub ScriptEngine_Intialize()
     Me.GameWindowSizeY = 480
     TargetFramerate = 60
     FrameTime = 16
+    
+    IsEngineRunning = False
+    SimulationTime = 0
     
     Dim GlobalObject As CodeEngineObject_Class
     
@@ -574,7 +563,7 @@ Private Sub ScriptEngine_Intialize()
     EngineUtil_Class.Build Me
     Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
     
-    Set Me.EConsole = VBCE.Console.CreateNewConsoleInstance(Me)
+    Set Me.EConsole = Console.CreateNewConsoleInstance(Me)
     Me.CodeEngine.AddObject "Console", Me.EConsole, True
     
     Dim GOConsole As New CodeEngineObject_Class
@@ -607,10 +596,9 @@ Private Function OnEngineLoad()
     If Len(Command) > 0 Then
         OnProjectLoad Command
     Else
+    
         Me.BaseScene = 1
     End If
-    IsEngineRunning = False
-    SimulationTime = 0
 End Function
 
 Private Function OnProjectLoad(Com As String)
@@ -640,7 +628,6 @@ Function LoadEngineInEditorMode(TGameWindow As Form, Optional TEditorWindow As F
     Me.IsInEditor = True
     Set Me.GameWindow = TGameWindow
     Set Me.EditorWindow = TEditorWindow
-    
 End Function
 
 Function EndGame()
@@ -842,7 +829,7 @@ End Sub
 Function CreateModuleFromFile(FileName As String, Optional ExposedObject As Object = Nothing) As Module
 Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module From File"
     Dim FSystem As New FileSystemObject
-    Dim SFile As file
+    Dim SFile As File
     Dim dataStream As TextStream
     Dim CModule As Module
     
@@ -857,11 +844,11 @@ Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module Fr
     End If
 End Function
 
-Function OpenProject(FileName As String, localPath As Boolean) As Boolean
+Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
     Dim FileSystem As New FileSystemObject
-    Dim ScriptFile As file
+    Dim ScriptFile As File
     Dim ScriptFileDataStream As TextStream
-    Dim ProjectFile As file
+    Dim ProjectFile As File
     Dim ProjectFileDataStream As TextStream
     Dim Data As String
     Dim SModule As Module
@@ -877,9 +864,9 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
         Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
         Do Until ProjectFileDataStream.AtEndOfStream
             Data = ProjectFileDataStream.ReadLine()
-            If localPath Then
-                If FileSystem.FileExists(Me.GetGamePath() & Data) Then
-                    Set ScriptFile = FileSystem.GetFile(Me.GetGamePath() & Data)
+            If AppPath Then
+                If FileSystem.FileExists(Me.GetAppPath() & Data) Then
+                    Set ScriptFile = FileSystem.GetFile(Me.GetAppPath() & Data)
                     Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
                     Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_" & Me.CodeEngine.Modules.Count)
                     SModule.AddCode ScriptFileDataStream.ReadAll()
@@ -902,7 +889,7 @@ Function OpenProject(FileName As String, localPath As Boolean) As Boolean
     Else
         OpenProject = False
     End If
-    Exit Function
+    
 End Function
 
 Function GetTextFromFile(FileName As String) As String
@@ -976,9 +963,10 @@ Private Function OpenGameWindow()
 End Function
 
 Private Function CreateStatusDialog(Caption As String) As Object
-    Dim DialogInstance As New StatusDialog
-    DialogInstance.PRGBar_Show Caption
-    Set CreateStatusDialog = DialogInstance
+    'Dim DialogInstance As Object
+    'Set DialogInstance = New StatusDialog
+    'DialogInstance.PRGBar_Show Caption
+    'Set CreateStatusDialog = DialogInstance
 End Function
 
 Sub CheckScriptCode(Script As Script_Class, CodeEditor As Object)
@@ -1007,7 +995,7 @@ Private Sub CreateScriptModules(StatusDialog As Form)
     Dim thisScript As Script_Class
     Dim thisModule As Module
     Dim curScene As Scene_Class
-    Dim baseObject As IObject_Class
+    'Dim baseObject As IObject_Class
     Dim curGObject As GameObject_Class
     'OnGameLoad
     ReloadCodeEngine ' Resetoi Koodimoottorin
@@ -1053,10 +1041,10 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     'Dim baseObject As IObject_Class
     Dim curGObject As Object
     
-    If Me.IsInEditor Then
-        Dim loadStatusDialog As StatusDialog
-        Set loadStatusDialog = CreateStatusDialog("Please Wait... Starting Game")
-    End If
+    'If Me.IsInEditor Then
+        'Dim loadStatusDialog As Object
+        'Set loadStatusDialog = CreateStatusDialog("Please Wait... Starting Game")
+    'End If
     
     OnGameLoad
     Me.GameWindow.Cls
@@ -1179,11 +1167,11 @@ End Function
 Function RenderScene(Frames As Long, Optional DestinationPath As String)
     Dim thisScript As Script_Class
     Dim curScene As Scene_Class
-    Dim IGameObject As IObject_Class
+    'Dim IGameObject As IObject_Class
     Dim curGObject As GameObject_Class
     
-    Dim loadStatusDialog As StatusDialog
-    Set loadStatusDialog = CreateStatusDialog("Please Wait... Rendering Scenes")
+    'Dim loadStatusDialog As StatusDialog
+    'Set loadStatusDialog = CreateStatusDialog("Please Wait... Rendering Scenes")
     
     CurrentFrame = 0
     SimulationTime = 0
@@ -1201,9 +1189,9 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
         Set thisScript = Me.Scripts.Item(i)
         Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name, thisScript.MyObject)
         Set thisScript.MyModule = thisModule
-        If Me.IsInEditor Then
-            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Modules Adding Code "
-        End If
+        'If Me.IsInEditor Then
+            'loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Modules Adding Code "
+        'End If
         thisModule.AddCode thisScript.Data
     Next
     
@@ -1211,9 +1199,9 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
         Set thisScript = Me.Mesh_Scripts.Item(i)
         Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name, thisScript.MyObject)
         Set thisScript.MyModule = thisModule
-        If Me.IsInEditor Then
-            loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Mesh_Scripts.Count), "Objects Loading Mesh Code "
-        End If
+        'If Me.IsInEditor Then
+            'loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Mesh_Scripts.Count), "Objects Loading Mesh Code "
+        'End If
         thisModule.AddCode thisScript.Data
     Next
     
@@ -1221,10 +1209,10 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
         Set curScene = Me.Scenes.Item(i)
         curScene.OnLoad Me.CodeEngine
         For O = i To curScene.Objects.Count
-            Set curGObject = curScene.Objects(O)
-            Set IGameObject = curGObject
-            loadStatusDialog.PRGBar_SetValue CLng(O), CLng(curScene.Objects.Count), "Objects Loading Mesh Code "
-            IGameObject.Load Me.CodeEngine
+            'Set curGObject = curScene.Objects(O)
+            'Set IGameObject = curGObject
+            'loadStatusDialog.PRGBar_SetValue CLng(O), CLng(curScene.Objects.Count), "Objects Loading Mesh Code "
+            'IGameObject.Load Me.CodeEngine
         Next
     Next
     
@@ -1236,7 +1224,7 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
     
     For f = 1 To Frames
         CurrentFrame = CurrentFrame + 1
-        loadStatusDialog.PRGBar_SetValue CLng(f), Frames, "Rendering Frames "
+        'loadStatusDialog.PRGBar_SetValue CLng(f), Frames, "Rendering Frames "
         For i = 1 To Me.Scripts.Count
             Set thisScript = Me.Scripts.Item(i)
             thisScript.MyModule.Run "Update"
@@ -1245,9 +1233,9 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
             Set curScene = Me.Scenes.Item(i)
             For O = 1 To curScene.Objects.Count
                 Set curGObject = curScene.Objects(O)
-                Set IGameObject = curGObject
+                'Set IGameObject = curGObject
                 'curGObject.Update Me.CodeEngine
-                IGameObject.Update Me.CodeEngine
+                'IGameObject.Update Me.CodeEngine
             Next
         Next
         SimulationTime = SimulationTime + Me.GetTargetFrameTime()
