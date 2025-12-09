@@ -94,7 +94,7 @@ Private MathClass As New Math_Class
 Private AudioSystem As New AudioSystem_Class
 Private fileSystemHandler As Object 'FileSystemObject
 Public Direct11Lib As Object
-Public Direct9Lib As DirectX9_Class
+'Public Direct9Lib As DirectX9_Class
 
 Private EngineUtil_Class As New EngineUtils_Class
 
@@ -526,7 +526,7 @@ Private Sub ScriptEngine_Intialize()
     'If Direct11Lib Is Nothing Then
         'MsgBox "DirectX11 Component Failed To Load. DirectX11 Features Will Not Be Usable.", vbExclamation
     'End If
-    Set Direct9Lib = New DirectX9_Class
+    'Set Direct9Lib = New DirectX9_Class
     
     
     AudioSystem.Build Me

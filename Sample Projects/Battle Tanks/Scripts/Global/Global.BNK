@@ -1,0 +1,234 @@
+
+Class Enemy1
+	' These Variables Must Be Implemented Before Adding This Object To Scene
+	Public Name ' Name Of The Object. This Changes To Collection Key When Using AddObject Function From Scene
+	Public Position ' Position In Scene. X And Y Must Be Implemented For This.
+	Public MyScene ' The Object's Scene. This Changes 
+	Public Active
+	Public Visible
+	
+	' Unique Variables For This Object
+	Private Target
+	private ShootTime
+	
+	Private Sub Class_Initialize()
+		Name = "Enemy_Tank_1" ' Default Name
+		Set Position = Vector(0,0,0) 
+		Set MyScene = Nothing
+		Set Target = nothing
+		ShootTime = 0.0
+		Active = True
+		Visible = True
+	End Sub
+	
+	Sub Load()
+		Set Target = MyScene.GetObject("Player")
+		If Not Target Is Nothing Then
+			Console.WriteLine "Target Set To " & Target.Name
+		end if
+	End sub
+	
+	Sub Update()
+		Draw
+		Move
+		ShootTime = ShootTime + Engine.GetFrameTime()
+		FireBullet
+	End Sub
+	
+	Private Sub Move()
+		if not Target is nothing then
+			if Position.GetDistanceToVector(Target.Position) > 500 then
+				if Target.Position.X > Me.Position.X then
+					Position.AddVector 10,0,0
+				Elseif Target.Position.X < Me.Position.X then
+					Position.AddVector -10,0,0
+				end if
+				if Target.Position.Y > Me.Position.Y then
+					Position.AddVector 0,50,0
+				Elseif Target.Position.Y < Me.Position.Y then
+					Position.AddVector 0,-50,0
+				end if
+			Else
+			
+			end if
+		Else
+		
+		end if
+	End Sub
+	
+	Sub FireBullet()
+		if ShootTime > 1000 then 'mm
+			ShootTime = 0
+			Set NBullet = MyScene.AddObject(new Bullet,"#ObjectName")
+			Set Enemy = MyScene.GetObject("Player")
+			if not Enemy is nothing then
+				NBullet.SetTarget Enemy
+			else
+				NBullet.SetTarget Nothing
+			end if
+			
+			NBullet.Position.SetVectorV Position
+			NBullet.Velocity.SetVector -200,0,0
+			AudioSystem.PlayWaveSound Engine.GetGamePath() & "\Assets\Sounds\Shoot.Wav",1
+		end if
+	End Sub
+	
+	Private Sub Draw()
+		Engine.DrawClass.PrintTextV Position,"Enemy",8
+		Engine.DrawClass.DrawBoxV Position.VClone.AddVector(-250,-250,0),Position.VClone().AddVector(250,250,0)
+		Engine.DrawClass.DrawCircleV Position,200
+		Engine.DrawClass.DrawLineV Position,Position.VClone().AddVector(-500,0,0)
+	end sub
+	
+	Sub EditorCallDraw()
+		Draw
+	end sub
+	
+	sub Destroy()
+		MyScene.DeleteObject Name
+		AudioSystem.PlayWaveSound Engine.GetGamePath() & "\Assets\Sounds\Explosion1.Wav",1
+		Engine.ClassComponents.Item("GameManager").GivePoint
+	end sub
+End Class
+
+Class Player
+	' These Variables Must Be Implemented Before Adding This Object To Scene
+	Public Name
+	Public Position
+	Public MyScene
+	Public Active
+	Public Visible
+	
+	' Unique Variables For This Object
+	private ShootTime
+	
+	Private Sub Class_Initialize()
+		Name = "Player1"
+		Set Position = Vector(0,0,0)
+		Set MyScene = Nothing
+		ShootTime = 0.0
+		Active = True
+		Visible = True
+	End Sub
+	
+	Sub Load()
+	
+	End sub
+	
+	Sub Update()
+		ShootTime = ShootTime + Engine.GetFrameTime()
+		ControlPlayer
+		Draw
+	End Sub
+	
+	Sub ControlPlayer()
+		If Engine.InputSystem.IsKeyDown(87) Then 'W
+			Position.AddVector 0,-100,0
+		end if
+		If Engine.InputSystem.IsKeyDown(83) Then 'S
+			Position.AddVector 0,100,0
+		end if
+		If Engine.InputSystem.IsKeyDown(68) Then 'D
+			Position.AddVector 100,0,0
+		end if
+		If Engine.InputSystem.IsKeyDown(65) Then 'A
+			Position.AddVector -100,0,0
+		end if
+		If Engine.InputSystem.IsKeyDown(32) then 'Space
+			FireBullet
+		end if
+	End sub
+	
+	Sub FireBullet()
+		if ShootTime > 1000 then 'mm
+			ShootTime = 0
+			Set NBullet = MyScene.AddObject(new Bullet,"#ObjectName")
+			Set Enemy = MyScene.GetObject("Enemy")
+			if not Enemy is nothing then
+				NBullet.SetTarget Enemy
+			else
+				NBullet.SetTarget Nothing
+			end if
+			
+			NBullet.Position.SetVectorV Position
+			NBullet.Velocity.SetVector 200,0,0
+			AudioSystem.PlayWaveSound Engine.GetGamePath() & "\Assets\Sounds\Shoot.Wav",1
+		end if
+	End Sub
+	
+	Private Sub Draw()
+		Engine.DrawClass.PrintTextV Position,"Player",8
+		Engine.DrawClass.DrawBoxV Position.VClone.AddVector(-250,-250,0),Position.VClone().AddVector(250,250,0)
+		Engine.DrawClass.DrawCircleV Position,200
+		Engine.DrawClass.DrawLineV Position,Position.VClone().AddVector(500,0,0)
+	end sub
+	
+	Sub EditorCallDraw()
+		Draw
+	end sub
+	
+	Sub Destroy()
+		MyScene.DeleteObject Name
+		AudioSystem.PlayWaveSound Engine.GetGamePath() & "\Assets\Sounds\Explosion1.Wav",1
+	end sub
+End Class
+
+Class Bullet
+	' These Variables Must Be Implemented Before Adding This Object To Scene
+	Public Name
+	Public Position
+	Public MyScene
+	Public Active
+	Public Visible
+	
+	' Unique Variables For This Object
+	Private Target
+	Public Velocity
+	private SpawnFrame
+	
+	Private Sub Class_Initialize()
+		Name = "Bullet"
+		Set Position = Vector(0,0,0)
+		Set Velocity = Vector(0,0,0)
+		Set MyScene = Nothing
+		Set Target = Nothing
+		Active = True
+		Visible = True
+		SpawnFrame = Engine.GetRenderedFrames()
+	End Sub
+	
+	Sub SetTarget(Targ)
+		set Target = Targ
+	end sub
+	
+	Sub Load()
+	
+	End Sub
+	
+	Sub Update()
+		Draw
+		UpdatePhysics
+		if SpawnFrame + 120	< Engine.GetRenderedFrames() then
+			Delete
+		end if
+	End Sub
+	
+	sub UpdatePhysics()
+		Position.AddVectorV Velocity
+		if not Target is nothing then
+			if Position.GetDistanceToVector(Target.Position) < 600 then
+				Delete
+				Target.Destroy
+			end if
+		end if
+	End Sub
+	
+	Private Sub Draw()
+		Engine.DrawClass.DrawCircleV Position,50,VBRed
+	End Sub
+	
+	sub Delete()
+		MyScene.DeleteObject Name
+	End Sub
+	
+End Class

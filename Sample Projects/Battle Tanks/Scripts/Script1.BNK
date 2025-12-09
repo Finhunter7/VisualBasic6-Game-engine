@@ -1,0 +1,8 @@
+
+Sub Load()
+
+End Sub
+
+Sub Update()
+	Engine.GameWindow.Cls
+End Sub
