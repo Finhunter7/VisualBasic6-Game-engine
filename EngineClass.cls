@@ -266,11 +266,9 @@ Function SelectObject(GameObject As Object)
 End Function
 
 Function EditorRefreshScenes()
-    Dim curScene As Scene_Class
     Me.EditorWindow.Cls
-    For i = 1 To Me.Scenes.Count
-        Set curScene = Me.Scenes(i)
-        curScene.ReDrawObjects Me.CodeEngine
+    For Each Item In Me.Scenes
+        Item.RedrawObjects
     Next
 End Function
 Function RefreshChanges()
@@ -489,11 +487,6 @@ Function SetGlobalScriptData(Data As String) As Boolean
     On Error Resume Next
     Me.GlobalScript.Data = Data
     Me.CodeEngine.AddCode Me.GlobalScript.Data
-End Function
-
-Function AddGlobalScriptData(Data As String) As Boolean
-    On Error Resume Next
-    Me.GlobalScript.Data = Me.GlobalScript.Data & Data & vbCrLf
 End Function
 
 Sub EditObjectCode(Edit As CodeEditorEnums, Object As GameObject_Class, Optional Scene As Scene_Class)
@@ -832,7 +825,7 @@ End Sub
 Function CreateModuleFromFile(FileName As String, Optional ExposedObject As Object = Nothing) As Module
 Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module From File"
     Dim FSystem As New FileSystemObject
-    Dim SFile As file
+    Dim SFile As File
     Dim dataStream As TextStream
     Dim CModule As Module
     
@@ -849,9 +842,9 @@ End Function
 
 Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
     Dim FileSystem As New FileSystemObject
-    Dim ScriptFile As file
+    Dim ScriptFile As File
     Dim ScriptFileDataStream As TextStream
-    Dim ProjectFile As file
+    Dim ProjectFile As File
     Dim ProjectFileDataStream As TextStream
     Dim Data As String
     Dim SModule As Module
@@ -1156,11 +1149,11 @@ Private Function EngineUpdate()
     Next
     For Each cScene In Me.Scenes
         cScene.Update
-        For Each cObject In cScene.Objects
-            If cObject.Active Then
-                cObject.Update
-            End If
-        Next
+        'For Each cObject In cScene.Objects
+            'If cObject.Active Then
+                'cObject.Update
+            'End If
+        'Next
     Next
     SimulationTime = SimulationTime + Me.GetTargetFrameTime()
     Me.DrawClass.PrintText 1, 1, "FPS: " & Me.GetFrameRate()
@@ -1210,7 +1203,6 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
     
     For i = 1 To Me.Scenes.Count
         Set curScene = Me.Scenes.Item(i)
-        curScene.OnLoad Me.CodeEngine
         For O = i To curScene.Objects.Count
             'Set curGObject = curScene.Objects(O)
             'Set IGameObject = curGObject

@@ -15,7 +15,9 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 ' Events
 Public Event OnRemove()
+Public Event OnObjectRemove(Name As String)
 
+Public GameEngine As EngineClass
 ' Variables
 Public Name As String
 Attribute Name.VB_VarUserMemId = 0
@@ -23,18 +25,18 @@ Attribute Name.VB_VarProcData = ";Text"
 Public Index As Long
 Private Layers(1 To 20) As Boolean
 
-Public GameEngine As EngineClass
-Attribute GameEngine.VB_VarHelpID = -1
 Public Objects As New Collection
 Attribute Objects.VB_VarDescription = "Collection/List Of GameObjects To Render And Manipulate In Game. Use AddObject Function To Add Objects"
-Private CopyObjects As New Collection
-Public SavedObjects As New Collection
+'Private CopyObjects As New Collection
+'Public SavedObjects As New Collection
 'Public Scripts As New Collection
+Public IsPaused As Boolean
 
 Public WorldCenterPos As New Vector_Class
 Public WorldBackGround As Variant
 Public SunAngle As New Vector_Class
-Public CameraPos As New Vector_Class
+Public EditorCameraPosition As New Vector_Class
+Public Camera As Object
 Public Gravity As New Vector_Class
 
 Enum ObjectPresets
@@ -70,27 +72,6 @@ Attribute EndScene.VB_Description = "Removes The Scene From GameEngine's Scenes 
     EndScene = Me.GameEngine.EndScene(Me.Name)
 End Function
 
-Sub OnLoad(GameCodeEngine As ScriptControl)
-
-End Sub
-
-Sub OnGameStop()
-    'For i = 1 To Me.Objects.Count
-        'Me.Objects.Remove i
-    'Next
-    'For i = 1 To CopyObjects.Count
-        'Me.Objects.Add CopyObjects.Item(i), CopyObjects.Item(i).Name
-    'Next
-End Sub
-
-Private Sub LoadMeshCode(BEngine As ScriptControl)
-    'Dim GObject As GameObject_Class
-    'For i = 1 To Me.Objects.Count()
-        'Set GObject = Me.Objects.Item(i)
-        'GObject.Load BEngine
-    'Next
-End Sub
-
 Sub Load()
     On Error Resume Next
     For Each Item In Me.Objects
@@ -99,36 +80,27 @@ Sub Load()
 End Sub
 
 Sub Update()
-    'On Error Resume Next
-    'For Each Item In Me.Objects
-        'Item.Update
-    'Next
-End Sub
-
-Sub DrawObjects()
-Attribute DrawObjects.VB_Description = "Calls GameObject's Draw Methods In Objects Collection"
-    
-End Sub
-
-Sub ReDrawObjects(BEngine As ScriptControl)
-    'Dim GObject As Object
+    On Error Resume Next
     For Each Item In Me.Objects
-        On Error Resume Next
-        Item.EditorCallDraw
+        If Item.Active Then
+            Item.Update
+        End If
     Next
 End Sub
 
-Sub SetCamera(CObjectPos As Vector_Class)
-    Me.CameraPos.SetVectorV CObjectPos
-    'ChangeCameraPosition
+Sub RedrawObjects()
+    On Error Resume Next
+    For Each Item In Me.Objects
+        CallByName Item, "EditorCallDraw", VbMethod
+    Next
 End Sub
 
-Sub ChangeCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
-    'For Each Obj In Me.Objects
-        'Obj.Position.AddVector -AddX, -AddY, -AddZ
-    'Next
-    Me.CameraPos.AddVector AddX, AddY, AddZ
-    ReDrawObjects Me.GameEngine.CodeEngine
+Sub SetCamera(CameraObject As Object)
+    Set Camera = CameraObject
+End Sub
+
+Sub ChangeEditorCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
+    Me.EditorCameraPosition.AddVector AddX, AddY, AddZ
 End Sub
 
 Function AddObject(Obj As Variant, Optional Name As String = "") As Object
@@ -159,12 +131,14 @@ End Function
 Sub EndObject(ID)
     On Error Resume Next
     Me.Objects.Remove ID
+    RaiseEvent OnObjectRemove(ID)
 End Sub
 
 Sub DeleteObject(ID)
 Attribute DeleteObject.VB_Description = "Deletes GameObject From Objects Collection."
     On Error Resume Next
     Me.Objects.Remove ID
+    RaiseEvent OnObjectRemove(ID)
 End Sub
 
 Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, Optional Parent As GameObject_Class, Optional Preset As ObjectPresets) As GameObject_Class ' Käytä Tätä Vain Uuden Luomisessa
@@ -238,51 +212,14 @@ Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, O
     Set CreateNewObject = CnewObject
 End Function
 
-Function CreateObjectInstance(SceneAndObjectName As String, Optional Position As Vector_Class) As GameObject_Class ' Käytä Tätä Pelissä
-    Dim ThisObject As New GameObject_Class
-    Dim ObjectsCount As Integer
-    ObjectsCount = Me.Objects.Count
-    
-    Set ThisObject = Me.GameEngine.GameObjects.Item(objectName)
-    ThisObject.Name = ThisObject.Name & ObjectsCount
-    Set ThisObject.MyScene = Me
-    
-    Me.Objects.Add ThisObject, ThisObject.Name
-    Set CreateObjectInstance = ThisObject
-End Function
-
-
-Function CreateObject(ExSceneAndName As String, Optional CallerObject As GameObject_Class, Optional SpawnPos As Vector_Class) As GameObject_Class
-    Dim EXObject As GameObject_Class
-    
-    Set EXObject = Me.GameEngine.GameObjects.Item(ExSceneAndName)
-    
-    If EXObject Is Nothing Then
-        Set CreateObject = Nothing
-        Exit Function
-    Else
-        If CallerObject Is Nothing Then
-            Me.Objects.Add EXObject, EXObject.Name
-        Else
-            CallerObject.MyScene.Objects.Add EXObject, EXObject.Name
-        End If
-        If SpawnPos Is Nothing Then
-            EXObject.Position.SetV Me.WorldCenterPos
-        Else
-            EXObject.Position.SetV SpawnPos
-        End If
-    End If
-    
-    
-End Function
-
 Private Sub Class_Initialize()
     OnSceneLoad
 End Sub
 Private Sub OnSceneLoad()
     Me.Gravity.SetVector 0, 9.81, 0
-    Me.CameraPos.SetVector 0, 0, 10
+    Me.EditorCameraPosition.SetVector 0, 0, 10
     Me.SunAngle.SetVector 20, 0, 0
+    Set Camera = Nothing
     Layers(1) = True
 End Sub
 
