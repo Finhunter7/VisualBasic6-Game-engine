@@ -57,7 +57,7 @@ Sub CreateFromScene(SceneObj As Scene_Class)
         Next
         Me.WorldCenterPos.SetVectorV .WorldCenterPos
         Me.SunAngle.SetVectorV .SunAngle
-        Me.CameraPos.SetVectorV .CameraPos
+        'Me.CameraPos.SetVectorV .CameraPos
         Me.Gravity.SetVectorV .Gravity
         
     End With
@@ -131,14 +131,14 @@ End Function
 Sub EndObject(ID)
     On Error Resume Next
     Me.Objects.Remove ID
-    RaiseEvent OnObjectRemove(ID)
+    'RaiseEvent OnObjectRemove(ID)
 End Sub
 
 Sub DeleteObject(ID)
 Attribute DeleteObject.VB_Description = "Deletes GameObject From Objects Collection."
     On Error Resume Next
     Me.Objects.Remove ID
-    RaiseEvent OnObjectRemove(ID)
+    'RaiseEvent OnObjectRemove(ID)
 End Sub
 
 Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, Optional Parent As GameObject_Class, Optional Preset As ObjectPresets) As GameObject_Class ' Käytä Tätä Vain Uuden Luomisessa

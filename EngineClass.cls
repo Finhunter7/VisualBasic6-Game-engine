@@ -283,7 +283,7 @@ Function EditorMoveCamera(DirX As Double, DirY As Double)
         Exit Function
     End If
     'Me.GetCurrentScene.CameraPos.AddVector DirX, DirY
-    Me.GetCurrentScene.ChangeCameraPosition DirX, DirY, 0
+    Me.GetCurrentScene.ChangeEditorCameraPosition DirX, DirY, 0
     'Me.EditorRefreshScenes
 End Function
 
