@@ -7,41 +7,63 @@ Class GameManager
 	Public Points
 	Public MainScene
 	Private SpawnFrame
+	Public GameOver
 	
 	Private sub Class_Initialize()
 		Name = "" ' Sets the Type To String
 		Points = 0
 		Set MainScene = Engine.GetScene("MainGame") ' Sets The Scene. Remember That The Scene Must Be Active Before This Class is Created Using The New Keyword
 		SpawnFrame = 0
+		GameOver = False
 	end sub
 	
 	Sub GivePoint()
 		Points = Points + 1
 	End Sub
 	
+	Sub SetGameOver(Val)
+		GameOver = Val
+		if Val = True Then
+			MainScene.EndScene
+		Else
+		
+		end if
+	End sub
+	
 	Sub Update()
-		if SpawnFrame + 180 < Engine.GetRenderedFrames() then
+		if SpawnFrame + 180 < Engine.GetRenderedFrames() And Gameover = False then
 			SpawnEnemy
 			SpawnFrame = Engine.GetRenderedFrames() ' Returns The Rendered Frames
 		end if
+		DrawHUD
 	End Sub
+	
+	private Sub DrawHUD()
+		'Engine.DrawClass.PrintText Engine.GetWindowCenter().X,200,"Points: " & GameMGR.Points,20 ' Displays the Points/Score
+		Engine.DrawClass.printText 0,400,"Controls: Move: WASD, Shoot: Space"
+		if GameOver then
+			Engine.DrawClass.PrintTextV Engine.GetWindowCenter().AddVector(-1000,0,0),"Game Over",30
+			Engine.DrawClass.PrintTextV Engine.GetWindowCenter().AddVector(-1750,500,0),"You Got " & Points & " Points",30
+		Else
+			Engine.DrawClass.PrintText Engine.GetWindowCenter().X,200,"Points: " & GameMGR.Points,20 ' Displays the Points/Score
+		end if
+	End sub
 	
 	Sub SpawnEnemy()
 		If not MainScene Is Nothing then ' Checks Is The Scene Valid
 			Set ThisObject = MainScene.AddObject(New Enemy1,"#ObjectName") ' Spawns The Enemy1 Object To Scene MainGame
-			ThisObject.Position.SetVector Engine.GetWindowSize().X,Engine.GetWindowCenter().Y,0 ' Sets The Objects position
+			ThisObject.Position.SetVector Engine.GetWindowSize().X + 250,Engine.GetWindowSize().Y*(RND(1)*1),0 ' Sets The Objects position
 		end if
 	End sub
 End Class
 
-Set GameMGR = Engine.CreateNewClassComponent(new GameManager,"GameManager") ' Usage Of This Requers The Implementation Of The Name Variable In This Class
+Set GameMGR = Engine.CreateNewClassComponent(new GameManager,"GameManager") ' Usage Of This Requers The Implementation Of The Name Variable In This Class.
+' Using Engine.CreateNewClassComponent Function Adds The GameManager Object In To List Called ClassComponents In Engine.  
 
 Sub Load()
 	'Engine.CreateNewClassComponent new GameManager,"GameManager"
 End Sub
 
 Sub Update()
-	Engine.DrawClass.PrintText Engine.GetWindowCenter().X,200,"Points: " & GameMGR.Points,20 ' Displays the Points/Score
-	'Engine.DrawClass.PrintText 500,200,"Player 1 Points: " & GameMGR.round,20
 	GameMGR.Update ' Calls The Update Method From The GameManager
 End Sub
