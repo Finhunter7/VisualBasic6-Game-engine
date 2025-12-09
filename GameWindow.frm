@@ -40,5 +40,7 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    Me.Engine.EndGame
+    If Not Engine Is Nothing Then
+        Me.Engine.EndGame
+    End If
 End Sub

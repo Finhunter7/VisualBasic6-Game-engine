@@ -55,29 +55,29 @@ Sub DrawCircleV(Position As Variant, Radius As Double, Optional Color As Long = 
     GameEngine.GameWindow.Circle (Position.X, Position.Y), Radius, Color
 End Sub
 
-Sub PrintTextV(Position As Variant, text, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
+Sub PrintTextV(Position As Variant, Text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
     GameEngine.GameWindow.FontSize = TextSize
     GameEngine.GameWindow.ForeColor = TextColor
     'Me.GameEngine.GameWindow.PSet (Position.X, Position.Y)
     GameEngine.GameWindow.CurrentX = Position.X
     GameEngine.GameWindow.CurrentY = Position.Y
-    GameEngine.GameWindow.Print text
+    GameEngine.GameWindow.Print Text
 End Sub
 
-Sub PrintText(XPos As Double, YPos As Double, text, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
+Sub PrintText(XPos As Double, YPos As Double, Text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
     GameEngine.GameWindow.FontSize = TextSize
     GameEngine.GameWindow.ForeColor = TextColor
     GameEngine.GameWindow.CurrentX = XPos
     GameEngine.GameWindow.CurrentY = YPos
-    GameEngine.GameWindow.Print text
+    GameEngine.GameWindow.Print Text
 End Sub
 
-Sub DrawText(XPos As Double, YPos As Double, text, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
-    PrintText XPos, YPos, text, TextSize, TextColor
+Sub DrawText(XPos As Double, YPos As Double, Text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
+    PrintText XPos, YPos, Text, TextSize, TextColor
 End Sub
 
-Sub DrawTextV(Position As Variant, text, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
-    PrintTextV Position, text, TextSize, TextColor
+Sub DrawTextV(Position As Variant, Text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
+    PrintTextV Position, Text, TextSize, TextColor
 End Sub
 
 Sub DrawCubeCV(SVector As Vector_Class, EVector As Vector_Class, Optional Color As Long = vbWhite, Optional Rotation As Matrix_Class)

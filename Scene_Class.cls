@@ -145,7 +145,7 @@ Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Objec
         Obj.Name = Name
         Me.Objects.Add Obj, Obj.Name
     End If
-    
+    Obj.Load
     Set AddObject = Obj
 End Function
 

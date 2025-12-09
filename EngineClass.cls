@@ -94,6 +94,7 @@ Private MathClass As New Math_Class
 Private AudioSystem As New AudioSystem_Class
 Private fileSystemHandler As Object 'FileSystemObject
 Public Direct11Lib As Object
+Public Direct9Lib As DirectX9_Class
 
 Private EngineUtil_Class As New EngineUtils_Class
 
@@ -525,6 +526,8 @@ Private Sub ScriptEngine_Intialize()
     'If Direct11Lib Is Nothing Then
         'MsgBox "DirectX11 Component Failed To Load. DirectX11 Features Will Not Be Usable.", vbExclamation
     'End If
+    Set Direct9Lib = New DirectX9_Class
+    
     
     AudioSystem.Build Me
     Me.SetCodeLaunguage "VBScript"
@@ -912,12 +915,12 @@ Function GetFolder(Path As String) As Folder
     If FileObj.FolderExists(Path) Then
         Set CFolder = FileObj.GetFolder(Path)
         
-        Set GetFilesInFolder = CFolder
+        Set GetFolder = CFolder
         'For Each Item In CFolder.Files
             'Files.Add Item, Item.Name
         'Next
     Else
-        Set GetFilesInFolder = Nothing
+        Set GetFolder = Nothing
     End If
     'Set GetFilesInFolder = Files
 End Function
