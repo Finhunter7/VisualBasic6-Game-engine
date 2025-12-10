@@ -267,7 +267,10 @@ Function SelectObject(GameObject As Object)
 End Function
 
 Function EditorRefreshScenes()
-    Me.EditorWindow.Cls
+    On Error Resume Next
+    If Not Me.EditorWindow Is Nothing Then
+        Me.EditorWindow.Cls
+    End If
     For Each Item In Me.Scenes
         Item.RedrawObjects
     Next
@@ -706,6 +709,7 @@ Function GetFrameTime() As Double
 End Function
 
 Function GetFrameRate() As Double
+    On Error Resume Next
     'GetFrameRate = (((TargetFramerate / (Timer - RenderStart)) * SimulationTime) / 1000)
     GetFrameRate = (1000 / Me.GetFrameTime())
 End Function
@@ -860,6 +864,8 @@ Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
     Dim SModule As Module
     Dim CLine As Long
     
+    ClearGameEngineData ' Reset The Engine
+    
     RaiseEvent OnProjectOpen
     
     On Error Resume Next
@@ -872,30 +878,40 @@ Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
         Do Until ProjectFileDataStream.AtEndOfStream
             CLine = CLine + 1
             Data = ProjectFileDataStream.ReadLine()
-            'If CLine = 1 Then
-                'Me.CodeEngine.Language = Data
-            'End If
-            'If Left(Data, 1) = "'" Then
-            
-            'End If
-            If AppPath Then
-                If FileSystem.FileExists(Me.GetAppPath() & Data) Then
-                    Set ScriptFile = FileSystem.GetFile(Me.GetAppPath() & Data)
-                    Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
-                    Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_" & Me.CodeEngine.Modules.Count)
-                    SModule.AddCode ScriptFileDataStream.ReadAll()
-                    SModule.Run "Initialize"
-                    ScriptFileDataStream.Close
+            Debug.Print "OpenProject Method Reading " & Data
+            If CLine = 1 And (Data = "VBScript" Or Data = "JavaScript") Then ' Legacy Support For Old Project Files
+                Me.SetCodeLaunguage Data
+                ClearGameEngineData
+                Debug.Print "Setting Code Launguage To " & Data
+            ElseIf Not Data = "" Or Not Left(Data, 1) = "'" Then
+                Debug.Print "Syntax Check Compete "
+                If AppPath Then
+                    If FileSystem.FileExists(Me.GetAppPath() & Data) Then
+                        Set ScriptFile = FileSystem.GetFile(Me.GetAppPath() & Data)
+                        Debug.Print "Loading File " & ScriptFile.Name
+                        
+                        Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
+                        Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_" & Me.CodeEngine.Modules.Count)
+                        SModule.AddCode ScriptFileDataStream.ReadAll()
+                        SModule.Run "Initialize"
+                        ScriptFileDataStream.Close
+                        Debug.Print "Loaded Module " & SModule.Name
+                    End If
+                Else
+                    If FileSystem.FileExists(ProjectFile.ParentFolder.Path & Data) Then
+                        Set ScriptFile = FileSystem.GetFile(ProjectFile.ParentFolder.Path & Data)
+                        Debug.Print "Loading File " & ScriptFile.Name
+                        
+                        Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
+                        Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_" & Me.CodeEngine.Modules.Count)
+                        SModule.AddCode ScriptFileDataStream.ReadAll()
+                        SModule.Run "Initialize"
+                        ScriptFileDataStream.Close
+                        Debug.Print "Loaded Module " & SModule.Name
+                    End If
                 End If
             Else
-                If FileSystem.FileExists(ProjectFile.ParentFolder.Path & Data) Then
-                    Set ScriptFile = FileSystem.GetFile(ProjectFile.ParentFolder.Path & Data)
-                    Set ScriptFileDataStream = ScriptFile.OpenAsTextStream(ForReading, TristateUseDefault)
-                    Set SModule = Me.CodeEngine.Modules.Add(ScriptFile.Name & "_" & Me.CodeEngine.Modules.Count)
-                    SModule.AddCode ScriptFileDataStream.ReadAll()
-                    SModule.Run "Initialize"
-                    ScriptFileDataStream.Close
-                End If
+                Debug.Print "Skip Line"
             End If
         Loop
         ProjectFileDataStream.Close
