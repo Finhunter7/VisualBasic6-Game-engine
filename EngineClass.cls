@@ -858,6 +858,7 @@ Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
     Dim ProjectFileDataStream As TextStream
     Dim Data As String
     Dim SModule As Module
+    Dim CLine As Long
     
     RaiseEvent OnProjectOpen
     
@@ -869,7 +870,14 @@ Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
         IsProjectOpened = True
         Set ProjectFileDataStream = ProjectFile.OpenAsTextStream(ForReading, TristateUseDefault)
         Do Until ProjectFileDataStream.AtEndOfStream
+            CLine = CLine + 1
             Data = ProjectFileDataStream.ReadLine()
+            'If CLine = 1 Then
+                'Me.CodeEngine.Language = Data
+            'End If
+            'If Left(Data, 1) = "'" Then
+            
+            'End If
             If AppPath Then
                 If FileSystem.FileExists(Me.GetAppPath() & Data) Then
                     Set ScriptFile = FileSystem.GetFile(Me.GetAppPath() & Data)
@@ -1152,18 +1160,12 @@ Private Function EngineUpdate()
     'On Error GoTo SErr32
     On Error Resume Next
     For Each Item In Me.Scripts
-        'Me.CodeEngine.Modules.Item("Script_" & thisScript.Name).Run "Update"
         If Item.Active Then
             Item.MyModule.Run "Update"
         End If
     Next
     For Each cScene In Me.Scenes
         cScene.Update
-        'For Each cObject In cScene.Objects
-            'If cObject.Active Then
-                'cObject.Update
-            'End If
-        'Next
     Next
     'SimulationTime = SimulationTime + Me.GetTargetFrameTime()
     Me.DrawClass.PrintText 1, 1, "FPS: " & Me.GetFrameRate()
