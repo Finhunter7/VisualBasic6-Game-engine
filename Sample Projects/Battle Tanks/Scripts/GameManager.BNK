@@ -36,7 +36,17 @@ Class GameManager
 			SpawnFrame = Engine.GetRenderedFrames() ' Returns The Rendered Frames
 		end if
 		DrawHUD
+		ShowConsole
 	End Sub
+	
+	Private Sub ShowConsole()
+		if Engine.InputSystem.IsKeyDown(16) and Engine.InputSystem.IsKeyDown(67) then 'Shift And C
+			Engine.EConsole.Show
+			For i = 1 To Engine.InputSystem.KeysDown.Count
+				Engine.InputSystem.KeysDown.Remove i
+			Next
+		end if
+	End sub
 	
 	private Sub DrawHUD()
 		'Engine.DrawClass.PrintText Engine.GetWindowCenter().X,200,"Points: " & GameMGR.Points,20 ' Displays the Points/Score
@@ -52,7 +62,7 @@ Class GameManager
 	Sub SpawnEnemy()
 		If not MainScene Is Nothing then ' Checks Is The Scene Valid
 			Set ThisObject = MainScene.AddObject(New Enemy1,"#ObjectName") ' Spawns The Enemy1 Object To Scene MainGame
-			ThisObject.Position.SetVector Engine.GetWindowSize().X + 250,Engine.GetWindowSize().Y*(RND(1)*1),0 ' Sets The Objects position
+			ThisObject.Position.SetVector Engine.GetWindowSize().X + 500,Engine.GetWindowSize().Y*(RND(1)*1),0 ' Sets The Objects position
 		end if
 	End sub
 End Class

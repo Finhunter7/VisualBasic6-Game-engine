@@ -1,8 +1,13 @@
 
-Sub Load()
+Private NextClear
 
+Sub Load()
+	NextClear = Engine.GetRenderedFrames()
 End Sub
 
 Sub Update()
-	Engine.GameWindow.Cls
+	'If NextClear + 10 < Engine.GetRenderedFrames() then
+		Engine.GameWindow.Cls ' Clears The Screen 
+		'NextClear = Engine.GetRenderedFrames()
+	'end if
 End Sub

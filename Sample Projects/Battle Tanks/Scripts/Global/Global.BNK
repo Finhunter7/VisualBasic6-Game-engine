@@ -77,7 +77,7 @@ Class Enemy1
 	
 	Private Sub Draw()
 		'Engine.DrawClass.PrintTextV Position,"Enemy",8
-		Engine.DrawClass.DrawBoxV Position.VClone.AddVector(-250,-250,0),Position.VClone().AddVector(250,250,0)
+		Engine.DrawClass.DrawBoxV Position.VClone.AddVector(-375,-250,0),Position.VClone().AddVector(375,250,0)
 		Engine.DrawClass.DrawCircleV Position,200
 		Engine.DrawClass.DrawLineV Position,Position.VClone().AddVector(-500,0,0)
 	end sub
@@ -155,8 +155,8 @@ Class Player
 	End Sub
 	
 	Private Sub Draw()
-		Engine.DrawClass.PrintTextV Position,"Player",8
-		Engine.DrawClass.DrawBoxV Position.VClone.AddVector(-250,-250,0),Position.VClone().AddVector(250,250,0)
+		'Engine.DrawClass.PrintTextV Position,"Player",8
+		Engine.DrawClass.DrawBoxV Position.VClone.AddVector(-375,-250,0),Position.VClone().AddVector(375,250,0)
 		Engine.DrawClass.DrawCircleV Position,200
 		Engine.DrawClass.DrawLineV Position,Position.VClone().AddVector(500,0,0)
 	end sub
@@ -217,7 +217,7 @@ Class Bullet
 	sub UpdatePhysics()
 		Position.AddVectorV Velocity
 		if not Target is nothing then
-			if Position.GetDistanceToVector(Target.Position) < 600 then
+			if Position.GetDistanceToVector(Target.Position) < 450 then
 				Delete
 				Target.Destroy
 			end if

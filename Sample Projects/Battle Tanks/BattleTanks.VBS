@@ -6,6 +6,6 @@ Sub Initialize()
 	Engine.GameWindow.Height = 5000
 	'Engine.GameWindow.AutoRedraw = True
 	Engine.GameWindow.ClipControls = True
-	Engine.SetTargetFrameRate 60 '60 ' Setting The Target Framerate. If Set To -1 The Framerate Will Be Uncapped
-	Engine.EConsole.Show ' Shows The Console
+	Engine.SetTargetFrameRate 60 '60 ' Setting The Target Framerate. If Set To -1 The Framerate Will Be Uncapped And 0 Will Default To 60
+	'Engine.EConsole.Show ' Shows The Console
 End sub
