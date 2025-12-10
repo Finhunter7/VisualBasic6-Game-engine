@@ -110,8 +110,12 @@ Private Sub GameEngine_OnGameEnd()
     Me.Events.Reload
 End Sub
 
-Private Sub GameEngine_OnGameStop()
+Sub ClearKeysDown()
     For i = 1 To Me.KeysDown.Count
         Me.KeysDown.Remove i
     Next
+End Sub
+
+Private Sub GameEngine_OnGameStop()
+    ClearKeysDown
 End Sub

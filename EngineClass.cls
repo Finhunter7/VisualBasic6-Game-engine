@@ -178,11 +178,12 @@ Function GetScene(ID) As Object
     End If
 End Function
 
-Function GetCurrentScene() As Scene_Class ' Palauttaa ensimmäisen Scenen
+Function GetCurrentScene() As Object ' Palauttaa ensimmäisen Scenen
+    On Error Resume Next
     If Me.Scenes.Count < 1 Then
         Set GetCurrentScene = Nothing
     Else
-        Set GetCurrentScene = Me.Scenes.Item(BaseScene)
+        Set GetCurrentScene = Scenes.Item(BaseScene)
     End If
 End Function
 
@@ -324,6 +325,11 @@ Sub AddGlobalObject(Name As String, TObject As Object, Optional AddMembers As Bo
     newObject.Build Name, TObject
     Me.GlobalObjects.Add newObject, Name
     'Me.CodeEngine.AddObject Name, TObject, AddMembers
+End Sub
+
+Sub AddCustomGlobalObject(Obj As Object, Name As String, Optional AddMembers As Boolean = False)
+    On Error Resume Next
+    Me.CodeEngine.AddObject Name, Obj, True
 End Sub
 
 Function RenameScene(SceneName As String, NewName As String)
@@ -504,15 +510,16 @@ Private Sub ScriptEngine_Intialize()
     Else
         Me.CodeEngine.Reset
     End If
-    If Me.CodeEngine Is Nothing Then
-        MsgBox "This Program Requires MSScriptControl.ScriptControl ActiveX/COM Object. Unable To Load VBCE", vbExclamation
-        MsgBox "MSScriptControl Failed To Load. Unable To Load VBCE", vbExclamation
+    If Me.CodeEngine Is Nothing Then ' Checking If The MSScriptControl Is In Memory And Loaded. If Not Ending The Application
+        MsgBox "This Program Requires MSScriptControl.ScriptControl ActiveX/COM Object.", vbExclamation
+        'MsgBox "MSScriptControl Failed To Load. Unable To Load VBCE", vbExclamation
         'Unload Me
         End
     End If
     Set fileSystemHandler = New Scripting.FileSystemObject
     If fileSystemHandler Is Nothing Then
-        MsgBox "Scripting.FileSystemObject ActiveX Component Failed To Load", vbExclamation
+        MsgBox "This Program Requires Scripting.FileSystemObject ActiveX/COM Object.", vbExclamation
+        End
     End If
     'Set Direct11Lib = New DirectX11_Class
     'Direct11Lib.Initialize Me
@@ -524,16 +531,17 @@ Private Sub ScriptEngine_Intialize()
     
     AudioSystem.Build Me
     Me.SetCodeLaunguage "VBScript"
-    Me.CodeEngine.AddObject "Engine", Me, True
-    Me.CodeEngine.AddObject "Vector", EVectorClass, True
-    Me.CodeEngine.AddObject "Math", MathClass, True
-    Me.CodeEngine.AddObject "AudioSystem", AudioSystem, True
+    'Me.CodeEngine.AddObject "Engine", Me, True
+    'Me.CodeEngine.AddObject "Vector", EVectorClass, True
+    'Me.CodeEngine.AddObject "Math", MathClass, True
+    'Me.CodeEngine.AddObject "AudioSystem", AudioSystem, True
     
-    Me.GlobalScript.Name = "Global"
-    Me.ProjectName = "Project1"
-    Me.ProjectType = VBCEGameProject
+    Me.GlobalScript.Name = "Global" ' Setting The Global Script Name
+    Me.ProjectName = "Project1" ' Setting The Default Project Name
+    Me.ProjectType = VBCEGameProject ' Setting The Default Project Type
     Me.GameWindowSizeX = 640
     Me.GameWindowSizeY = 480
+    Me.BaseScene = 1
     TargetFramerate = 60
     FrameTime = 16
     
@@ -559,13 +567,16 @@ Private Sub ScriptEngine_Intialize()
     EngineUtil_Class.Build Me
     Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
     
-    Set Me.EConsole = Console.CreateNewConsoleInstance(Me)
-    Me.CodeEngine.AddObject "Console", Me.EConsole, True
+    Set Me.EConsole = Console.CreateNewConsoleInstance(Me) ' Create Console
+    'Me.CodeEngine.AddObject "Console", Me.EConsole, True
     
     Dim GOConsole As New CodeEngineObject_Class
     GOConsole.Build "Console", Me.EConsole
     Me.GlobalObjects.Add GOConsole, GOConsole.Name
     
+    For Each Item In Me.GlobalObjects
+        Me.CodeEngine.AddObject Item.Name, Item.MyObject, True
+    Next
     'Set GlobalObject = New CodeEngineObject_Class
     'GlobalObject.Build "VBA", VBA
     'Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
@@ -593,7 +604,6 @@ Private Function OnEngineLoad()
         OnProjectLoad Command
     Else
     
-        Me.BaseScene = 1
     End If
 End Function
 
@@ -696,12 +706,12 @@ Function GetFrameTime() As Double
 End Function
 
 Function GetFrameRate() As Double
-    GetFrameRate = (((TargetFramerate / (Timer - RenderStart)) * SimulationTime) / 1000)
-    'GetFrameRate = (1000 / Me.GetRealFrameTime())
+    'GetFrameRate = (((TargetFramerate / (Timer - RenderStart)) * SimulationTime) / 1000)
+    GetFrameRate = (1000 / Me.GetFrameTime())
 End Function
 
 Function GetSimulationTime() As Double
-    GetSimulationTime = SimulationTime
+    GetSimulationTime = CurrentFrame / TargetFramerate
 End Function
 
 Function GetRealTime() As Double
@@ -1081,9 +1091,9 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
         thisModule.AddCode thisScript.Data
     Next
     On Error Resume Next
-    For i = 1 To Me.Scenes.Count
-        Set curScene = Me.Scenes.Item(i)
-        curScene.Load
+    For Each Item In Scenes
+        'Set curScene = Me.Scenes.Item(i)
+        Item.Load
         'For o = i To curScene.Objects.Count
             'Set curGObject = curScene.Objects(o)
             'curGObject.Load 'Me.CodeEngine
@@ -1155,7 +1165,7 @@ Private Function EngineUpdate()
             'End If
         'Next
     Next
-    SimulationTime = SimulationTime + Me.GetTargetFrameTime()
+    'SimulationTime = SimulationTime + Me.GetTargetFrameTime()
     Me.DrawClass.PrintText 1, 1, "FPS: " & Me.GetFrameRate()
     Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetFrameTime()
 End Function
@@ -1218,23 +1228,7 @@ Function RenderScene(Frames As Long, Optional DestinationPath As String)
     Next
     
     For f = 1 To Frames
-        CurrentFrame = CurrentFrame + 1
-        'loadStatusDialog.PRGBar_SetValue CLng(f), Frames, "Rendering Frames "
-        For i = 1 To Me.Scripts.Count
-            Set thisScript = Me.Scripts.Item(i)
-            thisScript.MyModule.Run "Update"
-        Next
-        For i = 1 To Me.Scenes.Count
-            Set curScene = Me.Scenes.Item(i)
-            For O = 1 To curScene.Objects.Count
-                Set curGObject = curScene.Objects(O)
-                'Set IGameObject = curGObject
-                'curGObject.Update Me.CodeEngine
-                'IGameObject.Update Me.CodeEngine
-            Next
-        Next
-        SimulationTime = SimulationTime + Me.GetTargetFrameTime()
-        
+        EngineUpdate
         If Not DestinationPath = "" Then
             On Error GoTo SaveError
             SavePicture Me.GameWindow.Image, DestinationPath & "\" & f & ".bmp"
