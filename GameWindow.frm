@@ -39,6 +39,14 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
     'Me.MouseDown = Button
 End Sub
 
+Private Sub Form_Resize()
+    On Error Resume Next
+    If Not Engine Is Nothing Then
+        Me.ScaleWidth = Engine.GameWindowScaleX
+        Me.ScaleHeight = Engine.GameWindowScaleY
+    End If
+End Sub
+
 Private Sub Form_Unload(Cancel As Integer)
     If Not Engine Is Nothing Then
         Me.Engine.EndGame

@@ -542,8 +542,10 @@ Private Sub ScriptEngine_Intialize()
     Me.GlobalScript.Name = "Global" ' Setting The Global Script Name
     Me.ProjectName = "Project1" ' Setting The Default Project Name
     Me.ProjectType = VBCEGameProject ' Setting The Default Project Type
-    Me.GameWindowSizeX = 640
-    Me.GameWindowSizeY = 480
+    'Me.GameWindowSizeX = 640
+    'Me.GameWindowSizeY = 480
+    Me.GameWindowScaleX = 640
+    Me.GameWindowScaleY = 480
     Me.BaseScene = 1
     TargetFramerate = 60
     FrameTime = 16
@@ -736,15 +738,23 @@ End Function
 
 Function GetWindowCenter() As Vector_Class
     Dim newVec As New Vector_Class
-    newVec.SetVector Me.GameWindow.Width / 2, Me.GameWindow.Height / 2
+    newVec.SetVector Me.GameWindow.ScaleWidth / 2, Me.GameWindow.ScaleHeight / 2
     Set GetWindowCenter = newVec
 End Function
 
 Function GetWindowSize() As Vector_Class
     Dim newVec As New Vector_Class
-    newVec.SetVector Me.GameWindow.Width, Me.GameWindow.Height
+    'newVec.SetVector Me.GameWindow.Width, Me.GameWindow.Height
+    newVec.SetVector Me.GameWindow.ScaleWidth, Me.GameWindow.ScaleHeight
     Set GetWindowSize = newVec
 End Function
+
+Sub SetWindowScale(X As Long, Y As Long)
+    GameWindowScaleX = X
+    GameWindowScaleY = Y
+    GameWindow.ScaleWidth = GameWindowScaleX
+    GameWindow.ScaleHeight = GameWindowScaleY
+End Sub
 
 Function PrintEngineInfo()
     Me.EConsole.WriteLine "ScriptControl Information"
@@ -1185,7 +1195,7 @@ Private Function EngineUpdate()
     Next
     'SimulationTime = SimulationTime + Me.GetTargetFrameTime()
     Me.DrawClass.PrintText 1, 1, "FPS: " & Me.GetFrameRate()
-    Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetFrameTime()
+    ''Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetFrameTime()
 End Function
 
 Function RenderScene(Frames As Long, Optional DestinationPath As String)
