@@ -33,6 +33,11 @@ Public Function List(ListOfWhat As VbVarType, ParamArray items() As Variant) As 
     Set List = newList
 End Function
 
+Public Function PropertyBagObject(ParamArray items() As Variant) As PropertyBag
+    Dim newList As New VBRUN.PropertyBag
+    Set PropertyBagObject = newList
+End Function
+
 'Public Function CreateEvent(FromCName As String, ProcName As String) As Object
     'Dim NEvent As New EngineEvent_Class
     'NEvent.S_Modules.Add Script.MyModule

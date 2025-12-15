@@ -5,6 +5,7 @@ Begin VB.Form NewForm
    ClientLeft      =   60
    ClientTop       =   405
    ClientWidth     =   4680
+   Icon            =   "NewForm.frx":0000
    LinkTopic       =   "Form3"
    ScaleHeight     =   3135
    ScaleWidth      =   4680

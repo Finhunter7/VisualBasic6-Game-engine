@@ -8,6 +8,7 @@ Begin VB.Form GameWindow
    ClientTop       =   405
    ClientWidth     =   3540
    ForeColor       =   &H00FFFFFF&
+   Icon            =   "GameWindow.frx":0000
    LinkTopic       =   "Form3"
    ScaleHeight     =   2340
    ScaleWidth      =   3540

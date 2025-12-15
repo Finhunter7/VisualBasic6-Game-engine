@@ -31,6 +31,7 @@ Attribute Objects.VB_VarDescription = "Collection/List Of GameObjects To Render 
 'Public SavedObjects As New Collection
 'Public Scripts As New Collection
 Public IsPaused As Boolean
+Public Active As Boolean
 
 Public WorldCenterPos As New Vector_Class
 Public WorldBackGround As Variant
@@ -117,7 +118,9 @@ Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Objec
         Obj.Name = Name
         Me.Objects.Add Obj, Obj.Name
     End If
-    Obj.Load
+    If Me.GameEngine.IsEngineRunning Then
+        Obj.Load
+    End If
     Set AddObject = Obj
 End Function
 

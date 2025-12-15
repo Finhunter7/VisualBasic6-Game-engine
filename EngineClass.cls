@@ -35,12 +35,15 @@ Public Event MouseUp(Button As Integer, X As Single, Y As Single)
 Public Event MouseMove(Button As Integer, X As Single, Y As Single)
 Public Event KeyDown(KeyCode As Integer)
 Public Event KeyUp(KeyCode As Integer)
+
 'Editor Events
 Public Event EditorMouseDown(Button As Integer, X As Single, Y As Single)
 'Public Event EditorMouseUp(Button As Integer, X As Single, Y As Single)
 Public Event EditorMouseMove(Button As Integer, X As Single, Y As Single)
 Public Event EditorKeyDown(KeyCode As Integer)
 'Public Event EditorKeyUp(KeyCode As Integer)
+
+' End Of Editor Events
 
 
 ' Project
@@ -113,7 +116,7 @@ Public Textures As New Collection
 Public VBCETextures As New Collection
 Public Components As New Collection
 
-Public IsEngineRunning As Boolean
+Private IIsEngineRunning As Boolean
 Public RunGameInEditor As Boolean
 
 Private TargetFramerate As Integer
@@ -195,11 +198,13 @@ Function GetReference(NameOrID) As Object
     End If
 End Function
 
+' Editor Stuff
+
 Function EditorGetSelectedObject(MPosX As Single, MPosY As Single) As Object
     On Error Resume Next
     Dim curScene As Scene_Class
     Dim SceneObject As Object
-    If Me.IsEngineRunning Then
+    If IIsEngineRunning Then
         Set EditorSelectedObject = Nothing
         Set EditorGetSelectedObject = Nothing
         Exit Function
@@ -254,7 +259,7 @@ Sub DrawSelectedLines(SceneObject As Object)
 End Sub
 
 Function SelectObject(GameObject As Object)
-    If Me.IsEngineRunning Then
+    If IIsEngineRunning Then
         Exit Function
     End If
     Me.EditorRefreshScenes
@@ -283,13 +288,15 @@ Function RefreshChanges()
 End Function
 
 Function EditorMoveCamera(DirX As Double, DirY As Double)
-    If Me.IsEngineRunning Then
+    If IIsEngineRunning Then
         Exit Function
     End If
     'Me.GetCurrentScene.CameraPos.AddVector DirX, DirY
     Me.GetCurrentScene.ChangeEditorCameraPosition DirX, DirY, 0
     'Me.EditorRefreshScenes
 End Function
+
+' End of Editor Stuff
 
 Function CreateNewScene(thisName As String) As Scene_Class ' Luo uuden Scenen ScenesInactive kokoelmaan Scene luokan pohjalta
 Attribute CreateNewScene.VB_Description = "Creates New Inactive Scene"
@@ -314,6 +321,7 @@ End Function
 Function CreateCustomScene(SceneObject As Object, Optional Name As String) As Object
     On Error Resume Next
     Set SceneObject.MyEngine = Me
+    SceneObject.Active = False
     If Name = "" Then
         Me.ScenesInactive.Add SceneObject, SceneObject.Name
     Else
@@ -330,10 +338,11 @@ Sub AddGlobalObject(Name As String, TObject As Object, Optional AddMembers As Bo
     'Me.CodeEngine.AddObject Name, TObject, AddMembers
 End Sub
 
-Sub AddCustomGlobalObject(Obj As Object, Name As String, Optional AddMembers As Boolean = False)
+Function AddCustomGlobalObject(Obj As Object, Name As String, Optional AddMembers As Boolean = False) As Object
     On Error Resume Next
-    Me.CodeEngine.AddObject Name, Obj, True
-End Sub
+    Me.CodeEngine.AddObject Name, Obj, AddMembers
+    Set AddCustomGlobalObject = Obj
+End Function
 
 Function RenameScene(SceneName As String, NewName As String)
     Dim thisScene As Scene_Class
@@ -382,6 +391,8 @@ Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
         'newScene.OnLoad Me.CodeEngine
         'Set AddScene = newScene
     End If
+    newScene.Active = True
+    
     Set AddScene = newScene
     
     RaiseEvent OnDataChanged
@@ -389,6 +400,7 @@ Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
 End Function
 
 Function EndScene(Name) As Boolean
+    On Error Resume Next
     Dim Scene As Scene_Class
     If Me.Scenes.Count < 1 Then
         EndScene = False
@@ -399,6 +411,7 @@ Function EndScene(Name) As Boolean
         EndScene = False
     Else
         Me.Scenes.Remove Name
+        Scene.Active = False
         EndScene = True
     End If
     RaiseEvent OnDataChanged
@@ -550,7 +563,7 @@ Private Sub ScriptEngine_Intialize()
     TargetFramerate = 60
     FrameTime = 16
     
-    IsEngineRunning = False
+    IIsEngineRunning = False
     SimulationTime = 0
     
     Dim GlobalObject As CodeEngineObject_Class
@@ -652,12 +665,6 @@ Function EndGame()
     RaiseEvent OnGameEnd
 End Function
 
-Function PauseGame()
-    Me.EngineTimer.Kill
-    Me.GameWindow.Caption = Me.ProjectName & " [Paused]"
-    RaiseEvent OnGamePause
-End Function
-
 Public Property Get IsProjectOnDisk() As Boolean
     IsProjectOnDisk = IsProjectOpened
 End Property
@@ -666,33 +673,43 @@ Public Property Get ProjectFilePath() As String
     ProjectFilePath = m_ProjectFile
 End Property
 
-Function ResumeGame()
+Public Property Get IsEngineRunning() As Boolean
+    IsEngineRunning = IIsEngineRunning
+End Property
+
+Sub PauseGame()
+    Me.EngineTimer.Kill
+    Me.GameWindow.Caption = Me.ProjectName & " [Paused]"
+    RaiseEvent OnGamePause
+End Sub
+
+Sub ResumeGame()
     RaiseEvent OnGameResume
     RenderStart = Timer
     Me.GameWindow.Caption = Me.ProjectName
     Me.EngineTimer.Start
-End Function
+End Sub
 
 Function GetCodeLanguage() As String
     GetCodeLanguage = ProjectCodeLanguage
 End Function
 
-Function SetCodeLaunguage(Language As String)
+Sub SetCodeLaunguage(Language As String)
     Me.CodeEngine.Language = Language
     ProjectCodeLanguage = Language
     RaiseEvent OnDataChanged
-End Function
+End Sub
 
-Function SetProjectType(PType As ProjectTypes)
+Sub SetProjectType(PType As ProjectTypes)
     Me.ProjectType = PType
-End Function
+End Sub
 
-Function SetTargetFramerate(Framerate As Integer)
+Sub SetTargetFramerate(Framerate As Integer)
     TargetFramerate = Framerate
     FrameTime = (1000 / Framerate)
     Me.EngineTimer.Interval = FrameTime
     RaiseEvent OnDataChanged
-End Function
+End Sub
 
 Function GetTargetFramerate() As Integer
     GetTargetFramerate = TargetFramerate
@@ -710,6 +727,10 @@ Function GetFrameTime() As Double
     GetFrameTime = Me.EngineTimer.GetRealIntervalTime()
 End Function
 
+Function GetFrameTimeMulti() As Double
+    GetFrameTimeMultiply = Me.EngineTimer.GetRealIntervalTime() / TargetFramerate
+End Function
+
 Function GetFrameRate() As Double
     On Error Resume Next
     'GetFrameRate = (((TargetFramerate / (Timer - RenderStart)) * SimulationTime) / 1000)
@@ -717,6 +738,7 @@ Function GetFrameRate() As Double
 End Function
 
 Function GetSimulationTime() As Double
+Attribute GetSimulationTime.VB_Description = "Gets How Many Seconds Of Frames Has Been Rendered"
     GetSimulationTime = CurrentFrame / TargetFramerate
 End Function
 
@@ -737,16 +759,23 @@ Function GetGamePath() As String
 End Function
 
 Function GetWindowCenter() As Vector_Class
-    Dim newVec As New Vector_Class
-    newVec.SetVector Me.GameWindow.ScaleWidth / 2, Me.GameWindow.ScaleHeight / 2
-    Set GetWindowCenter = newVec
+    Dim NewVec As New Vector_Class
+    NewVec.SetVector Me.GameWindow.ScaleWidth / 2, Me.GameWindow.ScaleHeight / 2
+    Set GetWindowCenter = NewVec
 End Function
 
 Function GetWindowSize() As Vector_Class
-    Dim newVec As New Vector_Class
+    Dim NewVec As New Vector_Class
     'newVec.SetVector Me.GameWindow.Width, Me.GameWindow.Height
-    newVec.SetVector Me.GameWindow.ScaleWidth, Me.GameWindow.ScaleHeight
-    Set GetWindowSize = newVec
+    NewVec.SetVector Me.GameWindow.ScaleWidth, Me.GameWindow.ScaleHeight
+    Set GetWindowSize = NewVec
+End Function
+
+Function GetWindowRelativeScale() As Vector_Class
+    Dim NewVec As New Vector_Class
+    NewVec.X = (Me.GameWindow.Width / Me.GameWindowScaleX)
+    NewVec.Y = (Me.GameWindow.Height / Me.GameWindowScaleY)
+    Set GetWindowRelativeScale = NewVec
 End Function
 
 Sub SetWindowScale(X As Long, Y As Long)
@@ -756,15 +785,6 @@ Sub SetWindowScale(X As Long, Y As Long)
     GameWindow.ScaleHeight = GameWindowScaleY
 End Sub
 
-Function PrintEngineInfo()
-    Me.EConsole.WriteLine "ScriptControl Information"
-    Me.EConsole.WriteLine "Engine Information"
-    Me.EConsole.WriteLine "Engine Version " & App.Major & "." & App.Minor & " " & App.Revision
-    Me.EConsole.WriteLine "Active Scenes Count " & Me.Scenes.Count
-    Me.EConsole.WriteLine "Inactive Scenes Count " & Me.ScenesInactive.Count
-    Me.EConsole.WriteLine "Scripts Count " & Me.Scripts.Count
-End Function
-
 Private Function OnGameStop()
     If Me.RunGameInEditor = False Then
         Unload Me.GameWindow
@@ -773,7 +793,7 @@ Private Function OnGameStop()
     If Me.EngineTimer.IsActive() Then
         Me.EngineTimer.Kill
     End If
-    IsEngineRunning = False
+    IIsEngineRunning = False
     Me.GameWindow.Caption = "Engine [Desing]"
     Me.EConsole.WriteLine "Engine Stopped"
     Set Me.GameWindow = Me.EditorWindow
@@ -963,7 +983,7 @@ Function GetFolder(Path As String) As Folder
 End Function
 
 Private Function OnGameLoad()
-    IsEngineRunning = True
+    IIsEngineRunning = True
     OpenGameWindow
     Me.GameWindow.Caption = Me.ProjectName
     If Me.IsInEditor Then
@@ -1279,14 +1299,16 @@ Private Sub CodeEngine_Error()
 End Sub
 
 Private Sub CodeEngine_Timeout()
-    If Me.IsEngineRunning Then
+    If IIsEngineRunning Then
         Me.EndGame
     End If
     RaiseEvent OnTimeout
 End Sub
 
+' Editor Events
+
 Private Sub EditorWindow_KeyDown(KeyCode As Integer, Shift As Integer)
-    If Me.IsEngineRunning Then
+    If IIsEngineRunning Then
         Exit Sub
     End If
     If KeyCode = vbKeyUp Then
@@ -1304,7 +1326,7 @@ Private Sub EditorWindow_KeyDown(KeyCode As Integer, Shift As Integer)
 End Sub
 
 Private Sub EditorWindow_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    If Me.IsEngineRunning = False Then
+    If IIsEngineRunning = False Then
         If Button = 1 Then
             Me.EditorGetSelectedObject X, Y
             If Me.GetSelectedObject() Is Nothing Then
@@ -1319,7 +1341,7 @@ Private Sub EditorWindow_MouseDown(Button As Integer, Shift As Integer, X As Sin
 End Sub
 
 Private Sub EditorWindow_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    If Me.IsEngineRunning = False Then
+    If IIsEngineRunning = False Then
         If Button = 1 Then
             If Not Me.GetSelectedObject() Is Nothing Then
                 Me.EditorWindow.Cls
@@ -1334,12 +1356,14 @@ Private Sub EditorWindow_MouseMove(Button As Integer, Shift As Integer, X As Sin
     End If
 End Sub
 
+' End Of Editor Events
+
 Private Sub EngineTimer_Update()
     EngineUpdate
 End Sub
 
 Private Sub GameWindow_KeyDown(KeyCode As Integer, Shift As Integer)
-    If Me.IsEngineRunning Then
+    If IIsEngineRunning Then
         If KeyCode = 27 Then
             Me.EndGame
         End If
@@ -1372,3 +1396,9 @@ End Sub
 Private Sub GameWindow_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
     RaiseEvent MouseUp(Button, X, Y)
 End Sub
+
+Sub About()
+    EConsole.WriteLine "VBCE Version " & App.Major & "." & App.Minor & "." & App.Revision
+    EConsole.WriteLine "VBCE Made By Sami Nissinen(Finhunter7) 2025-2025"
+End Sub
+

@@ -20,15 +20,11 @@ Private User_Modules As New Collection
 
 Function Invoke(ParamArray IArgs() As Variant) As Variant  'Args() As Variant
     On Error Resume Next
-    For i = 1 To S_Modules.Count
-        If Not S_Modules.Item(i) Is Nothing Then
-            If UBound(IArgs) = -1 Then
-                Invoke = CallByName(S_Modules.Item(i), EventClassName & "_" & ExecuteProc, VbMethod)
-            Else
-                Invoke = CallByName(S_Modules.Item(i), EventClassName & "_" & ExecuteProc, VbMethod, IArgs())
-            End If
+    For Each Item In S_Modules
+        If UBound(IArgs) = -1 Then
+            Invoke = CallByName(Item, EventClassName & "_" & ExecuteProc, VbMethod)
         Else
-            RemoveUser i
+            Invoke = CallByName(Item, EventClassName & "_" & ExecuteProc, VbMethod, IArgs())
         End If
     Next
     For i = 1 To User_Modules.Count

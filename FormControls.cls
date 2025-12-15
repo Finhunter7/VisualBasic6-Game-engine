@@ -30,6 +30,13 @@ Function AddFrame(Form As Form, Name As String) As Frame
     Set AddFrame = CFrame
 End Function
 
+Function AddMenu(Form As Form, Name As String) As Menu
+    Dim NMenu As Menu
+    
+    Set NMenu = Form.Controls.Add("VB.Menu")
+    Set AddMenu = NMenu
+End Function
+
 Function AddButton(Form As Form, Name As String) As FormControlsButton_Class
     Dim CButton As New FormControlsButton_Class
     CButton.Build Name
