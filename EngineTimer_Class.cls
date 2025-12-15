@@ -11,6 +11,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+' This Code Under Should Be Rewriten And Removed When Better Solution Is Found
+
 Public Event Update()
 Public Interval As Double
 Private IntervalTime As Double

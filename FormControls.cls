@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Function CreateForm(Name As String) As FormForVBS_Class
     Dim CForm As New FormForVBS_Class
     CForm.Name = Name
-    Set CForm.CForm = New NewForm
+    Set CForm.Form = New NewForm
     Set CreateForm = CForm
 End Function
 

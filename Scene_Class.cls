@@ -40,12 +40,6 @@ Public EditorCameraPosition As New Vector_Class
 Public Camera As Object
 Public Gravity As New Vector_Class
 
-Enum ObjectPresets
-    SEmpty = 0
-    SPlane = 1
-    Cube = 2
-    SCircle = 3
-End Enum
 
 Sub CreateFromScene(SceneObj As Scene_Class)
     With SceneObj
@@ -96,9 +90,10 @@ Sub RedrawObjects()
     Next
 End Sub
 
-Sub SetCamera(CameraObject As Object)
+Function SetCamera(CameraObject As Object) As Object
     Set Camera = CameraObject
-End Sub
+    Set SetCamera = CameraObject
+End Function
 
 Sub ChangeEditorCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
     Me.EditorCameraPosition.AddVector AddX, AddY, AddZ
@@ -143,77 +138,6 @@ Attribute DeleteObject.VB_Description = "Deletes GameObject From Objects Collect
     Me.Objects.Remove ID
     'RaiseEvent OnObjectRemove(ID)
 End Sub
-
-Function CreateNewObject(objname As String, Optional SpawnPos As Vector_Class, Optional Parent As GameObject_Class, Optional Preset As ObjectPresets) As GameObject_Class ' Käytä Tätä Vain Uuden Luomisessa
-    Dim CnewObject As New GameObject_Class
-    Dim CnewObject2 As New GameObject_Class
-    Dim NewMesh As String
-    
-    CnewObject.Name = objname
-    CnewObject2.Name = "Hello 12345"
-    'CnewObject.SetParent CnewObject
-    CnewObject.SceneHiearchyPath = Me.Name & "\" & objname
-    Set CnewObject.MyScene = Me
-    
-    If SpawnPos Is Nothing Then
-        CnewObject.Position.SetVectorV Me.WorldCenterPos
-    Else
-        CnewObject.Position.SetV SpawnPos
-    End If
-    
-    On Error Resume Next
-    
-    Me.Objects.Add CnewObject, CnewObject.Name
-    'Me.GameEngine.GameObjects.Add CnewObject, Me.Name & "_" & CnewObject.Name
-    Dim MeshRendererComp As New Component_Class
-    Dim MeshScript As New Script_Class
-    MeshScript.Tag = "RendererScript"
-    
-    CnewObject.AddComponent MeshScript
-    If Preset = SEmpty Then 'Empty
-        'CnewObject.ChangeMeshCode CnewObject.MeshCode, Me.GameEngine.CodeEngine
-    
-    ElseIf Preset = SPlane Then
-        MeshScript.Name = Me.Name & "_" & CnewObject.Name & "_Mesh"
-        NewMesh = vbNewLine & "Sub Draw() 'Same as Update but executed after Update" & vbNewLine & "Engine.DrawClass.DrawBoxV Me.Position,Me.Position.VClone().AddVector(500,500,0)" & vbNewLine & "End Sub" & vbNewLine & vbNewLine & "Sub EditorDraw()" & vbNewLine & "Draw()" & vbNewLine & "End Sub"
-        MeshScript.Data = NewMesh
-        Me.GameEngine.Mesh_Scripts.Add MeshScript, MeshScript.Name
-        Set MeshScript.MyObject = CnewObject
-        CnewObject.Components.Add MeshScript, "Mesh_Code"
-    ElseIf Preset = SCircle Then 'Circle
-        MeshScript.Name = Me.Name & "_" & CnewObject.Name & "_Mesh"
-        NewMesh = vbNewLine & "Sub Draw() 'Same as Update but executed after Update" & vbNewLine & "Engine.GameWindow.Circle 2,Me.Position.X ,Me.Position.Y,100,VbRed,Me.Position.X,Me.Position.Y,1" & vbNewLine & "End Sub" & vbNewLine & vbNewLine & "Sub EditorDraw()" & vbNewLine & "Draw()" & vbNewLine & "End Sub"
-        MeshScript.Data = NewMesh
-        Me.GameEngine.Mesh_Scripts.Add MeshScript, MeshScript.Name
-        Set MeshScript.MyObject = CnewObject
-        CnewObject.Components.Add MeshScript, "Mesh_Code"
-        
-        'CnewObject.ChangeMeshCode NewMesh, Me.GameEngine.CodeEngine
-    ElseIf Preset = Cube Then
-        MeshScript.Name = Me.Name & "_" & CnewObject.Name & "_Mesh"
-        NewMesh = vbNewLine & _
-        "Sub Draw() 'Same as Update but executed after Update" & vbNewLine & _
-        "Engine.DrawClass.DrawBoxV Me.Position,Me.Position.VClone().AddVector(1000,1000,0)" & vbNewLine & _
-        "Engine.DrawClass.DrawLineV Me.Position,Me.Position.VClone().AddVector(250,250,0)" & vbNewLine & _
-        "Engine.DrawClass.DrawLineV Me.Position.VClone().AddVector(1000,0,0),Me.Position.VClone().AddVector(1500,250,0)" & vbNewLine & _
-        "Engine.DrawClass.DrawBoxV Me.Position.VClone().AddVector(250,250,0),Me.Position.VClone().AddVector(1500,1500,0)" & vbNewLine & _
-        "Engine.DrawClass.DrawLineV Me.Position.VClone().AddVector(0,1000,0),Me.Position.VClone().AddVector(250,1500,0)" & vbNewLine & _
-        "End Sub" & vbNewLine & vbNewLine & _
-        "Sub EditorDraw()" & vbNewLine & _
-        "Draw()" & vbNewLine & _
-        "End Sub"
-        MeshScript.Data = NewMesh
-        Me.GameEngine.Mesh_Scripts.Add MeshScript, MeshScript.Name
-        Set MeshScript.MyObject = CnewObject
-        CnewObject.Components.Add MeshScript, "Mesh_Code"
-        
-    Else
-    
-    End If
-    
-    Me.GameEngine.RefreshChanges
-    Set CreateNewObject = CnewObject
-End Function
 
 Private Sub Class_Initialize()
     OnSceneLoad

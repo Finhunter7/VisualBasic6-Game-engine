@@ -37,6 +37,6 @@ Private Sub Class_Initialize()
     Events.CreateEvent "OnChange"
 End Sub
 
-Private Sub Text_Change()
+Private Sub TextBox_Change()
     Events.Item("OnChange").Invoke
 End Sub
