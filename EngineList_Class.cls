@@ -58,14 +58,14 @@ End Function
 'End Sub
 
 Public Sub Using(Class As String)
-
+    
 End Sub
 
-Public Sub UsingSystem(Class As String)
-
+Public Sub UsingSystem(Class As String, Optional Server As String)
+    'Set UsingSystem = CreateObject(Class, Server)
 End Sub
 
-Public Sub Import(ModuleFile As String)
-
-End Sub
+Public Function Import(FilePath As String, Optional Class As String) As Object
+    'Set Import = GetObject(FilePath, Class)
+End Function
 

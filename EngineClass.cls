@@ -133,6 +133,7 @@ Enum ProjectTypes
     VBCEVideoProject = 2
     VBCEDX8GameProject = 3
     VBCEDX11GameProject = 4
+    VBCEFormsProject = 5
 End Enum
 
 Enum SceneConstants
@@ -196,6 +197,20 @@ Function GetReference(NameOrID) As Object
     Else
         Set GetReference = Me.EngineRefrences.Item(NameOrID).Refrence
     End If
+End Function
+
+Function CreateNewReference(Name As String, Class As String, Optional Server As String) As Boolean
+    Dim newRef As New EngineRefrence_Class
+    On Error GoTo Error1
+    newRef.Name = Name
+    newRef.RefrenceClass = Class
+    newRef.Server = Server
+    Set newRef.Refrence = CreateObject(Class, Server)
+    Me.EngineRefrences.Add newRef, Name
+    CreateNewReference = True
+    Exit Function
+Error1:
+    CreateNewReference = False
 End Function
 
 ' Editor Stuff
@@ -427,6 +442,14 @@ Sub UnloadScene(SceneName As String)
     EndScene SceneName
     Me.ScenesInactive.Remove SceneName
     RaiseEvent OnDataChanged
+End Sub
+
+Sub ResetScene(ID)
+    
+End Sub
+
+Sub PauseScene(ID)
+
 End Sub
 
 Function RemoveScript(TScriptName As String)
@@ -778,9 +801,10 @@ Function GetWindowRelativeScale() As Vector_Class
     Set GetWindowRelativeScale = NewVec
 End Function
 
-Sub SetWindowScale(X As Long, Y As Long)
+Sub SetWindowScale(X As Long, Y As Long, Optional ScaleUnit As ScaleModeConstants)
     GameWindowScaleX = X
     GameWindowScaleY = Y
+    GameWindow.ScaleMode = ScaleUnit
     GameWindow.ScaleWidth = GameWindowScaleX
     GameWindow.ScaleHeight = GameWindowScaleY
 End Sub
@@ -984,8 +1008,11 @@ End Function
 
 Private Function OnGameLoad()
     IIsEngineRunning = True
-    OpenGameWindow
-    Me.GameWindow.Caption = Me.ProjectName
+    
+    If ProjectType = VBCEGameProject Then
+        OpenGameWindow
+        Me.GameWindow.Caption = Me.ProjectName
+    End If
     If Me.IsInEditor Then
         Me.EConsole.WriteLine "Engine Started"
         Me.EditorWindow.Caption = "Engine Running"

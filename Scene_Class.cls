@@ -149,7 +149,3 @@ Private Sub OnSceneLoad()
     Set Camera = Nothing
     Layers(1) = True
 End Sub
-
-Private Sub GameEngine_OnDataChanged()
-
-End Sub
