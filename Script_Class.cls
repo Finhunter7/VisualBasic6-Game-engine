@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 'Implements IScript_Class
-Public Name As String ' Scriptin Nimi
+Private IName As String ' Scriptin Nimi
 Public Tag As String
 Private IData As String ' Scriptin koodi
 Public Index As Long ' Ei Käytössä
@@ -22,6 +22,14 @@ Public ScriptPriority As Long
 Public MyModule As Module
 Public MyObject As Object
 Public Active As Boolean
+
+Public Property Get Name() As String
+    Name = IName
+End Property
+
+Friend Property Let Name(RHS As String)
+    IName = RHS
+End Property
 
 Public Property Get Data() As String
     Data = IData
@@ -34,11 +42,11 @@ End Property
 
 Private Sub CountKeysStat()
     Dim Vars As Variant
-    Dim pos As Long
+    Dim Pos As Long
     Vars = Array("Dim", "Private", "Public")
     For Each Var In Vars
-        Do Until pos > Len(IData)
-            pos = InStr(pos + Len(Var), IData, Var, vbTextCompare)
+        Do Until Pos > Len(IData)
+            Pos = InStr(Pos + Len(Var), IData, Var, vbTextCompare)
         Loop
         
     Next

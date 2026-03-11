@@ -13,6 +13,17 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private GameEngine As EngineClass
 Private FileSystem As FileSystemObject
+Private ProgramFolder As Folder
+Private Actions() As Integer
+Private ActionCount As Integer
+
+Enum EditorActions
+    CreateNewScript = 0
+    CreateNewObject = 1
+    CreateNewScene = 2
+    EditObject = 3
+End Enum
+
 
 Enum BrowserTypes
     SolutionBrowser = 0
@@ -29,6 +40,100 @@ Enum SBTActions
     SBTBringFront = 4
     SBTBringBack = 5
 End Enum
+
+Public Sub RecordAction(EditorAction As EditorActions)
+    ActionCount = ActionCount + 1
+    Actions(ActionCount) = EditorAction
+End Sub
+
+Private Sub CreateFolderStructure(Path As String)
+    If ToPath = "" Then
+        If FileSystem.FolderExists(App.Path & "\Build\" & GameEngine.ProjectName) Then
+            FileSystem.DeleteFolder App.Path & "\Build\" & GameEngine.ProjectName
+        End If
+        If Not FileSystem.FolderExists(App.Path & "\Build") Then
+            Set ProgramFolder = FileSystem.CreateFolder(App.Path & "\Build").SubFolders.Add(GameEngine.ProjectName)
+        Else
+            Set ProgramFolder = FileSystem.CreateFolder(App.Path & "\Build\" & GameEngine.ProjectName)
+        End If
+        
+        ProgramFolder.SubFolders.Add "Scripts"
+        ProgramFolder.SubFolders.Add "Scenes"
+        ProgramFolder.SubFolders.Add "Objects"
+        ProgramFolder.SubFolders.Add "Assets"
+    Else
+        Set ProgramFolder = FileSystem.CreateFolder(ToPath)
+        ProgramFolder.SubFolders.Add "Scripts"
+        ProgramFolder.SubFolders.Add "Scenes"
+        ProgramFolder.SubFolders.Add "Objects"
+        ProgramFolder.SubFolders.Add "Assets"
+    End If
+End Sub
+
+Public Sub BuildProgram(Optional ToPath As String)
+    Dim dataStream As TextStream
+    On Error GoTo CPrompt
+    'Dim Progress As New StatusDialog
+    'Progress.PRGBar_Show "Build", StatusdlgCancel
+    'Progress.PRGBar_SetValue 0, 100, ""
+    GameEngine.Console.WriteLine "Build " & GameEngine.ProjectName & " Started"
+    GameEngine.Console.WriteLine "Building folder structure"
+    CreateFolderStructure ToPath
+    GameEngine.Console.WriteLine "Building folder structure done"
+    GameEngine.Console.WriteLine "Creating executable"
+    
+    FileSystem.CopyFile App.Path & "\VBCEPlayer.exe", ProgramFolder.Path & "\VBCEPlayer.exe", True
+    GameEngine.Console.WriteLine "Creating executable done"
+    
+    Set dataStream = ProgramFolder.CreateTextFile(GameEngine.ProjectName & ".VBS", True, False)
+    dataStream.WriteLine ""
+    dataStream.WriteLine "Sub Initialize()"
+    With GameEngine
+        dataStream.WriteLine "Engine.ProjectName = " & Chr(34) & .ProjectName & Chr(34)
+        dataStream.WriteLine "Engine.SetTargetFramerate " & .GetTargetFramerate
+    End With
+    dataStream.WriteLine "End Sub"
+    dataStream.Close
+    Set dataStream = ProgramFolder.CreateTextFile("Project.VBCEProject", True, False)
+    With GameEngine
+        dataStream.WriteLine .GetCodeLanguage
+        dataStream.WriteLine "\ObjectHandler.VBS"
+        dataStream.WriteLine "\" & GameEngine.ProjectName & ".VBS"
+        dataStream.WriteLine "\Scenes\" & "Scenes" & ".VBS"
+    End With
+    dataStream.Close
+    
+    Set dataStream = ProgramFolder.CreateTextFile("ObjectHandler.VBS", True, False)
+    dataStream.Write LoadResString(1)
+    dataStream.Close
+    
+    For Each Item In GameEngine.Scripts
+        Set dataStream = ProgramFolder.SubFolders("Scripts").CreateTextFile(Item.Name & ".VBS", True, False)
+        dataStream.Write Item.Data
+        dataStream.Close
+    Next
+    Set dataStream = ProgramFolder.SubFolders("Scenes").CreateTextFile("Scenes" & ".VBS", True, False)
+    For Each Item In GameEngine.ScenesInactive
+        'Set dataStream = ProgramFolder.SubFolders("Scenes").CreateTextFile(Item.Name & ".VBS", True, False)
+        dataStream.WriteLine "Set ThisScene = Engine.CreateNewScene(" & Chr(34) & Item.Name & Chr(34) & ")"
+        For Each Obj In Item.Objects
+            dataStream.WriteLine ""
+            dataStream.WriteLine "Set ThisObject = ThisScene.AddObject(New " & Obj.Name & ")"
+            dataStream.WriteLine "ThisObject.Position.SetVector " & Obj.Position.X & "," & Obj.Position.Y & "," & Obj.Position.Z
+            dataStream.WriteLine "ThisObject.Active = " & Obj.Active
+            dataStream.WriteLine "ThisObject.Visible = " & Obj.Visible
+        Next
+        If Item.IsActive Then
+            dataStream.WriteLine "Engine.AddScene " & Chr(34) & Item.Name & Chr(34)
+        End If
+        dataStream.Close
+    Next
+    GameEngine.Console.WriteLine "Creating program completed"
+    Exit Sub
+CPrompt:
+    GameEngine.Console.WriteLine "Warning. " & Err.Source & " " & Err.Description
+    Resume Next
+End Sub
 
 Public Sub LoadDeveloperTools(TargetGameEngine As EngineClass)
     Set GameEngine = TargetGameEngine
@@ -368,7 +473,7 @@ Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As Browser
         With TreeViewObject.selectedItem
             If .Tag = "Object" Then
                 If .Parent.Tag = "Object" Then
-                    Set tGameObject = GameEngine.GetCurrentScene().Objects(.Parent.text).Child.Item(.text)
+                    'Set tGameObject = GameEngine.GetCurrentScene().Objects(.Parent.text).Child.Item(.text)
                     GameEngine.SelectObject tGameObject
                 Else
                     Set tGameObject = GameEngine.GetCurrentScene().Objects(.text)
@@ -413,7 +518,7 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
                     TreeViewObject.Nodes.Remove .Key
                 ElseIf .Tag = "GameObject" Then
                     If .Parent.Tag = "Folder" Then
-                        GameEngine.ScenesInactive.Item(.Parent.Parent.text).Objects(.text).EndObject
+                        GameEngine.ScenesInactive.Item(.Parent.Parent.text).EndObject .text
                     Else
                         GameEngine.UnloadGameObject .Parent.text & "_" & .text
                     End If
@@ -427,7 +532,7 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
         With TreeViewObject.selectedItem
             If Action = RemoveItem Then
                 If .Tag = "Object" Then
-                    GameEngine.Scenes(.Parent.text).Objects(.text).EndObject
+                    GameEngine.Scenes(.Parent.text).EndObject .text
                     TreeViewObject.Nodes.Remove .Key
                 ElseIf .Tag = "Scene" Then
                     GameEngine.Scenes(.text).EndScene

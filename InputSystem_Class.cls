@@ -15,15 +15,15 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 Private WithEvents GameEngine As EngineClass
 Attribute GameEngine.VB_VarHelpID = -1
-Public KeysDown As New Collection
-Public KeysUp As New Collection
-Public KeysPressed As New Collection
-Public MouseX As Single
-Public MouseY As Single
-Public MouseButtonDown As Integer
+Private IKeysDown As New Collection
+Private IKeysUp As New Collection
+Private IKeysPressed As New Collection
+Private IMouseX As Single
+Private IMouseY As Single
+Private IMouseButtonDown As Integer
 
 ' Events For VBS And JS
-Public Events As New EventManager_Class
+Private IEvents As New EventManager_Class
 'Public OnMouseDownEvent As New EngineEvent_Class
 'Public OnKeyDownEvent As New EngineEvent_Class
 
@@ -40,13 +40,45 @@ Public Enum InputSystemKeyConstants
     
 End Enum
 
+Public Property Get MouseX() As Single
+    MouseX = IMouseX
+End Property
+
+Public Property Get MouseY() As Single
+    MouseY = IMouseY
+End Property
+
+Public Property Get MouseButtonDown() As Integer
+    MouseButtonDown = IMouseButtonDown
+End Property
+
+Public Property Get KeysDown() As Collection
+    Set KeysDown = IKeysDown
+End Property
+
+Public Property Get KeysUp() As Collection
+    Set KeysUp = IKeysUp
+End Property
+
+Public Property Get KeysPressed() As Collection
+    Set KeysPressed = IKeysPressed
+End Property
+
+Public Property Get Events() As EventManager_Class
+    Set Events = IEvents
+End Property
+
+Private Property Set Events(RHS As EventManager_Class)
+    Set IEvents = RHS
+End Property
+
 Sub SetEngine(Engine As EngineClass)
     Set GameEngine = Engine
 End Sub
 
 Function IsKeyDown(Key As Integer) As Boolean
-    For i = 1 To Me.KeysDown.Count
-        If Me.KeysDown.Item(i) = Key Then
+    For i = 1 To IKeysDown.Count
+        If IKeysDown.Item(i) = Key Then
             IsKeyDown = True
             Exit Function
         End If
@@ -56,13 +88,13 @@ End Function
 
 Function GetMousePosition() As Vector_Class
     Dim m_Pos As New Vector_Class
-    m_Pos.X = Me.MouseX
-    m_Pos.Y = Me.MouseY
+    m_Pos.X = IMouseX
+    m_Pos.Y = IMouseY
     Set GetMousePosition = m_Pos
 End Function
 
 Function IsMouseButtonDown(Button As Integer) As Boolean
-    If Button = Me.MouseButtonDown Then
+    If Button = IMouseButtonDown Then
         IsMouseButtonDown = True
     Else
         IsMouseButtonDown = False
@@ -71,9 +103,9 @@ End Function
 
 Private Sub Class_Initialize()
     ' Create Events
-    Me.Events.ChangeClassName "InputSystem"
-    Me.Events.CreateEvent "OnMouseDown"
-    Me.Events.CreateEvent "OnKeyDown"
+    IEvents.ChangeClassName "InputSystem"
+    IEvents.CreateEvent "OnMouseDown"
+    IEvents.CreateEvent "OnKeyDown"
     'OnMouseDownEvent.EventClassName = "InputSystem"
     'OnMouseDownEvent.ExecuteProc = "OnMouseDown"
     'OnKeyDownEvent.EventClassName = "InputSystem"
@@ -82,37 +114,37 @@ End Sub
 
 Private Sub GameEngine_KeyDown(KeyCode As Integer)
     On Error Resume Next
-    Me.KeysDown.Add KeyCode, "Key_" & KeyCode
+    IKeysDown.Add KeyCode, "Key_" & KeyCode
     'OnKeyDownEvent.Invoke KeyCode
-    Me.Events.Item("OnKeyDown").Invoke KeyCode
+    IEvents.Item("OnKeyDown").Invoke KeyCode
 End Sub
 
 Private Sub GameEngine_KeyUp(KeyCode As Integer)
     On Error Resume Next
-    Me.KeysDown.Remove "Key_" & KeyCode
+    IKeysDown.Remove "Key_" & KeyCode
 End Sub
 
 Private Sub GameEngine_MouseDown(Button As Integer, X As Single, Y As Single)
-    MouseButtonDown = Button
-    Me.Events.Item("OnMouseDown").Invoke Button, X, Y
+    IMouseButtonDown = Button
+    IEvents.Item("OnMouseDown").Invoke Button, X, Y
 End Sub
 
 Private Sub GameEngine_MouseMove(Button As Integer, X As Single, Y As Single)
-    MouseX = X
-    MouseY = Y
+    IMouseX = X
+    IMouseY = Y
 End Sub
 
 Private Sub GameEngine_MouseUp(Button As Integer, X As Single, Y As Single)
-    MouseButtonDown = 0
+    IMouseButtonDown = 0
 End Sub
 
 Private Sub GameEngine_OnGameEnd()
-    Me.Events.Reload
+    IEvents.Reload
 End Sub
 
 Sub ClearKeysDown()
-    For i = 1 To Me.KeysDown.Count
-        Me.KeysDown.Remove i
+    For i = 1 To IKeysDown.Count
+        IKeysDown.Remove i
     Next
 End Sub
 

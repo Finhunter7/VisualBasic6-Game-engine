@@ -81,7 +81,6 @@ Begin VB.MDIForm MainWindow
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             Bevel           =   0
-            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -523,7 +522,6 @@ Begin VB.MDIForm MainWindow
       End
       Begin VB.Menu mnuBuildProject1 
          Caption         =   "Build Project..."
-         Enabled         =   0   'False
       End
       Begin VB.Menu mnuRenderTo1 
          Caption         =   "Render Project..."
@@ -737,7 +735,6 @@ Begin VB.MDIForm MainWindow
    End
    Begin VB.Menu Browsermnu1 
       Caption         =   "Browser"
-      Visible         =   0   'False
       Begin VB.Menu BmnuCreateNew1 
          Caption         =   "Create New"
          Begin VB.Menu BmnuScript1 
@@ -847,6 +844,7 @@ Private Sub Engine_OnProjectOpen()
 End Sub
 
 Private Sub MDIForm_Load()
+    Me.Browsermnu1.Visible = False
     Set Engine = New EngineClass
     OnLoad
     Form1.Show
@@ -894,6 +892,26 @@ Private Sub mnuAddComScript1_Click()
         "Set Component = New CustomComponent"
 End Sub
 
+Private Sub mnuAddExistingObj1_Click()
+    On Error GoTo aerror
+    Dim ObjectName As String
+    Dim Choise As VbMsgBoxResult
+    ObjectName = InputBox("Object Class Name In Global Script", "AddObject")
+    If ObjectName = "" Or Engine.Scenes.Count < 1 Then
+        Exit Sub
+    Else
+        Choise = MsgBox("Do You Want To Create Copy Of " & ObjectName & " Or Single Instance", vbYesNo + vbQuestion, "AddObject Action")
+        If Choise = vbYes Then
+            Engine.CodeEngine.ExecuteStatement "Engine.GetCurrentScene().AddObject New " & ObjectName
+        Else
+            Engine.CodeEngine.ExecuteStatement "Engine.GetCurrentScene().AddObject New " & ObjectName & ", " & Chr(34) & ObjectName & Chr(34)
+        End If
+    End If
+    Exit Sub
+aerror:
+    Exit Sub
+End Sub
+
 Private Sub mnuAddFile1_Click()
     Dim curFile As String
     Dim TScene As Scene_Class
@@ -936,6 +954,10 @@ Private Sub mnuArrangeIcons1_Click()
     Me.Arrange vbArrangeIcons
 End Sub
 
+Private Sub mnuBuildProject1_Click()
+    EditorClass.BuildProgram
+End Sub
+
 Private Sub mnuCascade1_Click()
     Me.Arrange vbCascade
 End Sub
@@ -953,6 +975,7 @@ Private Sub mnuCloseProject1_Click()
     If Not Me.Engine Is Nothing Then
         If MsgBox("Are you sure", vbYesNo, "Close Project") = vbYes Then
             Set Engine = Nothing
+            Set Engine = New EngineClass
             EditorClass.LoadDeveloperTools Engine
         End If
     End If
@@ -965,10 +988,10 @@ Private Sub mnuCodeEditor1_Click()
 End Sub
 
 Private Sub mnuConsole1_Click()
-    Engine.EConsole.Show
-    Engine.EConsole.DisplayMessage
-    If Engine.EConsole.WindowState = 1 Then
-        Engine.EConsole.WindowState = 0
+    Engine.Console.Show
+    Engine.Console.DisplayMessage
+    If Engine.Console.WindowState = 1 Then
+        Engine.Console.WindowState = 0
     End If
 End Sub
 
@@ -1133,12 +1156,12 @@ Private Sub mnuRemove1_Click()
 End Sub
 
 Private Sub mnuRender1_Click()
-    Engine.RenderScene InputBox("Render Frames")
+    'Engine.RenderScene InputBox("Render Frames")
     Form1.Show
 End Sub
 
 Private Sub mnuRenderTo1_Click()
-    Engine.RenderScene InputBox("Render Frames"), FileBrowser1.SaveToDir(Me)
+    'Engine.RenderScene InputBox("Render Frames"), FileBrowser1.SaveToDir(Me)
 End Sub
 
 Private Sub mnuResume1_Click()

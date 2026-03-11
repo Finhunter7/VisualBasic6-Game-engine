@@ -225,11 +225,11 @@ Private Sub mnuCircle1_Click()
                 curObject.Child.Add newChild, NewObjectName
                 
             ElseIf .Tag = "Scene" Then
-                Set thisScene = GameEngine.Scenes(.text)
-                NewObjectName = InputBox("Object Name")
+                'Set thisScene = GameEngine.Scenes(.text)
+                'NewObjectName = InputBox("Object Name")
                 
-                Set newObject = thisScene.CreateNewObject(NewObjectName, , , 1)
-                Set newObject.MyScene = thisScene
+                'Set newObject = thisScene.CreateNewObject(NewObjectName, , , 1)
+                'Set newObject.MyScene = thisScene
                 'newObject.ChangeMeshCode NewMesh, Me.GameEngine.CodeEngine
             End If
         End With
@@ -271,7 +271,7 @@ Private Sub mnuEmpty1_Click()
                 Set thisScene = GameEngine.Scenes(TreeView1.selectedItem.text)
                 NewObjectName = InputBox("Object Name")
                 
-                Set newObject = thisScene.CreateNewObject(NewObjectName)
+                'Set newObject = thisScene.CreateNewObject(NewObjectName)
                 Set newObject.MyScene = thisScene
                 'Set IGameObject = newObject
                 'IGameObject.Load Me.GameEngine.CodeEngine
@@ -283,44 +283,8 @@ Private Sub mnuEmpty1_Click()
     End If
 End Sub
 
-Function AddObject(PresetNum As ObjectPresets)
-    Dim thisScene As Scene_Class
-    Dim newObject As GameObject_Class
-    Dim curObject As GameObject_Class
-    Dim NewObjectName As String
-    Dim selObject As Node
+Function AddObject()
     
-    'Dim NewMesh As String
-    'NewMesh = vbNewLine & "Sub Draw()" & vbNewLine & "Engine.GameWindow.Circle 2,Me.Position.X ,Me.Position.Y,100,VbRed,Me.Position.X,Me.Position.Y,1" & vbNewLine & "End Sub"
-    
-    Set selObject = TreeView1.selectedItem
-    
-    If Not selObject Is Nothing Then
-        With selObject
-            If .Tag = "Object" Then
-                Set thisScene = GameEngine.Scenes(.Parent)
-                NewObjectName = InputBox("Child Object Name")
-                
-                Dim newChild As New GameObject_Class
-                'Set newChild.Position = thisScene.Objects(.text).Position
-                Set curObject = thisScene.Objects(.text)
-                Set newChild.ParentObject = curObject
-                newChild.Name = NewObjectName
-                curObject.Child.Add newChild, NewObjectName
-                
-            ElseIf .Tag = "Scene" Then
-                Set thisScene = GameEngine.Scenes(.text)
-                NewObjectName = InputBox("Object Name")
-                
-                Set newObject = thisScene.CreateNewObject(NewObjectName, , , PresetNum)
-                Set newObject.MyScene = thisScene
-                'newObject.ChangeMeshCode NewMesh, Me.GameEngine.CodeEngine
-            End If
-        End With
-        Me.Update
-    Else
-        MsgBox "Please select valid scene", vbExclamation
-    End If
 End Function
 
 Private Sub mnuOC1_Click()

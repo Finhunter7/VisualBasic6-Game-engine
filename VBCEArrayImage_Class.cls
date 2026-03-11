@@ -41,8 +41,8 @@ Sub DrawLine(StartPos As Vector_Class, EndPos As Vector_Class, Color As Long)
 End Sub
 
 Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As Long, ScaleFactor As Integer)
-    Dim Render As New ImageRenderWindow
-    Dim StatusDia As New StatusDialog
+    Dim Render As New NewForm
+    'Dim StatusDia As New StatusDialog
     Dim PixelDenX As Double
     Dim PixelDenY As Double
     'Me.ResizeImage Picture.Width / OScaleX, Picture.Height / OScaleY
@@ -73,22 +73,22 @@ Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As L
             SetPixelColor CLng(PCol), CLng(PLine), CLng(Render.Point(PCol * PixelDenX, PLine * PixelDenY))
             DoEvents
         Next
-        StatusDia.PRGBar_SetValue CLng(PLine), CLng(SizeY), "Rendering "
-        If StatusDia.IsOperationCanceled Then
-            Exit For
-            Exit For
-            Render.Hide
-            StatusDia.Hide
-            Set CreateFromImage = Nothing
-            Exit Function
-        End If
+        'StatusDia.PRGBar_SetValue CLng(PLine), CLng(SizeY), "Rendering "
+        'If StatusDia.IsOperationCanceled Then
+            'Exit For
+            'Exit For
+            'Render.Hide
+            'StatusDia.Hide
+            'Set CreateFromImage = Nothing
+            'Exit Function
+        'End If
     Next
     Render.Hide
-    StatusDia.Hide
+    'StatusDia.Hide
     Set CreateFromImage = Me
 End Function
 
-Sub RenderTo(TargetObject As Object, Pos As Vector_Class, newScaleX As Double, newScaleY As Double)
+Sub RenderTo(TargetObject As Object, Pos As Variant, newScaleX As Double, newScaleY As Double)
     For PLine = 1 To SizeY
         For PCol = 1 To SizeX
             'MainWindow.Engine.GameWindow.PSet (PCol * newScaleX, PLine * newScaleY), ImageArray(PCol, PLine)
@@ -99,7 +99,7 @@ Sub RenderTo(TargetObject As Object, Pos As Vector_Class, newScaleX As Double, n
 End Sub
 
 Function ToPicture(ScaleX As Double, ScaleY As Double) As StdPicture
-    Dim ConvertRender As New ImageRenderWindow
+    Dim ConvertRender As New NewForm
     Dim Pos As New Vector_Class
     'Render.ScaleMode = 3
     'ConvertRender.WindowState = 1

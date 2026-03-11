@@ -133,7 +133,7 @@ Attribute DrawBoxCV.VB_Description = "Draws A Non-Solid Box Using X,Y Vectors"
 End Sub
 
 Sub DrawVBCETexture(VBCEArrayImage As Object, Position As Variant, SizeX As Double, SizeY As Double, Optional Rotation As Matrix_Class)
-    'VBCEArrayImage.RenderTo GameEngine.GameWindow, Position, SizeX, SizeY
+    VBCEArrayImage.RenderTo GameEngine.GameWindow, Position, SizeX, SizeY
 End Sub
 
 Sub DrawTextureV(Texture As Object, Position As Variant, Optional Size As Variant)

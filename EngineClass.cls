@@ -73,6 +73,7 @@ Public WithEvents EngineTimer As EngineTimer_Class
 Attribute EngineTimer.VB_VarHelpID = -1
 
 Public GlobalScript As New Script_Class
+Private IIsGlobalScriptDataLoaded As Boolean
 Public GlobalObjects As New Collection
 
 Public WithEvents GameWindow As Form
@@ -86,7 +87,7 @@ Private EditorSelectedObject As Object
 'Public ProjectBrowser As Form
 'Public SceneBrowser As Form
 Public SettingsWindow As Form
-Public EConsole As Form
+Private EConsole As Console
 
 Public InputSystem As New InputSystem_Class
 Public DrawClass As New Draw_Class
@@ -105,6 +106,7 @@ Private EngineUtil_Class As New EngineUtils_Class
 
 Public Scenes As New Collection ' Aktiiviset Scenet
 Public ScenesInactive As New Collection
+Public SceneHander As Object
 'Private SceneRestorePoint As New Collection
 
 Public Forms As New Collection
@@ -130,7 +132,7 @@ Private CurrentFrame As Long
 Enum ProjectTypes
     VBCEGameProject = 0
     VBCEScriptProject = 1
-    VBCEVideoProject = 2
+    VBCERenderProject = 2
     VBCEDX8GameProject = 3
     VBCEDX11GameProject = 4
     VBCEFormsProject = 5
@@ -175,7 +177,19 @@ Enum TextureClases
     PictureOrImage = 2
 End Enum
 
+Public Property Get IsGlobalScriptLoaded() As Boolean
+    IsGlobalScriptLoaded = IIsGlobalScriptDataLoaded
+End Property
+Private Property Let IsGlobalScriptLoaded(RHS As Boolean)
+    IIsGlobalScriptDataLoaded = RHS
+End Property
+
+Public Property Get Console() As Console
+    Set Console = EConsole
+End Property
+
 Function GetScene(ID) As Object
+Attribute GetScene.VB_Description = "Gets scene with ID or Name"
     On Error Resume Next
     If Me.Scenes.Count > 0 Then
         Set GetScene = Scenes.Item(ID)
@@ -183,6 +197,7 @@ Function GetScene(ID) As Object
 End Function
 
 Function GetCurrentScene() As Object ' Palauttaa ensimmäisen Scenen
+Attribute GetCurrentScene.VB_Description = "Gets The First Active Scene"
     On Error Resume Next
     If Me.Scenes.Count < 1 Then
         Set GetCurrentScene = Nothing
@@ -323,9 +338,10 @@ Attribute CreateNewScene.VB_Description = "Creates New Inactive Scene"
     
     newScene.Name = thisName
     Set newScene.GameEngine = Me
+    newScene.IsActive = False
     
-    newScene.WorldCenterPos.X = Me.GameWindow.Width / 2
-    newScene.WorldCenterPos.Y = Me.GameWindow.Height / 2
+    newScene.WorldCenterPos.X = Me.GetWindowCenter().X
+    newScene.WorldCenterPos.Y = Me.GetWindowCenter().Y
     
     ScenesInactive.Add newScene, thisName
     Set CreateNewScene = newScene
@@ -368,7 +384,7 @@ Function RenameScene(SceneName As String, NewName As String)
         Me.EndScene SceneName
     End If
     If thisScene Is Nothing Then
-        Me.EConsole.WriteLine "Failed To Rename Scene " & SceneName & " To " & NewName & "Scene Does Not Exist"
+        EConsole.WriteLine "Failed To Rename Scene " & SceneName & " To " & NewName & "Scene Does Not Exist"
         Exit Function
     Else
         thisScene.Name = NewName
@@ -383,7 +399,7 @@ Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
     On Error Resume Next
     Dim newScene As Scene_Class
     If Me.ScenesInactive.Count < 1 Then
-        'Me.EConsole.WriteLine "AddScene " & Str(Name) & " Failed"
+        'EConsole.WriteLine "AddScene " & Str(Name) & " Failed"
         Set AddScene = Nothing
         Exit Function
     End If
@@ -406,7 +422,7 @@ Attribute AddScene.VB_Description = "Makes The Inactive Scene Active"
         'newScene.OnLoad Me.CodeEngine
         'Set AddScene = newScene
     End If
-    newScene.Active = True
+    newScene.IsActive = True
     
     Set AddScene = newScene
     
@@ -426,16 +442,10 @@ Function EndScene(Name) As Boolean
         EndScene = False
     Else
         Me.Scenes.Remove Name
-        Scene.Active = False
+        Scene.IsActive = False
         EndScene = True
     End If
     RaiseEvent OnDataChanged
-End Function
-
-Function CopyScene(Name As String) As Scene_Class
-    Dim newSceneCopy As New Scene_Class
-    newSceneCopy.CreateFromScene Me.ScenesInactive.Item(Name)
-    Set CopyScene = newSceneCopy
 End Function
 
 Sub UnloadScene(SceneName As String)
@@ -444,18 +454,33 @@ Sub UnloadScene(SceneName As String)
     RaiseEvent OnDataChanged
 End Sub
 
-Sub ResetScene(ID)
+Sub ResetScene(ID, MethodName As String, Optional SceneHanderObject As Object = Nothing)
+    On Error Resume Next
+    Dim thisScene As Object
     
+    Set thisScene = Me.ScenesInactive.Item(ID)
+    If thisScene Is Nothing Then
+        Exit Sub
+    End If
+    If thisScene.Active = False Then
+        Me.ScenesInactive.Remove ID
+        If Not SceneHanderObject Is Nothing Then
+            CallByName SceneHanderObject, MethodName, VbMethod
+        Else
+            CallByName SceneHander, MethodName, VbMethod
+        End If
+    End If
 End Sub
 
 Sub PauseScene(ID)
-
+    Me.Scenes.Item(ID).Pause
 End Sub
 
 Function RemoveScript(TScriptName As String)
     On Error Resume Next
     Dim ThisItem As Script_Class
     If Me.Scripts.Count > 0 Then
+    
         Set ThisItem = Me.Scripts.Item(TScriptName)
         If Not ThisItem Is Nothing Then
             Me.Scripts.Remove TScriptName
@@ -528,10 +553,17 @@ Function CreateCustomGameObject(GObject As Variant, Name As String, SceneID) As 
     Set CreateCustomGameObject = GObject
 End Function
 
+Sub LoadGlobalScriptData()
+    On Error Resume Next
+    Me.CodeEngine.AddCode Me.GlobalScript.Data
+    IIsGlobalScriptDataLoaded = True
+End Sub
+
 Function SetGlobalScriptData(Data As String) As Boolean
     On Error Resume Next
     Me.GlobalScript.Data = Data
     Me.CodeEngine.AddCode Me.GlobalScript.Data
+    IIsGlobalScriptDataLoaded = True
 End Function
 
 Sub EditObjectCode(Edit As CodeEditorEnums, Object As GameObject_Class, Optional Scene As Scene_Class)
@@ -580,13 +612,11 @@ Private Sub ScriptEngine_Intialize()
     Me.ProjectType = VBCEGameProject ' Setting The Default Project Type
     'Me.GameWindowSizeX = 640
     'Me.GameWindowSizeY = 480
-    Me.GameWindowScaleX = 640
-    Me.GameWindowScaleY = 480
-    Me.BaseScene = 1
-    TargetFramerate = 60
-    FrameTime = 16
+    'Me.GameWindowScaleX = 640
+    'Me.GameWindowScaleY = 480
     
     IIsEngineRunning = False
+    IIsGlobalScriptDataLoaded = False
     SimulationTime = 0
     
     Dim GlobalObject As CodeEngineObject_Class
@@ -608,12 +638,13 @@ Private Sub ScriptEngine_Intialize()
     EngineUtil_Class.Build Me
     Me.GlobalObjects.Add GlobalObject, GlobalObject.Name
     
-    Set Me.EConsole = Console.CreateNewConsoleInstance(Me) ' Create Console
-    'Me.CodeEngine.AddObject "Console", Me.EConsole, True
+    Set EConsole = New Console 'Console.CreateNewConsoleInstance(Me) 'Console.CreateNewConsoleInstance(Me) ' Create Console
+    EConsole.SetEngine Me
+    'Me.CodeEngine.AddObject "Console", EConsole, True
     
-    Dim GOConsole As New CodeEngineObject_Class
-    GOConsole.Build "Console", Me.EConsole
-    Me.GlobalObjects.Add GOConsole, GOConsole.Name
+    'Dim GOConsole As New CodeEngineObject_Class
+    'GOConsole.Build "Console", EConsole
+    'Me.GlobalObjects.Add GOConsole, GOConsole.Name
     
     For Each Item In Me.GlobalObjects
         Me.CodeEngine.AddObject Item.Name, Item.MyObject, True
@@ -634,7 +665,12 @@ Private Sub ScriptEngine_Intialize()
     Me.DrawClass.SetEngine Me
     Set EngineTimer = New EngineTimer_Class
     Set newGameWindow = New GameWindow
-    Set Me.GameWindow = newGameWindow
+    Set GameWindow = newGameWindow
+    
+    Me.SetWindowScale 640, 480
+    Me.BaseScene = 1
+    TargetFramerate = 60
+    FrameTime = 16
     
     OnEngineLoad
     
@@ -673,7 +709,7 @@ End Sub
 
 Function LoadEngineInEditorMode(TGameWindow As Form, Optional TEditorWindow As Form)
     Me.IsInEditor = True
-    Set Me.GameWindow = TGameWindow
+    Set GameWindow = TGameWindow
     Set Me.EditorWindow = TEditorWindow
 End Function
 
@@ -812,15 +848,15 @@ End Sub
 Private Function OnGameStop()
     If Me.RunGameInEditor = False Then
         Unload Me.GameWindow
-        Set Me.GameWindow = Me.EditorWindow
+        Set GameWindow = Me.EditorWindow
     End If
     If Me.EngineTimer.IsActive() Then
         Me.EngineTimer.Kill
     End If
     IIsEngineRunning = False
     Me.GameWindow.Caption = "Engine [Desing]"
-    Me.EConsole.WriteLine "Engine Stopped"
-    Set Me.GameWindow = Me.EditorWindow
+    EConsole.WriteLine "Engine Stopped"
+    Set GameWindow = Me.EditorWindow
     Me.EditorRefreshScenes
     'Me.CodeEngine.Reset
     'For Each Item In Me.Scenes
@@ -874,11 +910,12 @@ End Function
 Private Sub ReloadCodeEngine()
     Me.CodeEngine.Reset
     Me.CodeEngine.Language = GetCodeLanguage()
+    IIsGlobalScriptDataLoaded = False
     'Me.CodeEngine.AddObject "Engine", Me, True
     'Me.CodeEngine.AddObject "Vector", EVectorClass, True
     'Me.CodeEngine.AddObject "Math", MathClass, True
     'Me.CodeEngine.AddObject "AudioSystem", AudioSystem, True
-    'Me.CodeEngine.AddObject "Console", Me.EConsole, True
+    'Me.CodeEngine.AddObject "Console", EConsole, True
     For Each Obj In Me.GlobalObjects
         Me.CodeEngine.AddObject Obj.Name, Obj.MyObject, True
     Next
@@ -888,12 +925,15 @@ Private Sub ReloadCodeEngine()
             Set Ref.Refrence = CreateObject(Ref.RefrenceClass, Ref.Server)
         End If
     Next
+    If IIsGlobalScriptDataLoaded = False Then
+        Me.SetGlobalScriptData Me.GlobalScript.Data
+    End If
 End Sub
 
 Function CreateModuleFromFile(FileName As String, Optional ExposedObject As Object = Nothing) As Module
 Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module From File"
     Dim FSystem As New FileSystemObject
-    Dim SFile As File
+    Dim SFile As file
     Dim dataStream As TextStream
     Dim CModule As Module
     
@@ -909,10 +949,11 @@ Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module Fr
 End Function
 
 Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
+Attribute OpenProject.VB_Description = "Opens The Project File"
     Dim FileSystem As New FileSystemObject
-    Dim ScriptFile As File
+    Dim ScriptFile As file
     Dim ScriptFileDataStream As TextStream
-    Dim ProjectFile As File
+    Dim ProjectFile As file
     Dim ProjectFileDataStream As TextStream
     Dim Data As String
     Dim SModule As Module
@@ -1014,7 +1055,7 @@ Private Function OnGameLoad()
         Me.GameWindow.Caption = Me.ProjectName
     End If
     If Me.IsInEditor Then
-        Me.EConsole.WriteLine "Engine Started"
+        EConsole.WriteLine "Engine Started"
         Me.EditorWindow.Caption = "Engine Running"
         If Me.GetCurrentScene() Is Nothing Then
             Me.EditorWindow.StatusBar1.Panels(1).text = "Scene: Nothing"
@@ -1038,14 +1079,14 @@ End Function
 
 Private Function OpenGameWindow()
     If RunGameInEditor = False And Me.IsInEditor Then
-        Set Me.GameWindow = newGameWindow
+        Set GameWindow = newGameWindow
         Set Me.GameWindow.Engine = Me
-        Me.GameWindow.Show
-        Me.GameWindow.Refresh
+        GameWindow.Show
+        GameWindow.Refresh
     ElseIf Me.IsInEditor = False Then
-        Set Me.GameWindow.Engine = Me
-        Me.GameWindow.Show
-        Me.GameWindow.Refresh
+        Set GameWindow.Engine = Me
+        GameWindow.Show
+        GameWindow.Refresh
     End If
 End Function
 
@@ -1059,7 +1100,7 @@ End Function
 Sub CheckScriptCode(Script As Script_Class, CodeEditor As Object)
     Dim procs As Procedure
     Dim thisModule As Module
-    Me.EConsole.Show
+    EConsole.Show
     ReloadCodeEngine
     
     On Error GoTo Error1
@@ -1139,7 +1180,7 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     'CreateModules
     
     On Error GoTo GlobalError
-    If IsProjectOpened = False Then
+    If IsProjectOpened = False And IsGlobalScriptLoaded = False Then
         Me.CodeEngine.AddCode Me.GlobalScript.Data
     End If
     On Error GoTo CodeLoadError
@@ -1172,7 +1213,7 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
         thisModule.AddCode thisScript.Data
     Next
     On Error Resume Next
-    For Each Item In Scenes
+    For Each Item In ScenesInactive
         'Set curScene = Me.Scenes.Item(i)
         Item.Load
         'For o = i To curScene.Objects.Count
@@ -1189,7 +1230,9 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
     Next
     
     'loadStatusDialog.Hide
-    Me.EngineTimer.Start
+    If Me.ProjectType = VBCEGameProject Then
+        Me.EngineTimer.Start
+    End If
     Exit Function
     
     
@@ -1202,7 +1245,7 @@ GlobalError:
     Exit Function
 MError:
     MsgBox Me.CodeEngine.Error.Description & " In Object Mesh Code On Line: " & Me.CodeEngine.Error.Line, vbExclamation
-    'Me.EConsole.WriteLine Me.CodeEngine.Error.Description & " In Object Mesh Code On Line: " & Me.CodeEngine.Error.Line
+    'EConsole.WriteLine Me.CodeEngine.Error.Description & " In Object Mesh Code On Line: " & Me.CodeEngine.Error.Line
     'If Me.IsInEditor Then
         'loadStatusDialog.Hide
     'End If
@@ -1214,7 +1257,7 @@ SError:
     
 CodeLoadError:
     MsgBox Me.CodeEngine.Error.Description & " On Line " & Me.CodeEngine.Error.Line, vbExclamation
-    'Me.EConsole.WriteLine Me.CodeEngine.Error.Description & " In " & thisScript.Name & " On Line " & Me.CodeEngine.Error.Line
+    'EConsole.WriteLine Me.CodeEngine.Error.Description & " In " & thisScript.Name & " On Line " & Me.CodeEngine.Error.Line
     'If Me.IsInEditor Then
         'loadStatusDialog.Hide
     'End If
@@ -1245,83 +1288,42 @@ Private Function EngineUpdate()
     ''Me.DrawClass.PrintText 1, 200, "FrameTime: " & Me.GetFrameTime()
 End Function
 
-Function RenderScene(Frames As Long, Optional DestinationPath As String)
-    Dim thisScript As Script_Class
-    Dim curScene As Scene_Class
-    'Dim IGameObject As IObject_Class
-    Dim curGObject As GameObject_Class
-    
-    'Dim loadStatusDialog As StatusDialog
-    'Set loadStatusDialog = CreateStatusDialog("Please Wait... Rendering Scenes")
-    
-    CurrentFrame = 0
-    SimulationTime = 0
-    RenderStart = Timer
-    
-    Me.EditorWindow.Cls
-    Me.EditorWindow.Caption = "Rendering Scenes"
-    ReloadCodeEngine ' Resetoi Koodimoottorin
-    'CreateModules
+Sub RenderProject(Frames As Long, Optional DestinationPath As String)
+    Dim frameInterval As Double
     RaiseEvent OnRenderStart
-    
-    On Error Resume Next
-    Me.CodeEngine.AddCode Me.GlobalScript.Data
-    For i = 1 To Me.Scripts.Count
-        Set thisScript = Me.Scripts.Item(i)
-        Set thisModule = Me.CodeEngine.Modules.Add("Script_" & thisScript.Name, thisScript.MyObject)
-        Set thisScript.MyModule = thisModule
-        'If Me.IsInEditor Then
-            'loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Scripts.Count), "CodeEngine Modules Adding Code "
-        'End If
-        thisModule.AddCode thisScript.Data
-    Next
-    
-    For i = 1 To Me.Mesh_Scripts.Count
-        Set thisScript = Me.Mesh_Scripts.Item(i)
-        Set thisModule = Me.CodeEngine.Modules.Add(thisScript.Name, thisScript.MyObject)
-        Set thisScript.MyModule = thisModule
-        'If Me.IsInEditor Then
-            'loadStatusDialog.PRGBar_SetValue CLng(i), CLng(Me.Mesh_Scripts.Count), "Objects Loading Mesh Code "
-        'End If
-        thisModule.AddCode thisScript.Data
-    Next
-    
-    For i = 1 To Me.Scenes.Count
-        Set curScene = Me.Scenes.Item(i)
-        For O = i To curScene.Objects.Count
-            'Set curGObject = curScene.Objects(O)
-            'Set IGameObject = curGObject
-            'loadStatusDialog.PRGBar_SetValue CLng(O), CLng(curScene.Objects.Count), "Objects Loading Mesh Code "
-            'IGameObject.Load Me.CodeEngine
-        Next
-    Next
-    
-    For i = 1 To Me.Scripts.Count
-        Set thisScript = Me.Scripts.Item(i)
-        'Me.CodeEngine.Modules.Item("Script_" & thisScript.Name).Run "Load"
-        thisScript.MyModule.Run "Load"
-    Next
+    frameInterval = (Timer * 1000)
     
     For f = 1 To Frames
-        EngineUpdate
+        CurrentFrame = CurrentFrame + 1
+        'On Error GoTo SErr32
+        On Error Resume Next
+        For Each Item In Me.Scripts
+            If Item.Active Then
+                Item.MyModule.Run "Update"
+            End If
+        Next
+        For Each cScene In Me.Scenes
+            cScene.Update
+        Next
+        
         If Not DestinationPath = "" Then
             On Error GoTo SaveError
             SavePicture Me.GameWindow.Image, DestinationPath & "\" & f & ".bmp"
+        Else
+            SavePicture Me.GameWindow.Image, App.Path & "\Render\" & f & ".bmp"
         End If
     Next
-    MsgBox "Render Complete", vbInformation
     'loadStatusDialog.Hide
-    Me.EditorWindow.Caption = "Render Result"
     RaiseEvent OnRenderEnd
-    Exit Function
+    Exit Sub
     
 SaveError:
-    Me.EConsole.WriteLine "Failed To Save Frame " & f & DestinationPath & f & ".bmp" '& " Reason " & ErrObject.Description
+    EConsole.WriteLine "Failed To Save Frame " & f & DestinationPath & f & ".bmp" '& " Reason " & ErrObject.Description
     Resume Next
-End Function
+End Sub
 
 Private Sub CodeEngine_Error()
-    Me.EConsole.WriteLine "Warning. " & Me.CodeEngine.Error.Source & " " & Me.CodeEngine.Error.Description & " In Line " & CodeEngine.Error.Line
+    EConsole.WriteLine "Warning. " & Me.CodeEngine.Error.Source & " " & Me.CodeEngine.Error.Description & " In Line " & CodeEngine.Error.Line
     RaiseEvent OnError(Me.CodeEngine.Error)
 End Sub
 
@@ -1368,6 +1370,7 @@ Private Sub EditorWindow_MouseDown(Button As Integer, Shift As Integer, X As Sin
 End Sub
 
 Private Sub EditorWindow_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    On Error Resume Next
     If IIsEngineRunning = False Then
         If Button = 1 Then
             If Not Me.GetSelectedObject() Is Nothing Then
@@ -1395,7 +1398,7 @@ Private Sub GameWindow_KeyDown(KeyCode As Integer, Shift As Integer)
             Me.EndGame
         End If
         If KeyCode = 112 Then
-            Me.EConsole.Show
+            EConsole.Show
         End If
         If KeyCode = vbKeyPrint Then
             Me.EngineTimer.Kill

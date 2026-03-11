@@ -51,6 +51,13 @@ Function VClone() As Vector_Class ' Luo Kopion Vektorista
     Set VClone = CVector
 End Function
 
+Public Property Get Vector() As Object
+    Set Vector = Me
+End Property
+
+Public Property Set Vector(RHS As Object)
+
+End Property
 Function NewVector(Optional NX As Double, Optional NY As Double, Optional NZ As Double) As Vector_Class 'Luo Uuden Vektorin
 Attribute NewVector.VB_Description = "Returns A New Vector Instance"
 Attribute NewVector.VB_UserMemId = 0
@@ -80,7 +87,6 @@ Function SetVector(Optional NewX As Double, Optional NewY As Double, Optional Ne
     Me.Z = NewZ
     Set SetVector = Me
 End Function
-
 Function SetV(NVector3 As Variant) As Vector_Class
     Me.X = NVector3.X
     Me.Y = NVector3.Y

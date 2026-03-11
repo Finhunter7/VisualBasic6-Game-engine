@@ -3,5 +3,7 @@ Private Engine As New EngineClass
 Sub Main()
     If Engine.OpenProject(App.Path & "\Project.VBCEProject", True) Then
        Engine.StartEngine
+    Else
+        End
     End If
 End Sub

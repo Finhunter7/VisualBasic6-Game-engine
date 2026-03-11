@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Private GameEngine As EngineClass
 Private Declare Function CPlaySound Lib "winmm" Alias "sndPlaySoundA" (ByVal lpszSoundName As String, ByVal UFlags As Long) As Boolean
 Private Declare Function TPlaySound Lib "winmm" Alias "PlaySound" (ByVal pszSound As String, ByVal hmod As Object, ByVal fdwSound As Long) As Boolean
-Private Declare Function OpenDevice Lib "OpenAL32" Alias "alcOpenDevice" (ByVal devicename As String) As Object
+'Private Declare Function OpenDevice Lib "OpenAL32" Alias "alcOpenDevice" (ByVal devicename As String) As Object
 
 'Private Declare Function DirectSound Lib "Dsound" Alias "DirectSoundCreate8" (guid As String) As Object
 Sub Build(Engine As EngineClass)
@@ -26,18 +26,6 @@ Public Function EmitSound(FileName As String, UFlags As Long)
 End Function
 Public Function PlayWaveSound(FileOrResource As String, flags As Long, Optional header As Object) As Boolean
     PlayWaveSound = TPlaySound(FileOrResource, header, flags)
-End Function
-
-Public Function OpenAL_OpenDevice(devicename As String) As Object
-    Set OpenAL_OpenDevice = OpenDevice(devicename)
-End Function
-
-Public Function DirectCreateSoundDevice(guid As String) As Object
-    'Set DirectCreateSoundDevice = DirectSound(guid) 'GameEngine.Direct8Lib.DirectSoundCreate(guid)
-End Function
-
-Public Function CreateSoundBuffer(Device As Object, FileName As String, bufferDesc) As Object
-    Set CreateSoundBufferFromFile = Device.CreateSoundBufferFromFile(FileName, bufferDesc)
 End Function
 
 Public Sub PlayBuffer(Buffer As Object, flags)

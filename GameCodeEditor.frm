@@ -205,6 +205,7 @@ Begin VB.Form CodeEditor
       _ExtentX        =   11245
       _ExtentY        =   8705
       _Version        =   393217
+      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -470,7 +471,7 @@ Sub Save()
         SaveData
     Else
         Dim Choise As VbMsgBoxResult
-        Choise = MsgBox("Saving Will Stop GameEngine. Do You Want To Proceed", vbYesNo + vbExclamation)
+        Choise = MsgBox("Saving Will Stop The Engine. Do You Want To Proceed", vbYesNo + vbExclamation)
         If Choise = vbYes Then
             Me.GameEngine.EndGame
             SaveData

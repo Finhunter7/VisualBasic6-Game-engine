@@ -52,7 +52,7 @@ Sub Insert(NItem, Index, Optional Key)
     End If
 End Sub
 
-Function Item(NameOrID)
+Function Item(NameOrID) As Variant
     If LCol.Count > 0 Then
         If LVarType = vbObject Then
             Set Item = LCol.Item(NameOrID)

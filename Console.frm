@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form Console 
    BackColor       =   &H00000000&
    Caption         =   "Console"
-   ClientHeight    =   5805
+   ClientHeight    =   5775
    ClientLeft      =   165
    ClientTop       =   810
    ClientWidth     =   8055
@@ -18,16 +18,13 @@ Begin VB.Form Console
    ForeColor       =   &H00FFFFFF&
    Icon            =   "Console.frx":0000
    LinkTopic       =   "Form3"
-   ScaleHeight     =   5805
+   ScaleHeight     =   5775
    ScaleWidth      =   8055
    StartUpPosition =   3  'Windows Default
    Begin VB.Menu mnuExecute1 
       Caption         =   "Execute"
       Begin VB.Menu mnuStatement1 
          Caption         =   "Statement"
-      End
-      Begin VB.Menu mnuHook1 
-         Caption         =   "Hook Statement"
       End
    End
    Begin VB.Menu mnuview1 
@@ -48,7 +45,7 @@ Private StatementHook As String
 Private curText As Long
 'Private line() As Long
 Private LinesCount As Integer
-Private WithEvents GameEngine As EngineClass
+Private GameEngine As EngineClass
 Attribute GameEngine.VB_VarHelpID = -1
 
 Sub SetEngine(Engine As EngineClass)
@@ -135,11 +132,11 @@ Function Clear()
         Me.Caption = "Console - " & StatementHook
     End If
 End Function
-Function CreateNewConsoleInstance(Engine As EngineClass) As Console
-    Dim newConsole As New Console
-    newConsole.SetEngine Engine
-    Set CreateNewConsoleInstance = newConsole
-End Function
+'Function CreateNewConsoleInstance(Engine As EngineClass) As Console
+    'Dim newConsole As New Console
+    'newConsole.SetEngine Engine
+    'Set CreateNewConsoleInstance = newConsole
+'End Function
 
 Private Sub mnuClear1_Click()
     Me.Clear
@@ -177,7 +174,7 @@ Private Sub mnuStatement1_Click()
     Exit Sub
     
 err32:
-    Console.WriteLine GameEngine.CodeEngine.Error.Description
+    Me.WriteLine GameEngine.CodeEngine.Error.Description
 End Sub
 
 
