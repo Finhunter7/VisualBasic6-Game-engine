@@ -22,6 +22,35 @@ Begin VB.Form CodeEditor
    ScaleHeight     =   6270
    ScaleWidth      =   6435
    Tag             =   "CodeEditor"
+   Begin ComctlLib.Toolbar Toolbar1 
+      Align           =   1  'Align Top
+      Height          =   390
+      Left            =   0
+      TabIndex        =   2
+      Top             =   420
+      Width           =   6435
+      _ExtentX        =   11351
+      _ExtentY        =   688
+      _Version        =   327682
+      Begin VB.ComboBox ScriptCombo1 
+         Height          =   360
+         Left            =   60
+         TabIndex        =   4
+         TabStop         =   0   'False
+         Text            =   "Script_Name"
+         Top             =   15
+         Width           =   2775
+      End
+      Begin VB.ComboBox MethodCombo1 
+         Height          =   360
+         Left            =   3000
+         TabIndex        =   3
+         TabStop         =   0   'False
+         Text            =   "Script_Methods"
+         Top             =   15
+         Width           =   8055
+      End
+   End
    Begin ComctlLib.Toolbar Toolbar2 
       Align           =   1  'Align Top
       Height          =   420
@@ -124,35 +153,6 @@ Begin VB.Form CodeEditor
          EndProperty
       EndProperty
    End
-   Begin ComctlLib.Toolbar Toolbar1 
-      Align           =   1  'Align Top
-      Height          =   390
-      Left            =   0
-      TabIndex        =   2
-      Top             =   420
-      Width           =   6435
-      _ExtentX        =   11351
-      _ExtentY        =   688
-      _Version        =   327682
-      Begin VB.ComboBox ScriptCombo1 
-         Height          =   360
-         Left            =   60
-         TabIndex        =   4
-         TabStop         =   0   'False
-         Text            =   "Script_Name"
-         Top             =   15
-         Width           =   2775
-      End
-      Begin VB.ComboBox MethodCombo1 
-         Height          =   360
-         Left            =   3000
-         TabIndex        =   3
-         TabStop         =   0   'False
-         Text            =   "Script_Methods"
-         Top             =   15
-         Width           =   8055
-      End
-   End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
       Height          =   255
@@ -205,10 +205,11 @@ Begin VB.Form CodeEditor
       _ExtentX        =   11245
       _ExtentY        =   8705
       _Version        =   393217
-      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
+      OLEDragMode     =   0
+      OLEDropMode     =   0
       TextRTF         =   $"GameCodeEditor.frx":0442
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "MS Sans Serif"
@@ -296,33 +297,40 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'Private FileSystem As New FileSystemObject
 Const KeyWordsCount = 58
-Public curClassName As String
-Public GameObject As GameObject_Class
 Public GameEngine As EngineClass
 Public Session As CodeEditorEnums
-Private inEditObjectData As Object
+Private editMyObject As Object
+Private objectName As String
 Public cChanged As Boolean
 
 Private colorAdded As Boolean
 Private items(KeyWordsCount) As String
 'Private Express As New VBScript_RegExp_55.RegExp
 
+Enum CodeEditorEnums
+    ObjectCode = 1
+    MeshData = 2
+    ScriptCode = 3
+    cFile = 4
+    
+End Enum
 
 Private Sub Form_Activate()
-    MainWindow.mnuSaveW1.Caption = "Save " & Me.curClassName & " Code"
-    MainWindow.mnuSaveAs1.Caption = "Save " & Me.curClassName & " Code As"
+    'MainWindow.mnuSaveW1.Caption = "Save " & objectName & " Code"
+    'MainWindow.mnuSaveAs1.Caption = "Save " & objectName & " Code As"
 End Sub
 
 Private Sub Form_Load()
     LoadItems
-    If GameObject Is Nothing Then
-        Me.StatusBar1.Panels(3).text = "Exposed Object: None"
-    Else
-        Me.StatusBar1.Panels(3).text = "Exposed Object: " & GameObject.Name
-    End If
+    'If GameObject Is Nothing Then
+        'Me.StatusBar1.Panels(3).text = "Exposed Object: None"
+    'Else
+        'Me.StatusBar1.Panels(3).text = "Exposed Object: " & GameObject.Name
+    'End If
     
-    Me.Caption = Me.curClassName
+    Me.Caption = objectName
     'ToolWindow1.ToolWindowOpen Me
 End Sub
 
@@ -427,18 +435,35 @@ Sub Update()
     AddColor
 End Sub
 
-Function EditData(Script As Script_Class, TName As String, TSession As CodeEditorEnums, MGameEngine As EngineClass, Optional GObject As GameObject_Class)
-    Set Me.GameObject = GObject
-    Set Me.GameEngine = MGameEngine
-    Set inEditObjectData = Script
-    Me.Text1.text = Script.Data
-    cChanged = False
+Function EditData(TSession As CodeEditorEnums, Optional TObject As Object = Nothing)
     Me.Session = TSession
-    Me.curClassName = TName
-    Me.Caption = Me.curClassName
+    objectName = "None"
+    If Not TObject Is Nothing Then
+        Select Case TSession
+            Case 3
+                Set editMyObject = TObject
+                Me.Text1.text = editMyObject.Data
+                objectName = editMyObject.Name
+            Case 4
+                Set editMyObject = TObject
+                objectName = TObject.Name
+                ReadFile
+        End Select
+    End If
+    
+    cChanged = False
+    Me.Caption = objectName
     Me.Show
     AddColor
 End Function
+
+Sub ReadFile()
+    Dim tStream As TextStream
+    Set tStream = editMyObject.OpenAsTextStream(ForReading)
+    Text1.text = tStream.ReadAll()
+    tStream.Close
+End Sub
+
 
 Private Sub mnuOpen1_Click()
     'Dim file As String
@@ -465,7 +490,6 @@ Sub OpenNew()
 
 End Sub
 
-
 Sub Save()
     If Me.GameEngine.IsEngineRunning = False Then
         SaveData
@@ -481,21 +505,21 @@ Sub Save()
     End If
     AddColor
     cChanged = False
-    Me.Caption = curClassName
+    Me.Caption = objectName
 End Sub
 
 Private Sub SaveData()
-    If Me.Session = ScriptCode Then
-        inEditObjectData.Data = Me.Text1.text
-    ElseIf Me.Session = MeshData Then
-        'Me.GameObject.MeshCode = Text1.text
-        inEditObjectData.Data = Text1.text
-    ElseIf Me.Session = ObjectCode Then
-        'Me.GameObject.MyScript.Data = Text1.text
-    Else
-        MsgBox "Error Saving Code. Session Info Not Set", vbExclamation
-    End If
-    Me.Caption = curClassName
+    Select Case Me.Session
+        Case cFile
+            'Dim TFile As file
+            Dim tStream As TextStream
+            'Set TFile = editMyObject
+            Set tStream = editMyObject.OpenAsTextStream(ForWriting)
+            tStream.Write Text1.text
+            tStream.Close
+        Case ScriptCode
+            editMyObject.Data = Text1.text
+    End Select
 End Sub
 
 Sub SaveAs()
@@ -529,7 +553,7 @@ End Sub
 Private Sub Text1_Change()
     cChanged = True
     colorAdded = False
-    Me.Caption = curClassName & " - Changes Made"
+    Me.Caption = objectName & " - Changes Made"
     'FindItems
 End Sub
 
@@ -539,6 +563,10 @@ Private Function AddColor()
     Dim Pos As Integer
     Dim TChanged As Boolean
     
+    Dim StatusDia As New StatusDialog
+    StatusDia.PRGBar_Show "Please Wait...", StatusdlgDefault
+    StatusDia.PRGBar_SetValue 0, KeyWordsCount, "Repainting Keywords..."
+    DoEvents
     TChanged = cChanged
     OldPos = Text1.SelStart
     
@@ -562,11 +590,13 @@ Private Function AddColor()
                 Exit For
             End If
         Next
+        StatusDia.PRGBar_SetValue CLng(Item), KeyWordsCount, "Repainting Keywords..."
     Next
     Text1.SelStart = OldPos
     Text1.SelColor = vbBlack
     colorAdded = True
     cChanged = TChanged
+    StatusDia.Hide
 End Function
 
 Private Sub Text1_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -576,18 +606,6 @@ Private Sub Text1_KeyDown(KeyCode As Integer, Shift As Integer)
         'AddColor
     End If
     
-End Sub
-
-Private Sub SelectToolTip(SelectedText As String)
-    If SelectedText = "Vector" Or SelectedText = "Position" Or SelectedText = "WorldCenterPos" Or SelectedText = "SScale" Then
-        Me.Text1.ToolTipText = SelectedText & " Is Part Of Vector_Class. Avaible Methods: VClone(), NewVector(X,Y,Z),AddVectorV(Vector()),AddVector(X,Y,Z),SetVector(X,Y,Z),SetVectorV(Vector())"
-    ElseIf SelectedText = "Console" Then
-        Me.Text1.ToolTipText = SelectedText & " Avaible Methods: WriteLine , Clear"
-    ElseIf SelectedText = "WriteLine" Then
-        Me.Text1.ToolTipText = SelectedText & "(Text)"
-    Else
-        Me.Text1.ToolTipText = "No ToolTip Avaible For This Method"
-    End If
 End Sub
 
 Private Sub Text1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)

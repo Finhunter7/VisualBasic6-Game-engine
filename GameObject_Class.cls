@@ -15,14 +15,13 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 'Implements IObject_Class
 
-Public Name As String 'Read Only
-Attribute Name.VB_VarUserMemId = 0
-Attribute Name.VB_VarProcData = ";Text"
-Attribute Name.VB_VarDescription = "Name Of The GameObject"
-Public SceneHiearchyPath As String
+Private IName As String 'Read Only
+Attribute IName.VB_VarUserMemId = 0
+Attribute IName.VB_VarProcData = ";Text"
+Attribute IName.VB_VarDescription = "Name Of The GameObject"
 Public Tag As String
+Public SceneHiearchyPath As String
 Public MyScene As Scene_Class ' Asetetaan kun objekti luodaan
-Public Mass As Double
 Public ParentObject As GameObject_Class
 Public Child As New Collection ' of GameObject_Class
 'Public Transform As New Transform_Class ' Yhdistelm‰ Sijainista , Pyˆrimisest‰ ja Koosta
@@ -32,8 +31,8 @@ Public Rotation As New Matrix_Class
 Public SScale As New Vector_Class
 Public Size As Double 'Kokonais Mittakoko
 Public EditorColliderSize As New Vector_Class ' Editorissa n‰kyv‰ valittsemis alue
-Public Velocity As New Vector_Class '
-Public MyComponents As New Collection ' Kaikki Komponentit Jotka Objekti luo
+'Public Velocity As New Vector_Class '
+'Public MyComponents As New Collection ' Kaikki Komponentit Jotka Objekti luo
 Public Components As New Collection
 Public MyPropertites As New PropertyBag ' K‰ytet‰‰n kun objektista tehd‰‰n peliss‰ kopioita
 Public Visible As Boolean
@@ -44,10 +43,18 @@ Public Property Get Position() As Vector_Class
     Set Position = IPosition
 End Property
 
+Friend Property Let Name(IDName As String)
+    IName = IDName
+End Property
+
+Public Property Get Name() As String
+    Name = IName
+End Property
+
 Private Sub Initialize()
     Visible = True
     Active = True
-    Me.Mass = 1
+    'Me.Mass = 1
     Me.Size = 1
     Me.SScale.SetVector 1, 1, 1
     Me.EditorColliderSize.SetVector 500 * Me.SScale.X, 500 * Me.SScale.Y, 500 * Me.SScale.Z
@@ -58,12 +65,12 @@ Private Sub Initialize()
 End Sub
 
 Public Sub BuildFromObject(GObject As GameObject_Class)
+    On Error Resume Next
     With GObject
         Me.Name = .Name
         Me.SceneHiearchyPath = .SceneHiearchyPath
         Me.Tag = .Tag
         Set Me.MyScene = .MyScene
-        Me.Mass = .Mass
         Set Me.ParentObject = .ParentObject
         For Each Item In .Child
             Me.Child.Add Item, Item.Name
@@ -139,23 +146,9 @@ End Sub
 Public Function GetComponent(NameOrIndex) As Object
     On Error Resume Next
     If MyComponents.Count > 0 Then
-        Set GetComponent = MyComponents.Item(NameOrIndex)
+        Set GetComponent = Components.Item(NameOrIndex)
     Else
         Set GetComponent = Nothing
-    End If
-End Function
-
-Public Function GetComponents() As Collection
-    Set GetComponents = MyComponents
-End Function
-
-Public Function GetRuntimeComponent(NameOrID) As Object
-    On Error Resume Next
-    
-    If Me.Components.Count > 0 Then
-        Set GetRuntimeComponent = Me.Components.Item(NameOrID)
-    Else
-        Set GetRuntimeComponent = Nothing
     End If
 End Function
 
@@ -164,10 +157,7 @@ Public Function RemoveComponent(NameOrID) As Boolean
     Dim curComp As Object
     
     If MyComponents.Count > 0 Then
-        Set curComp = MyComponents.Item(NameOrID)
-        Set curComp.MyObject = curComp
-        'curComp.IsComponent = False
-        MyComponents.Remove NameOrID
+        Components.Remove NameOrID
         RemoveComponent = True
     Else
         RemoveComponent = False
@@ -177,33 +167,24 @@ DError:
     RemoveComponent = False
 End Function
 
-Public Sub AddComponent(NComponent As Script_Class)
-    On Error Resume Next
-    Dim newComponent As Object
-    'Set NComponent.MyObject = Me
-    'Set newComponent = NComponent
-    'Set newComponent.MyObject = Me
-    Set newComponent = NComponent.MyModule.Eval("Component")
-    If newComponent Is Nothing And Me.MyScene.GameEngine.IsEngineRunning = True Then
-        Err.Raise 8, Me.Name & ".AddComponent", "Script " & NComponent.Name & " Is Not Component Supported"
-    Else
-        MyComponents.Add NComponent, NComponent.Name
-        Debug.Print "Added Component " & NComponent.Name
-    End If
+Public Sub AddComponent(NComponent As Variant, Name As String)
+    On Error GoTo aerror
+    Set NComponent.MyObject = Me
+    NComponent.Name = Name
+    Components.Add NComponent, Name
+    
+aerror:
+    
 End Sub
 
 Private Sub Load()
     Me.EditorColliderSize.SetVector 500 * Size, 500 * Size, 500 * Size
-    Me.ResetPhysics
-    'LoadMeshCode GameCodeEngine
-    'LoadCode GameCodeEngine
-    'InitializeComponents
+    'Me.ResetPhysics
     LoadComponents 'GameCodeEngine
-    Draw 'GameCodeEngine
 End Sub
 
 Sub ResetPhysics()
-    Me.Velocity.SetVector 0, 0, 0
+    'Me.Velocity.SetVector 0, 0, 0
 End Sub
 
 Sub SetPosition(NewX As Double, Optional NewY As Double, Optional NewZ As Double)
@@ -212,61 +193,20 @@ Sub SetPosition(NewX As Double, Optional NewY As Double, Optional NewZ As Double
     Me.Position.Z = NewZ
 End Sub
 
-Private Sub LoadMeshCode()
-    On Error Resume Next
-    'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_MeshCode").AddCode MeshCode
-End Sub
-
-Private Sub LoadCode()
-    On Error Resume Next
-    'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_Code").AddCode MyScript.Data
-    'GameCodeEngine.Modules(MyScene.Name & "_" & Me.Name & "_Code").Run "Load"
-End Sub
-
 Private Sub Update()
-    Draw 'GameCodeEngine
-    'CallUpdate 'GameCodeEngine
-    UpdateComponents 'GameCodeEngine
-    UpdatePhysics
+    UpdateComponents
 End Sub
 
 Sub EditorCallDraw() ' K‰ytet‰‰n Kun Editorin Tarvitsee Piirt‰‰ Objekti Uudelleen
     On Error Resume Next
-    For Each Comp In Me.Components
-        If Comp.Tag = "RendererScript" Then
-            Comp.MyModule.Run "EditorDraw"
-            Exit For
-        End If
-        'Comp.EditorDraw
-    Next
-End Sub
-
-Sub Draw()
-    On Error Resume Next
-    If Visible Then
-        For Each Comp In Me.Components
-            If Comp.Tag = "RendererScript" Then
-                Comp.MyModule.Run "Draw"
-                Exit For
-            End If
-            'Comp.Draw
-        Next
-    End If
-End Sub
-
-Private Sub InitializeComponents()
-    On Error Resume Next
-    Dim curComponent As Object
-    For Each Item In MyComponents
-        Set curComponent = Item.MyModule.Eval("Component")
-        Me.Components.Add curComponent, curComponent.Name
-        Set curComponent.self = Me
+    For Each Item In Components
+        Item.EditorCallDraw
     Next
 End Sub
 
 Private Function LoadComponents()
     On Error Resume Next
-    For Each Item In Me.Components
+    For Each Item In Components
         Item.Load
     Next
 End Function
@@ -279,9 +219,9 @@ Private Function UpdateComponents()
 End Function
 Private Function UpdatePhysics()
     If Me.ParentObject Is Nothing Then
-        Me.Position.AddVectorV Me.Velocity
+        'Me.Position.AddVectorV Me.Velocity
     Else
-        Me.Velocity.SetVectorV Me.ParentObject.Velocity
+        'Me.Velocity.SetVectorV Me.ParentObject.Velocity
         'Me.Position.SetVectorV Me.ParentObject.Position
         'Me.Position.SetVector Me.ParentObject.Position.X
     End If

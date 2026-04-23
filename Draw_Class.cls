@@ -116,6 +116,10 @@ Sub DrawTextV(Position As Variant, text As String, Optional TextSize As Integer 
     GameEngine.GameWindow.Print text
 End Sub
 
+Sub WriteLine(text As String)
+    GameEngine.GameWindow.Print text
+End Sub
+
 Sub DrawCubeCV(SVector As Vector_Class, EVector As Vector_Class, Optional Color As Long = vbWhite, Optional Rotation As Matrix_Class)
     'Me.DrawClass.DrawBoxCV SVector, Me.Position.VClone().AddVector(1000, 1000, 0)
     'Me.DrawClass.DrawLineV SVector, Me.Position.VClone().AddVector(250, 250, 0)

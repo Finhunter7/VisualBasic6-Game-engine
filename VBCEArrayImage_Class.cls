@@ -21,7 +21,7 @@ Private RealY As Long
 Sub ResizeImage(NewX As Long, NewY As Long)
     SizeX = NewX
     SizeY = NewY
-    ReDim ImageArray(NewX, NewY)
+    ReDim Preserve ImageArray(NewX, NewY)
 End Sub
 
 Sub SetPixelColor(PosX As Long, PosY As Long, Color As Long)
@@ -36,19 +36,19 @@ Function GetPixelColor(PosX As Long, PosY As Long) As Long
     GetPixelColor = ImageArray(PosX, PosY)
 End Function
 
-Sub DrawLine(StartPos As Vector_Class, EndPos As Vector_Class, Color As Long)
+Sub DrawLine(StartPos As Object, EndPos As Object, Color As Long)
     
 End Sub
 
 Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As Long, ScaleFactor As Integer)
-    Dim Render As New NewForm
+    Dim Render As New RenderForm
     'Dim StatusDia As New StatusDialog
     Dim PixelDenX As Double
     Dim PixelDenY As Double
     'Me.ResizeImage Picture.Width / OScaleX, Picture.Height / OScaleY
     
     Render.Caption = "Please Wait... Rendering Image"
-    Render.Width = Picture.Width - 650
+    Render.Width = Picture.Width
     Render.Height = Picture.Height
     RealX = Picture.Width '- 690
     RealY = Picture.Height
@@ -66,7 +66,7 @@ Function CreateFromImage(Picture As IPictureDisp) 'OScaleX As Long, OScaleY As L
     Render.Show
     Render.Caption = "Please Wait... Rendering Texture"
     'Render.Visible = False
-    StatusDia.PRGBar_Show "Please Wait... Rendering", StatusdlgCancel
+    'StatusDia.PRGBar_Show "Please Wait... Rendering", StatusdlgCancel
     
     For PLine = 1 To SizeY
         For PCol = 1 To SizeX
@@ -99,7 +99,7 @@ Sub RenderTo(TargetObject As Object, Pos As Variant, newScaleX As Double, newSca
 End Sub
 
 Function ToPicture(ScaleX As Double, ScaleY As Double) As StdPicture
-    Dim ConvertRender As New NewForm
+    Dim ConvertRender As New RenderForm
     Dim Pos As New Vector_Class
     'Render.ScaleMode = 3
     'ConvertRender.WindowState = 1

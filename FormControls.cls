@@ -11,6 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+
 Function CreateForm(Name As String) As FormForVBS_Class
     Dim CForm As New FormForVBS_Class
     CForm.Name = Name
@@ -30,12 +31,12 @@ Function AddFrame(Form As Form, Name As String) As Frame
     Set AddFrame = CFrame
 End Function
 
-Function AddMenu(Form As Form, Name As String) As Menu
-    Dim NMenu As Menu
+'Function AddMenu(Form As Form, Name As String) As Menu
+    'Dim NMenu As Menu
     
-    Set NMenu = Form.Controls.Add("VB.Menu")
-    Set AddMenu = NMenu
-End Function
+    'Set NMenu = Form.Controls.Add("VB.Menu")
+    'Set AddMenu = NMenu
+'End Function
 
 Function AddButton(Form As Form, Name As String) As FormControlsButton_Class
     Dim CButton As New FormControlsButton_Class
@@ -56,3 +57,11 @@ Function AddUserControl(Form As Form, Name As String) As Object
     Set CUserControl = Form.Controls.Add("VB.UserControl", Name)
     Set AddUserControl = CUserControl
 End Function
+
+Public Function CreateMenu(TargetF As Variant, Name As String) As MenuForVBS_Class
+    'Dim NMenu As New MenuForVBS_Class
+    'NMenu.Name = Name
+    'Set NMenu.Menu = TargetF.Controls.Add("VB.Menu", Name)
+    'Set CreateMenu = NMenu
+End Function
+

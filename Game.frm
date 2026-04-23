@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Begin VB.Form Form1 
+Begin VB.Form Viewport_Form 
    AutoRedraw      =   -1  'True
    BackColor       =   &H00000000&
    Caption         =   "Viewport1"
@@ -52,7 +52,7 @@ Begin VB.Form Form1
       EndProperty
    End
 End
-Attribute VB_Name = "Form1"
+Attribute VB_Name = "Viewport_Form"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -66,7 +66,7 @@ Attribute VB_Exposed = False
 'Public MouseY As Double
 'Public MouseDown As Integer
 'Dim curScene As Long
-'Public Engine As EngineClass
+Public Engine As EngineClass
 
 Private Sub Form_Load()
     On Error Resume Next
@@ -116,6 +116,9 @@ Private Sub Form_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integ
 End Sub
 
 Private Sub Form_Resize()
-    'Me.ScaleWidth = 5000
-    'Me.ScaleHeight = 4000
+    On Error Resume Next
+    If Not Engine Is Nothing Then
+        Me.ScaleWidth = Engine.GameWindowScaleX
+        Me.ScaleHeight = Engine.GameWindowScaleY
+    End If
 End Sub

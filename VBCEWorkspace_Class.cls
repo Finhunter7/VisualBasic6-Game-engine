@@ -12,7 +12,7 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private GameEngine As EngineClass
-Private FileSystem As FileSystemObject
+Private fileSystem As FileSystemObject
 Private ProgramFolder As Folder
 Private Actions() As Integer
 Private ActionCount As Integer
@@ -48,13 +48,13 @@ End Sub
 
 Private Sub CreateFolderStructure(Path As String)
     If ToPath = "" Then
-        If FileSystem.FolderExists(App.Path & "\Build\" & GameEngine.ProjectName) Then
-            FileSystem.DeleteFolder App.Path & "\Build\" & GameEngine.ProjectName
+        If fileSystem.FolderExists(App.Path & "\Build\" & GameEngine.ProjectName) Then
+            fileSystem.DeleteFolder App.Path & "\Build\" & GameEngine.ProjectName
         End If
-        If Not FileSystem.FolderExists(App.Path & "\Build") Then
-            Set ProgramFolder = FileSystem.CreateFolder(App.Path & "\Build").SubFolders.Add(GameEngine.ProjectName)
+        If Not fileSystem.FolderExists(App.Path & "\Build") Then
+            Set ProgramFolder = fileSystem.CreateFolder(App.Path & "\Build").SubFolders.Add(GameEngine.ProjectName)
         Else
-            Set ProgramFolder = FileSystem.CreateFolder(App.Path & "\Build\" & GameEngine.ProjectName)
+            Set ProgramFolder = fileSystem.CreateFolder(App.Path & "\Build\" & GameEngine.ProjectName)
         End If
         
         ProgramFolder.SubFolders.Add "Scripts"
@@ -62,7 +62,7 @@ Private Sub CreateFolderStructure(Path As String)
         ProgramFolder.SubFolders.Add "Objects"
         ProgramFolder.SubFolders.Add "Assets"
     Else
-        Set ProgramFolder = FileSystem.CreateFolder(ToPath)
+        Set ProgramFolder = fileSystem.CreateFolder(ToPath)
         ProgramFolder.SubFolders.Add "Scripts"
         ProgramFolder.SubFolders.Add "Scenes"
         ProgramFolder.SubFolders.Add "Objects"
@@ -82,7 +82,7 @@ Public Sub BuildProgram(Optional ToPath As String)
     GameEngine.Console.WriteLine "Building folder structure done"
     GameEngine.Console.WriteLine "Creating executable"
     
-    FileSystem.CopyFile App.Path & "\VBCEPlayer.exe", ProgramFolder.Path & "\VBCEPlayer.exe", True
+    fileSystem.CopyFile App.Path & "\VBCEPlayer.exe", ProgramFolder.Path & "\VBCEPlayer.exe", True
     GameEngine.Console.WriteLine "Creating executable done"
     
     Set dataStream = ProgramFolder.CreateTextFile(GameEngine.ProjectName & ".VBS", True, False)
@@ -137,7 +137,7 @@ End Sub
 
 Public Sub LoadDeveloperTools(TargetGameEngine As EngineClass)
     Set GameEngine = TargetGameEngine
-    Set FileSystem = New FileSystemObject
+    Set fileSystem = New FileSystemObject
 End Sub
 
 Public Sub SaveProject(TargetPath As String)
@@ -160,8 +160,17 @@ Sub EditScript(Name As String)
     Set thisObj = editableScripts.Item(Name)
     
     Set CodeEditorInstance.GameEngine = GameEngine
-    CodeEditorInstance.EditData thisObj, Name, ScriptCode, GameEngine
+    CodeEditorInstance.EditData ScriptCode, thisObj
     
+End Sub
+
+Sub EditFile(FileName As String)
+    Dim CodeEditorInstance As New CodeEditor
+    If fileSystem.FileExists(FileName) Then
+        CodeEditorInstance.EditData cFile, fileSystem.GetFile(FileName)
+    Else
+        MsgBox "File not valid", vbExclamation, "VBCE"
+    End If
 End Sub
 
 Private Sub CreateProjectTree(TreeViewTarget As Object)
@@ -349,11 +358,6 @@ Sub BrowseEngineData(TargetTreeView As Object)
             Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "Components", 4, GObj.MyScene.Name & "_" & GObj.Name & "_" & Comp.Name, Comp.Name, 5, 5)
             thisNode.Tag = "Component"
         Next
-        For Each Comp In GObj.MyComponents
-            Set thisNode = TargetTreeView.Nodes.Add("G_" & GObj.MyScene.Name & "_" & GObj.Name & "_" & "AComponents", 4, GObj.MyScene.Name & "_" & GObj.Name & "_A_" & Comp.Name, Comp.Name, 5, 5)
-            thisNode.Tag = "Component"
-        Next
-        
     Next
     For i = 1 To GameEngine.CodeEngine.Procedures.Count
         Set thisprocedure = GameEngine.CodeEngine.Procedures.Item(i)
@@ -386,13 +390,19 @@ Sub UpdateSceneBrowser(TreeViewObject As Object)
             Set curGObject = GameEngine.Scenes.Item(curItem).Objects.Item(curObject)
             Set curScene = GameEngine.Scenes.Item(curItem)
             Set thisNode = TreeViewObject.Nodes.Add(curScene.Name, 4, curScene.Name & "_" & curGObject.Name, curGObject.Name, 7, 7)
-            
             thisNode.Tag = "Object"
+            Set thisNode = TreeViewObject.Nodes.Add(curGObject.MyScene.Name & "_" & curGObject.Name, 4, curScene.Name & "_" & curGObject.Name & "_Components", "Components", 1, 1)
+            thisNode.Tag = "Collection"
+            
             For Each CItem In curGObject.GetMyChildren()
                 Set thisNode = TreeViewObject.Nodes.Add(curGObject.MyScene.Name & "_" & curGObject.Name, 4, curGObject.Name & "_" & CItem.Name, CItem.Name, 7, 7)
                 'Set curGobjChild = curGObject.Child.Item(curChild)
                 'Set thisNode = TreeViewObject.Nodes.Add(curGObject.MyScene.Name & "_" & curGObject.Name, 4, curGObject.Name & "_" & CItem.Name, CItem.Name, 7, 7)
                 thisNode.Tag = "Object"
+            Next
+            For Each Comp In curGObject.Components
+                Set thisNode = TreeViewObject.Nodes.Add(curScene.Name & "_" & curGObject.Name & "_Components", 4, curGObject.MyScene.Name & "_" & curGObject.Name & "_" & Comp.Name, Comp.Name, 5, 5)
+                thisNode.Tag = "Component"
             Next
         Next
     Next
@@ -404,54 +414,30 @@ Sub UpdateFolderBrowser(TreeViewObject As Object)
         Exit Sub
     End If
     
-    Dim FFolder As Folder
+    Dim PFolder As Folder
     TreeViewObject.Nodes.Clear
     
-    If Not GameEngine.ProjectPath = "" And FileSystem.FolderExists(GameEngine.ProjectPath) Then
+    If Not GameEngine.ProjectPath = "" And fileSystem.FolderExists(GameEngine.ProjectPath) Then
         Set thisNode = TreeViewObject.Nodes.Add(, 0, "Project_" & GameEngine.ProjectName, GameEngine.ProjectName, 20, 20)
         thisNode.Tag = "Project"
-        If FileSystem.FolderExists(GameEngine.ProjectPath & "\Scenes") Then
-            Set FFolder = FileSystem.GetFolder(GameEngine.ProjectPath & "\Scenes")
-            Set thisNode = TreeViewObject.Nodes.Add("Project_" & GameEngine.ProjectName, 4, "Project_Scenes", "Scenes", 1, 1)
+        
+        Set PFolder = fileSystem.GetFolder(GameEngine.ProjectPath)
+        
+        For Each Item In PFolder.SubFolders
+            Set thisNode = TreeViewObject.Nodes.Add("Project_" & GameEngine.ProjectName, 4, "Project_Folder_" & Item.Name, Item.Name, 1, 1)
             thisNode.Tag = "Folder"
-            For Each Item In FFolder.Files
-                Set thisNode = TreeViewObject.Nodes.Add("Project_Scenes", 4, Item.Name, Item.Name, 38, 38)
-                thisNode.Tag = "File"
-            Next
-        End If
-        If FileSystem.FolderExists(GameEngine.ProjectPath & "\Scripts") Then
-            Set FFolder = FileSystem.GetFolder(GameEngine.ProjectPath & "\Scripts")
-            Set thisNode = TreeViewObject.Nodes.Add("Project_" & GameEngine.ProjectName, 4, "Project_Scripts", "Scripts", 1, 1)
-            thisNode.Tag = "Folder"
-            For Each Item In FFolder.Files
-                Set thisNode = TreeViewObject.Nodes.Add("Project_Scripts", 4, Item.Name, Item.Name, 38, 38)
-                thisNode.Tag = "File"
-            Next
-        End If
-        If FileSystem.FolderExists(GameEngine.ProjectPath & "\Objects") Then
-            Set FFolder = FileSystem.GetFolder(GameEngine.ProjectPath & "\Objects")
-            Set thisNode = TreeViewObject.Nodes.Add("Project_" & GameEngine.ProjectName, 4, "Project_Objects", "Objects", 1, 1)
-            thisNode.Tag = "Folder"
-            For Each Item In FFolder.Files
-                Set thisNode = TreeViewObject.Nodes.Add("Project_Objects", 4, Item.Name, Item.Name, 38, 38)
-                thisNode.Tag = "File"
-            Next
-        End If
-        If FileSystem.FolderExists(GameEngine.ProjectPath & "\Assets") Then
-            Set FFolder = FileSystem.GetFolder(GameEngine.ProjectPath & "\Assets")
-            Set thisNode = TreeViewObject.Nodes.Add("Project_" & GameEngine.ProjectName, 4, "Project_Assets", "Assets", 1, 1)
-            thisNode.Tag = "Folder"
-            For Each Item In FFolder.Files
-                Set thisNode = TreeViewObject.Nodes.Add("Project_Assets", 4, Item.Name, Item.Name, 38, 38)
-                thisNode.Tag = "File"
-            Next
-        End If
+        Next
+        For Each Item In PFolder.Files
+            Set thisNode = TreeViewObject.Nodes.Add("Project_" & GameEngine.ProjectName, 4, Item.Name, Item.Name, 26, 26)
+            thisNode.Tag = "File"
+        Next
     Else
         TreeViewObject.Nodes.Add , 0, "None", "Project Folder Is Not Set", 0, 0
     End If
 End Sub
 
 Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As BrowserTypes)
+    On Error Resume Next
     Dim tGameObject As Object 'GameObject_Class
     If TreeViewObject.selectedItem Is Nothing Then
         Exit Sub
@@ -474,15 +460,15 @@ Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As Browser
             If .Tag = "Object" Then
                 If .Parent.Tag = "Object" Then
                     'Set tGameObject = GameEngine.GetCurrentScene().Objects(.Parent.text).Child.Item(.text)
-                    GameEngine.SelectObject tGameObject
+                    'GameEngine.SelectObject tGameObject
                 Else
                     Set tGameObject = GameEngine.GetCurrentScene().Objects(.text)
                     GameEngine.SelectObject tGameObject
                 End If
-            ElseIf .Tag = "Scene" Then
+            ElseIf .Tag = "Collection" Then
                 
-            ElseIf .Tag = "Module" Then
-            'Me.EditModule Me.GameEngine.CodeEngine.Modules(.Key)
+            ElseIf .Tag = "Component" Then
+            
             ElseIf .Tag = "MeshCode" Then
             
             End If
@@ -490,7 +476,7 @@ Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As Browser
     ElseIf BrowserType = FolderBrowser Then
         With TreeViewObject.selectedItem
             If .Tag = "File" Then
-            
+                Me.EditFile GameEngine.ProjectPath & "\" & .text
             Else
             
             End If
@@ -501,7 +487,53 @@ Sub TreeViewBrowsersOnItemClick(TreeViewObject As Object, BrowserType As Browser
     
 End Sub
 
+Sub TreeViewBrowserAddComponentToObject(TreeViewObject As Object, BrowserType As BrowserTypes)
+    On Error Resume Next
+    Dim CName As String
+    Dim CCName As String
+    If TreeViewObject.selectedItem Is Nothing Then
+        Exit Sub
+    End If
+    
+    With TreeViewObject.selectedItem
+        Select Case BrowserType
+        
+            Case 0
+            
+            Case 1
+                If .Tag = "GameObject" Then
+                    CName = InputBox("Create New Component From Class", "Create Component")
+                    If CName = "" Then
+                        Exit Sub
+                    End If
+                    CCName = InputBox("Component Name", "Name Component")
+                    If CCName = "" Then
+                        Exit Sub
+                    End If
+                    GameEngine.CodeEngine.ExecuteStatement "Engine.ScenesInactive.Item(" & Chr(34) & .Parent.Parent.text & Chr(34) & ").GetObject(" & Chr(34) & .text & Chr(34) & ").AddComponent new " & CName & ", " & Chr(34) & CCName & Chr(34)
+                    'Engine.ScenesInactive.Item(.Parent.Parent.text).GetObject(.text).AddComponent
+                End If
+            Case 2
+                If .Tag = "Object" Then
+                    CName = InputBox("Create New Component From Class", "Create Component")
+                    If CName = "" Then
+                        Exit Sub
+                    End If
+                    CCName = InputBox("Component Name", "Name Component")
+                    If CCName = "" Then
+                        Exit Sub
+                    End If
+                    GameEngine.CodeEngine.ExecuteStatement "Engine.ScenesInactive.Item(" & Chr(34) & .Parent.text & Chr(34) & ").GetObject(" & Chr(34) & .text & Chr(34) & ").AddComponent new " & CName & ", " & Chr(34) & CCName & Chr(34)
+                    'Engine.ScenesInactive.Item(.Parent.Parent.text).GetObject(.text).AddComponent
+                End If
+                
+        End Select
+        
+    End With
+End Sub
+
 Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As BrowserTypes, Action As SBTActions)
+    On Error GoTo aerror
     Dim tGameObject As GameObject_Class
     
     If TreeViewObject.selectedItem Is Nothing Then
@@ -537,6 +569,8 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
                 ElseIf .Tag = "Scene" Then
                     GameEngine.Scenes(.text).EndScene
                     TreeViewObject.Nodes.Remove .Key
+                ElseIf .Tag = "Component" Then
+                    GameEngine.Scenes(.Parent.Parent.Parent.text).Objects(.Parent.Parent.text).Components.Remove .text
                 Else
                     MsgBox "This item cannot be removed", vbExclamation
                 End If
@@ -547,6 +581,10 @@ Sub TreeViewBrowserHandleActions(TreeViewObject As Object, BrowserType As Browse
     Else
         MsgBox "Not Implemented"
     End If
+    Exit Sub
+aerror:
+    MsgBox Err.Description, vbExclamation, Err.Source
+
 End Sub
 
 Sub TreeViewRightClick(TMainWindow As MDIForm, TreeViewObject As Object, MenuObject As Object)
@@ -558,9 +596,9 @@ Sub TreeViewRightClick(TMainWindow As MDIForm, TreeViewObject As Object, MenuObj
         TMainWindow.PopupMenu MenuObject
 End Sub
 
-Sub BrowseObject(TreeViewObject As Object, TObject As Object)
+Sub BrowseObject(TreeViewObject As Object, tobject As Object)
     TreeViewObject.Nodes.Clear
-    If TObject Is Nothing Then
+    If tobject Is Nothing Then
         TreeViewObject.Nodes.Add , 0, "None", "No Items Selected Or No Items Avaible"
         Exit Sub
     End If

@@ -19,6 +19,7 @@ Public Event OnObjectRemove(Name As String)
 
 Private IGameEngine As EngineClass
 ' Variables
+' Scene
 Private IName As String
 Attribute IName.VB_VarUserMemId = 0
 Attribute IName.VB_VarProcData = ";Text"
@@ -26,8 +27,11 @@ Public Index As Long
 Private IPriority As Integer
 Private Layers(1 To 20) As Boolean
 
+
+' Objects
 Private IObjects As New Collection
 Attribute IObjects.VB_VarDescription = "Collection/List Of GameObjects To Render And Manipulate In Game. Use AddObject Function To Add Objects"
+Private IObjectsAdded As Long
 'Private CopyObjects As New Collection
 'Public SavedObjects As New Collection
 'Public Scripts As New Collection
@@ -49,6 +53,8 @@ Friend Property Set GameEngine(RHS As EngineClass)
 End Property
 
 Public Property Get Name() As String
+Attribute Name.VB_Description = "Get's The Scene Name. Same Name Is Also Used By The Scenes Collection In Engine"
+Attribute Name.VB_UserMemId = 0
     Name = IName
 End Property
 Friend Property Let Name(RHS As String)
@@ -67,6 +73,14 @@ Public Property Get Objects() As Collection
 End Property
 Private Property Set Objects(RHS As Object)
     Set IObjects = RHS
+End Property
+
+Public Property Get AddedObjectsCount() As Long
+    AddedObjectsCount = IObjectsAdded
+End Property
+
+Public Property Get Camera() As Object
+    Set Camera = ICamera
 End Property
 
 Public Property Get IsActive() As Boolean
@@ -134,6 +148,15 @@ Sub Update()
     Next
 End Sub
 
+Sub DrawObjects() ' Not Curently Used
+    On Error Resume Next
+    For Each Item In IObjects
+        If Item.Active Then
+            Item.Draw
+        End If
+    Next
+End Sub
+
 Sub PauseUpdate() ' Update Is Routed Here If Scene Is Paused
     For Each Item In IObjects
         If Item.Active Then
@@ -149,14 +172,14 @@ Sub RedrawObjects()
     Next
 End Sub
 
-Function SetCamera(CameraObject As Object) As Object
-    Set ICamera = CameraObject
-    Set SetCamera = CameraObject
+Function SetCamera(CameraObject As Variant) As Object
+    If IsObject(CameraObject) Then
+        Set ICamera = CameraObject
+        Set SetCamera = CameraObject
+    Else
+        Set SetCamera = Nothing
+    End If
 End Function
-
-Public Property Get Camera() As Object
-    Set Camera = ICamera
-End Property
 
 Sub ChangeEditorCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
     Me.EditorCameraPosition.AddVector AddX, AddY, AddZ
@@ -166,24 +189,42 @@ Function AddObject(Obj As Variant, Optional Name As String = "") As Object
 Attribute AddObject.VB_Description = "Adds Object To Scene And Changes The Object Name"
     On Error Resume Next
     If Not IsObject(Obj) Then
-        Err.Raise 1, "AddObject", "Invalid variable type"
+        Err.Raise 1, "AddObject", "Invalid Object"
         Exit Function
     End If
     Set Obj.MyScene = Me
     If Name = "" Then
-        Obj.Name = "Object_" & IObjects.Count & "_" & Rnd(1) * 10000 ' Don't Do This. This is a tempoary fix. This line will be removed in future
+        Obj.Name = "Object_" & IObjects.Count & "_" & IObjectsAdded 'CInt(Rnd(1) * 10000) ' Don't Do This. This is a tempoary fix. This line will be removed in future
         IObjects.Add Obj, Obj.Name ' Tämä Tulee Muuttumaan
     ElseIf Name = "#ObjectName" Then
-        Obj.Name = Obj.Name & "_" & IObjects.Count & "_" & Rnd(1) * 10000 ' Don't Do This. This is a tempoary fix. This line will be removed in future
+        Obj.Name = Obj.Name & "_" & IObjects.Count & "_" & IObjectsAdded 'CInt(Rnd(1) * 10000)  ' Don't Do This. This is a tempoary fix. This line will be removed in future
         IObjects.Add Obj, Obj.Name
     Else
-        Obj.Name = Name
+        Dim NObj As Long
+        Dim OName As String
+        OName = Name
+        Do While ObjectExists(OName)
+            NObj = NObj + 1
+            OName = Name & "_" & NObj
+        Loop
+        Obj.Name = OName
         IObjects.Add Obj, Obj.Name
     End If
     If GameEngine.IsEngineRunning Then
         Obj.Load
     End If
+    IObjectsAdded = IObjectsAdded + 1
     Set AddObject = Obj
+End Function
+
+Function ObjectExists(Name As String) As Boolean
+    For Each Item In IObjects
+        If Item.Name = Name Then
+            ObjectExists = True
+            Exit Function
+        End If
+    Next
+    ObjectExists = False
 End Function
 
 Function GetObject(ID) As Object
@@ -233,7 +274,8 @@ Attribute DeleteObject.VB_Description = "Deletes GameObject From Objects Collect
     'RaiseEvent OnObjectRemove(ID)
 End Sub
 
-Sub RemoveAllObjects()
+Sub RemoveAllObjects() ' Removes The Objects Collection From Memory And Redeclares it
+Attribute RemoveAllObjects.VB_Description = "Removes The Objects Collection From Memory And Declares New One"
     Set IObjects = Nothing
     Set IObjects = New Collection
 End Sub

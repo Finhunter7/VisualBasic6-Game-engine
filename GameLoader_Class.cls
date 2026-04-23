@@ -64,7 +64,6 @@ Sub SaveObjectToDiskVBCFormat(SaveData As SavingEnums, FileName As String, EObje
                 textFile.WriteLine "[General]"
                 textFile.WriteLine "Object_Name " & .Name
                 textFile.WriteLine "Object_Tag " & .Tag
-                textFile.WriteLine "Object_Mass " & .Mass
                 textFile.WriteLine "Object_Size " & .Size
                 'textFile.WriteLine "Object_Active " & .Active
                 'textFile.WriteLine "Object_Visible " & .Visible

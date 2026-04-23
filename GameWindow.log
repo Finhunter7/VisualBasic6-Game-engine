@@ -1,0 +1,8 @@
+Line 18: Class InetCtlsObjects.Inet of control Inet1 was not a loaded control class.
+Line 25: Class MSWinsockLib.Winsock of control Winsock1 was not a loaded control class.
+Line 21: The property name _ExtentX in Inet1 is invalid.
+Line 22: The property name _ExtentY in Inet1 is invalid.
+Line 23: The property name _Version in Inet1 is invalid.
+Line 28: The property name _ExtentX in Winsock1 is invalid.
+Line 29: The property name _ExtentY in Winsock1 is invalid.
+Line 30: The property name _Version in Winsock1 is invalid.

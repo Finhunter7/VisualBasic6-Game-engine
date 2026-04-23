@@ -45,11 +45,21 @@ Private StatementHook As String
 Private curText As Long
 'Private line() As Long
 Private LinesCount As Integer
+Private curColumn As Long
 Private GameEngine As EngineClass
 Attribute GameEngine.VB_VarHelpID = -1
 
 Sub SetEngine(Engine As EngineClass)
     Set GameEngine = Engine
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+    Select Case KeyCode
+        Case vbKeyLeft
+            curColumn = curColumn - 1
+        Case vbKeyRight
+            curColumn = curColumn + 1
+    End Select
 End Sub
 
 Private Sub Form_KeyPress(KeyAscii As Integer)
@@ -59,12 +69,11 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
         If KeyAscii = 8 Then
             InputBuffer = Left(InputBuffer, Len(InputBuffer) - 1)
             textBuffer = Left(textBuffer, Len(textBuffer) - 1)
-            Repaint
         Else
             InputBuffer = InputBuffer & Chr(KeyAscii)
             textBuffer = textBuffer & Chr(KeyAscii)
-            Repaint
         End If
+        Repaint
     Else
         textBuffer = textBuffer & vbNewLine
         GameEngine.CodeEngine.ExecuteStatement InputBuffer

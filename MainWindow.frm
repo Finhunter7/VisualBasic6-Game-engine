@@ -12,25 +12,6 @@ Begin VB.MDIForm MainWindow
    LinkTopic       =   "MDIForm1"
    NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin ComctlLib.Toolbar Toolbar2 
-      Align           =   2  'Align Bottom
-      Height          =   420
-      Left            =   0
-      TabIndex        =   6
-      Top             =   8595
-      Width           =   14205
-      _ExtentX        =   25056
-      _ExtentY        =   741
-      Appearance      =   1
-      ImageList       =   "ImageList1"
-      _Version        =   327682
-      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
-         NumButtons      =   1
-         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
-            Object.Tag             =   ""
-         EndProperty
-      EndProperty
-   End
    Begin ComctlLib.Toolbar Toolbar1 
       Align           =   1  'Align Top
       Height          =   420
@@ -40,6 +21,8 @@ Begin VB.MDIForm MainWindow
       Width           =   14205
       _ExtentX        =   25056
       _ExtentY        =   741
+      ButtonWidth     =   635
+      ButtonHeight    =   582
       Appearance      =   1
       ImageList       =   "ImageList1"
       _Version        =   327682
@@ -62,6 +45,28 @@ Begin VB.MDIForm MainWindow
             Object.ToolTipText     =   "Save Active Window"
             Object.Tag             =   ""
             ImageIndex      =   3
+         EndProperty
+      EndProperty
+   End
+   Begin ComctlLib.Toolbar Toolbar2 
+      Align           =   2  'Align Bottom
+      Height          =   420
+      Left            =   0
+      TabIndex        =   6
+      Top             =   8595
+      Width           =   14205
+      _ExtentX        =   25056
+      _ExtentY        =   741
+      ButtonWidth     =   635
+      ButtonHeight    =   582
+      Appearance      =   1
+      ImageList       =   "ImageList1"
+      _Version        =   327682
+      BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
+         NumButtons      =   1
+         BeginProperty Button1 {0713F354-850A-101B-AFC0-4210102A8DA7} 
+            Object.Tag             =   ""
+            ImageIndex      =   1
          EndProperty
       EndProperty
    End
@@ -105,6 +110,7 @@ Begin VB.MDIForm MainWindow
          _ExtentX        =   6165
          _ExtentY        =   688
          ButtonWidth     =   609
+         ButtonHeight    =   582
          ImageList       =   "ImageList1"
          _Version        =   327682
          BeginProperty Buttons {0713E452-850A-101B-AFC0-4210102A8DA7} 
@@ -192,7 +198,7 @@ Begin VB.MDIForm MainWindow
                ImageVarType    =   2
             EndProperty
             BeginProperty Tab2 {0713F341-850A-101B-AFC0-4210102A8DA7} 
-               Caption         =   "Project-Browser"
+               Caption         =   "Engine-Data-Browser"
                Key             =   "TProjectB"
                Object.Tag             =   ""
                ImageVarType    =   2
@@ -201,6 +207,7 @@ Begin VB.MDIForm MainWindow
                Caption         =   "Scene-Browser"
                Key             =   "TSceneBrowser"
                Object.Tag             =   ""
+               Object.ToolTipText     =   "Displays all activated scenes"
                ImageVarType    =   2
             EndProperty
             BeginProperty Tab4 {0713F341-850A-101B-AFC0-4210102A8DA7} 
@@ -581,6 +588,9 @@ Begin VB.MDIForm MainWindow
       Begin VB.Menu mnuLogicEditor1 
          Caption         =   "Logic Editor..."
       End
+      Begin VB.Menu mnuTimelineEditor 
+         Caption         =   "Timeline Editor..."
+      End
       Begin VB.Menu mnuErrors1 
          Caption         =   "Errors..."
       End
@@ -735,6 +745,21 @@ Begin VB.MDIForm MainWindow
    End
    Begin VB.Menu Browsermnu1 
       Caption         =   "Browser"
+      Begin VB.Menu bmnuObjActions1 
+         Caption         =   "Object Actions"
+         Begin VB.Menu bmnuMakeActive1 
+            Caption         =   "Make Active"
+         End
+         Begin VB.Menu bmnuAddComponentFromGScript1 
+            Caption         =   "Add Component From Global Script"
+         End
+         Begin VB.Menu BmnuRemove1 
+            Caption         =   "Remove"
+         End
+      End
+      Begin VB.Menu bmnuSpace4 
+         Caption         =   "-"
+      End
       Begin VB.Menu BmnuCreateNew1 
          Caption         =   "Create New"
          Begin VB.Menu BmnuScript1 
@@ -754,7 +779,7 @@ Begin VB.MDIForm MainWindow
          End
       End
       Begin VB.Menu BmnuAddNew1 
-         Caption         =   "Add New From File"
+         Caption         =   "Add From File"
          Enabled         =   0   'False
          Begin VB.Menu BmnuAddScript1 
             Caption         =   "Script"
@@ -772,10 +797,7 @@ Begin VB.MDIForm MainWindow
             Caption         =   "Scene"
          End
       End
-      Begin VB.Menu BmnuRemove1 
-         Caption         =   "Remove"
-      End
-      Begin VB.Menu BmnuSpace3 
+      Begin VB.Menu bmnuSpace3 
          Caption         =   "-"
       End
       Begin VB.Menu BmnuPropertites1 
@@ -795,6 +817,21 @@ Private EditorClass As New VBCEWorkspace_Class
 
 Private Sub List1_Click()
 
+End Sub
+
+Private Sub bmnuAddComponentTo1_Click()
+
+End Sub
+
+Private Sub bmnuAddComponentFromGScript1_Click()
+
+    With Me.SolutionBrowser1.selectedItem
+        If .Key = "TProjectB" Then
+            EditorClass.TreeViewBrowserAddComponentToObject Me.TreeViewBrowser2, ProjectBrowser
+        ElseIf .Key = "TSceneBrowser" Then
+            EditorClass.TreeViewBrowserAddComponentToObject Me.TreeViewBrowser2, SceneBrowser
+        End If
+    End With
 End Sub
 
 Private Sub BmnuCScene1_Click()
@@ -833,6 +870,7 @@ End Sub
 
 Private Sub Engine_OnGameStart()
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [run]"
+    Me.StatusBar1.Panels(1).text = ""
 End Sub
 
 Private Sub Engine_OnGameStop()
@@ -847,7 +885,7 @@ Private Sub MDIForm_Load()
     Me.Browsermnu1.Visible = False
     Set Engine = New EngineClass
     OnLoad
-    Form1.Show
+    Viewport_Form.Show
     ProjectTypeSelectorDialog.OpenThis Me, Engine
 End Sub
 
@@ -856,7 +894,7 @@ Private Sub OnLoad()
     Form2.InitializeThis Engine, EditorClass
     Scene_Browser.InitializeThis Engine, EditorClass
     
-    Engine.LoadEngineInEditorMode Form1, Form1
+    Engine.LoadEngineInEditorMode Viewport_Form, Viewport_Form
     Set ActiveWindow = Me.ActiveForm
     Me.Caption = Me.Engine.ProjectName & " - " & "Visual Basic Code Engine [design]"
 End Sub
@@ -894,17 +932,17 @@ End Sub
 
 Private Sub mnuAddExistingObj1_Click()
     On Error GoTo aerror
-    Dim ObjectName As String
+    Dim objectName As String
     Dim Choise As VbMsgBoxResult
-    ObjectName = InputBox("Object Class Name In Global Script", "AddObject")
-    If ObjectName = "" Or Engine.Scenes.Count < 1 Then
+    objectName = InputBox("Object Class Name In Global Script", "AddObject")
+    If objectName = "" Or Engine.Scenes.Count < 1 Then
         Exit Sub
     Else
-        Choise = MsgBox("Do You Want To Create Copy Of " & ObjectName & " Or Single Instance", vbYesNo + vbQuestion, "AddObject Action")
+        Choise = MsgBox("Do You Want To Create Copy Of " & objectName & " Or Single Instance", vbYesNo + vbQuestion, "AddObject Action")
         If Choise = vbYes Then
-            Engine.CodeEngine.ExecuteStatement "Engine.GetCurrentScene().AddObject New " & ObjectName
+            Engine.CodeEngine.ExecuteStatement "Engine.GetCurrentScene().AddObject New " & objectName
         Else
-            Engine.CodeEngine.ExecuteStatement "Engine.GetCurrentScene().AddObject New " & ObjectName & ", " & Chr(34) & ObjectName & Chr(34)
+            Engine.CodeEngine.ExecuteStatement "Engine.GetCurrentScene().AddObject New " & objectName & ", " & Chr(34) & objectName & Chr(34)
         End If
     End If
     Exit Sub
@@ -1033,7 +1071,7 @@ Private Sub SetAcForm()
 End Sub
 
 Private Sub mnuLogicEditor1_Click()
-    LogicEditor_Window.EditorOpen Engine
+    'LogicEditor_Window.EditorOpen Engine
 End Sub
 
 Private Sub mnuNewProject1_Click()
@@ -1232,6 +1270,12 @@ Private Sub mnuTileVertic1_Click()
     Me.Arrange vbTileVertical
 End Sub
 
+Private Sub mnuTimelineEditor_Click()
+    Dim nForm As New TimelineEditor_Form
+    nForm.Build Engine
+    nForm.Show
+End Sub
+
 Private Sub mnuTitleHoriz1_Click()
     Me.Arrange vbTileHorizontal
 End Sub
@@ -1288,7 +1332,7 @@ Private Sub SolutionBrowserBar1_Resize()
     SolutionBrowser1.Left = 0 '120
     ToolbarRightCaptionBar1.Left = 0 '120
     SolutionBrowser1.Height = Me.SolutionBrowserBar1.Height - (Me.ToolbarRightCaptionBar1.Top + Me.ToolbarRightCaptionBar1.Height)
-    TreeViewBrowser2.Height = Me.SolutionBrowser1.Height - 550 - (Me.ToolbarRightCaptionBar1.Top + Me.ToolbarRightCaptionBar1.Height)
+    TreeViewBrowser2.Height = Me.SolutionBrowser1.Height - 625 - (Me.ToolbarRightCaptionBar1.Top + Me.ToolbarRightCaptionBar1.Height)
 End Sub
 
 Private Sub Toolbar1_ButtonClick(ByVal Button As ComctlLib.Button)
@@ -1357,12 +1401,32 @@ Private Sub TreeViewBrowser2_AfterLabelEdit(Cancel As Integer, NewString As Stri
     End If
 End Sub
 
-Private Sub TreeViewBrowser2_DblClick()
-    If Me.SolutionBrowser1.selectedItem.Key = "TProjectB" Then
-        EditorClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, ProjectBrowser
-    ElseIf Me.SolutionBrowser1.selectedItem.Key = "TSceneBrowser" Then
-        EditorClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, SceneBrowser
+Private Sub TreeViewBrowser2_Click()
+    On Error Resume Next
+    If Me.TreeViewBrowser2.selectedItem Is Nothing Then
+        Exit Sub
     End If
+    
+    With TreeViewBrowser2.selectedItem
+        bmnuObjActions1.Caption = .text & " " & .Tag & " Actions"
+        If .Tag = "GameObject" Or .Tag = "Object" Then
+            bmnuAddComponentFromGScript1.Enabled = True
+        Else
+            bmnuAddComponentFromGScript1.Enabled = False
+        End If
+    End With
+    
+End Sub
+
+Private Sub TreeViewBrowser2_DblClick()
+    Select Case Me.SolutionBrowser1.selectedItem.Key
+        Case "TProjectB"
+            EditorClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, ProjectBrowser
+        Case "TSceneBrowser"
+            EditorClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, SceneBrowser
+        Case "TFolderB1"
+            EditorClass.TreeViewBrowsersOnItemClick TreeViewBrowser2, FolderBrowser
+    End Select
 End Sub
 
 Private Sub TreeViewBrowser2_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
