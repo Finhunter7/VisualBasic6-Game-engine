@@ -19,13 +19,20 @@ Function CreateForm(Name As String) As FormForVBS_Class
     Set CreateForm = CForm
 End Function
 
-Function AddLabel(Form As Form, Name As String) As Label
+Function AddLabel(Form As Variant, Name As String) As Label
     Dim CLabel As Label
     Set CLabel = Form.Controls.Add("VB.Label")
     Set AddLabel = CLabel
 End Function
 
-Function AddFrame(Form As Form, Name As String) As Frame
+Function AddPictureBox(Form As Variant, Name As String) As PictureboxForVBS_Class
+    Dim Picbox As New PictureboxForVBS_Class
+    Picbox.Name = Name
+    Picbox.PictureBox = Form.Controls.Add("VB.Picturebox", Name)
+    Set AddPictureBox = Picbox
+End Function
+
+Function AddFrame(Form As Variant, Name As String) As Frame
     Dim CFrame As Frame
     Set CFrame = Form.Controls.Add("VB.Frame")
     Set AddFrame = CFrame
@@ -38,30 +45,37 @@ End Function
     'Set AddMenu = NMenu
 'End Function
 
-Function AddButton(Form As Form, Name As String) As FormControlsButton_Class
+Function AddButton(Form As Variant, Name As String) As FormControlsButton_Class
     Dim CButton As New FormControlsButton_Class
     CButton.Build Name
     Set CButton.Button = Form.Controls.Add("VB.CommandButton", Name)
     Set AddButton = CButton
 End Function
 
-Function AddTextBox(Form As Form, Name As String) As FormControlsTextbox_Class
+Function AddTextBox(Form As Variant, Name As String) As FormControlsTextbox_Class
     Dim CTextBox As New FormControlsTextbox_Class
     CTextBox.Build Name
     Set CTextBox.TextBox = Form.Controls.Add("VB.TextBox", Name)
     Set AddTextBox = CTextBox
 End Function
 
-Function AddUserControl(Form As Form, Name As String) As Object
+Function AddUserControl(Form As Variant, Name As String) As Object
     Dim CUserControl As Object
     Set CUserControl = Form.Controls.Add("VB.UserControl", Name)
     Set AddUserControl = CUserControl
 End Function
 
-Public Function CreateMenu(TargetF As Variant, Name As String) As MenuForVBS_Class
+Function AddMenu(TargetF As Variant, Name As String) 'As MenuForVBS_Class
     'Dim NMenu As New MenuForVBS_Class
     'NMenu.Name = Name
     'Set NMenu.Menu = TargetF.Controls.Add("VB.Menu", Name)
     'Set CreateMenu = NMenu
+End Function
+
+Function AddToolbar(TargetF As Variant, Name As String) As Object
+    'Dim CToolbar As New ToolbarForVBS_Class
+    CToolbar.Name = Name
+    Set CToolbar.Toolbar = TargetF.Controls.Add("Comctl.Toolbar.1", Name)
+    Set AddToolbar = CToolbar
 End Function
 

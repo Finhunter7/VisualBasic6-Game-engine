@@ -26,12 +26,12 @@ Sub DrawLineC(SVector As Variant, EVector As Variant, Optional Rotation As Matri
     GameEngine.GameWindow.Line (SVector.X, SVector.Y)-(EVector.X, EVector.Y), Color
 End Sub
 
-Sub DrawLine(SPosX As Double, SPosY As Double, EPosX As Double, EPosY As Double, Optional Rotation As Matrix_Class, Optional Color As Long = 16777215)
+Sub DrawLine(SPosX As Single, SPosY As Single, EPosX As Single, EPosY As Single, Optional Rotation As Matrix_Class, Optional Color As Long = 16777215)
 Attribute DrawLine.VB_Description = "Draws Line In To GameWindow"
     GameEngine.GameWindow.Line (SPosX, SPosY)-(EPosX, EPosY), Color
 End Sub
 
-Sub DrawBox(SPosX As Double, SPosY As Double, EPosX As Double, EPosY As Double, Optional Color As Long = 16777215)
+Sub DrawBox(SPosX As Single, SPosY As Single, EPosX As Single, EPosY As Single, Optional Color As Long = 16777215)
 Attribute DrawBox.VB_Description = "Draws A Non-Solid Box"
     GameEngine.GameWindow.Line (SPosX, SPosY)-(EPosX, EPosY), Color, B
 End Sub
@@ -50,23 +50,23 @@ Sub DrawSolidBoxV(SVector2 As Variant, EVector2 As Variant, Optional Color As Lo
     GameEngine.GameWindow.Line (SVector2.X, SVector2.Y)-(EVector2.X, EVector2.Y), Color, BF
 End Sub
 
-Sub DrawSolidBox(SX As Long, SY As Long, EX As Long, EY As Long, Optional Color As Long = 16777215)
+Sub DrawSolidBox(SX As Single, SY As Single, EX As Single, EY As Single, Optional Color As Long = 16777215)
     GameEngine.GameWindow.Line (SX, SY)-(EX, EY), Color, BF
 End Sub
 
-Sub DrawPoint(XPos As Double, YPos As Double, Optional Color As Long = 16777215)
+Sub DrawPoint(XPos As Single, YPos As Single, Optional Color As Long = 16777215)
     GameEngine.GameWindow.PSet (XPos, YPos), Color
 End Sub
 
-Sub DrawPixelV(Pos As Variant, Size As Long, Optional Color As Long = 16777215)
+Sub DrawPixelV(Pos As Variant, Size As Single, Optional Color As Long = 16777215)
     GameEngine.GameWindow.Line (Pos.X, Pos.Y)-(Pos.X + Size, Pos.Y + Size), Color, BF
 End Sub
 
-Sub DrawPixel(X As Long, Y As Long, Size As Long, Optional Color As Long = 16777215)
+Sub DrawPixel(X As Single, Y As Single, Size As Single, Optional Color As Long = 16777215)
     GameEngine.GameWindow.Line (X, Y)-(X + Size, Y + Size), Color, BF
 End Sub
 
-Sub DrawPixelVC(Pos As Variant, Size As Long, Optional Color As Long = 16777215)
+Sub DrawPixelVC(Pos As Variant, Size As Single, Optional Color As Long = 16777215)
     GameEngine.GameWindow.Line (Pos.X - (Size / 2), Pos.Y - (Size / 2))-(Pos.X + (Size / 2), Pos.Y + (Size / 2)), Color, BF
 End Sub
 
@@ -78,7 +78,7 @@ Function GetPixelColor(XPos As Single, YPos As Single) As Long
     GetPixelColor = GameEngine.GameWindow.Point(XPos, YPos)
 End Function
 
-Sub DrawCircleV(Position As Variant, Radius As Double, Optional Color As Long = vbWhite)
+Sub DrawCircleV(Position As Variant, Radius As Single, Optional Color As Long = vbWhite)
     GameEngine.GameWindow.Circle (Position.X, Position.Y), Radius, Color
 End Sub
 
@@ -91,7 +91,7 @@ Sub PrintTextV(Position As Variant, text As String, Optional TextSize As Integer
     GameEngine.GameWindow.Print text
 End Sub
 
-Sub PrintText(XPos As Double, YPos As Double, text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
+Sub PrintText(XPos As Single, YPos As Single, text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
     GameEngine.GameWindow.FontSize = TextSize
     GameEngine.GameWindow.ForeColor = TextColor
     GameEngine.GameWindow.CurrentX = XPos
@@ -99,7 +99,7 @@ Sub PrintText(XPos As Double, YPos As Double, text As String, Optional TextSize 
     GameEngine.GameWindow.Print text
 End Sub
 
-Sub DrawText(XPos As Double, YPos As Double, text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
+Sub DrawText(XPos As Single, YPos As Single, text As String, Optional TextSize As Integer = 8, Optional TextColor As Long = 16777215)
     GameEngine.GameWindow.FontSize = TextSize
     GameEngine.GameWindow.ForeColor = TextColor
     GameEngine.GameWindow.CurrentX = XPos
@@ -136,7 +136,7 @@ Attribute DrawBoxCV.VB_Description = "Draws A Non-Solid Box Using X,Y Vectors"
     GameEngine.GameWindow.Line (SVector.X, EVector.Y)-(EVector.X, EVector.Y), Color
 End Sub
 
-Sub DrawVBCETexture(VBCEArrayImage As Object, Position As Variant, SizeX As Double, SizeY As Double, Optional Rotation As Matrix_Class)
+Sub DrawVBCETexture(VBCEArrayImage As Object, Position As Variant, SizeX As Single, SizeY As Single, Optional Rotation As Matrix_Class)
     VBCEArrayImage.RenderTo GameEngine.GameWindow, Position, SizeX, SizeY
 End Sub
 
@@ -144,6 +144,6 @@ Sub DrawTextureV(Texture As Object, Position As Variant, Optional Size As Varian
     GameEngine.GameWindow.PaintPicture Texture.Texture, Position.X, Position.Y, Size.X, Size.Y
 End Sub
 
-Sub DrawPictureV(StdPic, PosVector2 As Variant, Optional SizeX As Double = 100, Optional SizeY As Double = 100)
+Sub DrawPictureV(StdPic, PosVector2 As Variant, Optional SizeX As Single = 100, Optional SizeY As Single = 100)
     GameEngine.GameWindow.PaintPicture StdPic, PosVector2.X, PosVector2.Y, SizeX, SizeY
 End Sub

@@ -205,6 +205,7 @@ Begin VB.Form CodeEditor
       _ExtentX        =   11245
       _ExtentY        =   8705
       _Version        =   393217
+      Enabled         =   -1  'True
       ScrollBars      =   3
       DisableNoScroll =   -1  'True
       AutoVerbMenu    =   -1  'True
@@ -334,6 +335,48 @@ Private Sub Form_Load()
     'ToolWindow1.ToolWindowOpen Me
 End Sub
 
+Private Function GetVariables() As Object
+    Dim TotalVars As New Collection
+    Dim Vars As Variant
+    Dim Methods As Variant
+    Dim Pos As Long
+    Dim Lines() As String
+    Dim CurLine() As String
+    Dim CurValue() As String
+    Dim curVarItem As CodeEditorVariable_Class
+    
+    Lines = Split(Text1.text, vbCrLf)
+    MsgBox UBound(Lines)
+    Vars = Array("Dim", "Private", "Public", "Set")
+    Methods = Array("Sub", "Function")
+    
+    'On Error Resume Next
+    For Each TLine In Lines
+        If TLine = "" Then
+            Resume Next
+        End If
+        CurLine = Filter(Vars, TLine)
+        CurValue = Split(Trim(TLine), "=")
+        
+        MsgBox UBound(CurLine)
+        If UBound(CurLine) > 0 Then
+            If UBound(Filter(Vars, CurLine(0))) > -1 And UBound(Filter(Methods, Trim(CurLine(1)))) < 0 Then
+                Set curVarItem = New CodeEditorVariable_Class
+                curVarItem.Name = Trim(CurLine(1))
+                curVarItem.ScopeString = Trim(CurLine(0))
+                If UBound(CurValue) > 0 Then
+                    curVarItem.Value = Trim(CurValue(1))
+                Else
+                    curVarItem.Value = "Empty"
+                End If
+                TotalVars.Add curVarItem
+            End If
+        End If
+    Next
+    
+    Set GetVariables = TotalVars
+End Function
+
 Function LoadItems()
     items(1) = "Sub"
     items(2) = "Function"
@@ -433,6 +476,14 @@ End Sub
 
 Sub Update()
     AddColor
+End Sub
+
+Sub ListVariables()
+    Set Vars = GetVariables()
+    ScriptCombo1.Clear
+    For Each Item In Vars
+        ScriptCombo1.AddItem Item.Name
+    Next
 End Sub
 
 Function EditData(TSession As CodeEditorEnums, Optional TObject As Object = Nothing)

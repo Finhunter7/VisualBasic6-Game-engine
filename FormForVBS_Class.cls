@@ -16,13 +16,6 @@ Private WithEvents IForm As Form
 Attribute IForm.VB_VarHelpID = -1
 'Events For VBS
 Private IEvents As New EventManager_Class
-'Public OnLoadEvent As New EngineEvent_Class
-'Public OnUnloadEvent As New EngineEvent_Class
-'Public OnResizeEvent As New EngineEvent_Class
-
-Sub Build(Name As String)
-    Me.Name = Name
-End Sub
 
 Public Property Get Name() As String
     Name = IName
@@ -47,47 +40,49 @@ Public Property Get Form() As Form
 End Property
 
 Private Sub IForm_KeyDown(KeyCode As Integer, Shift As Integer)
-    Events("OnKeyDown").Invoke KeyCode, Shift
+    Events("KeyDown").Invoke KeyCode, Shift
 End Sub
 
 Private Sub IForm_KeyPress(KeyAscii As Integer)
-    Events("OnKeyPress").Invoke KeyAscii
+    Events("KeyPress").Invoke KeyAscii
 End Sub
 
 Private Sub IForm_KeyUp(KeyCode As Integer, Shift As Integer)
-    Events("OnKeyUp").Invoke KeyCode, Shift
+    Events("KeyUp").Invoke KeyCode, Shift
 End Sub
 
 Private Sub IForm_Load()
-   Events("OnLoad").Invoke
+   Events("Load").Invoke
 End Sub
 
 Private Sub IForm_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Events("OnMouseDown").Invoke Button, Shift, X, Y
+    Events("MouseDown").Invoke Button, Shift, X, Y
 End Sub
 
 Private Sub IForm_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Events("OnMouseMove").Invoke Button, Shift, X, Y
+    Events("MouseMove").Invoke Button, Shift, X, Y
 End Sub
 
 Private Sub IForm_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    Events("OnMouseUp").Invoke Button, Shift, X, Y
+    Events("MouseUp").Invoke Button, Shift, X, Y
 End Sub
 
 Private Sub IForm_Resize()
-    Events("OnResize").Invoke
+    Events("Resize").Invoke
 End Sub
 
 Private Sub IForm_Unload(Cancel As Integer)
-    Events("OnUnload").Invoke Cancel
+    Events("Unload").Invoke Cancel
 End Sub
 
 Private Sub Class_Initialize()
-    Events.CreateEvent "OnUnload"
-    Events.CreateEvent "OnLoad"
-    Events.CreateEvent "OnResize"
-    Events.CreateEvent "OnMouseDown"
-    Events.CreateEvent "OnKeyDown"
-    Events.CreateEvent "OnKeyPress"
-    Events.CreateEvent "OnKeyUp"
+    Events.CreateEvent "Unload"
+    Events.CreateEvent "Load"
+    Events.CreateEvent "Resize"
+    Events.CreateEvent "MouseDown"
+    Events.CreateEvent "MouseMove"
+    Events.CreateEvent "MouseUp"
+    Events.CreateEvent "KeyDown"
+    Events.CreateEvent "KeyPress"
+    Events.CreateEvent "KeyUp"
 End Sub

@@ -19,7 +19,7 @@ Public Tag As String
 Private IData As String ' Scriptin koodi
 Public Index As Long ' Ei Käytössä
 Public ScriptPriority As Long
-Public MyModule As Module
+Private IMyModule As Module
 Public MyObject As Object
 Public Active As Boolean
 
@@ -40,17 +40,12 @@ Public Property Let Data(RHS As String)
     IData = RHS
 End Property
 
-Private Sub CountKeysStat()
-    Dim Vars As Variant
-    Dim Pos As Long
-    Vars = Array("Dim", "Private", "Public")
-    For Each Var In Vars
-        Do Until Pos > Len(IData)
-            Pos = InStr(Pos + Len(Var), IData, Var, vbTextCompare)
-        Loop
-        
-    Next
-End Sub
+Public Property Get MyModule() As Module
+    Set MyModule = IMyModule
+End Property
+Friend Property Set MyModule(RHS As Module)
+    Set IMyModule = RHS
+End Property
 
 Sub Load()
     On Error Resume Next
@@ -64,9 +59,4 @@ End Sub
 
 Private Sub Class_Initialize()
     Me.Active = True
-End Sub
-
-Sub CreateModule(CodeEngine As ScriptControl)
-    Set MyModule = CodeEngine.Modules.Add("Script_" & Me.Name & "_" & Rnd(1) * 10000, MyObject)
-    MyModule.AddCode Data
 End Sub

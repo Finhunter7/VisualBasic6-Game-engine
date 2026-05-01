@@ -185,11 +185,17 @@ Public Property Get Console() As Console
     Set Console = EConsole
 End Property
 
-Function GetScene(ID) As Object
+Function GetScene(ID, Optional ActiveOnly As Boolean = False) As Object
 Attribute GetScene.VB_Description = "Gets scene with ID or Name"
     On Error Resume Next
-    If Me.Scenes.Count > 0 Then
-        Set GetScene = Scenes.Item(ID)
+    If ActiveOnly Then
+        If Me.Scenes.Count > 0 Then
+            Set GetScene = Scenes.Item(ID)
+        End If
+    Else
+        If Me.ScenesInactive.Count > 0 Then
+            Set GetScene = ScenesInactive.Item(ID)
+        End If
     End If
 End Function
 
@@ -315,7 +321,7 @@ Function RefreshChanges()
     RaiseEvent OnDataChanged
 End Function
 
-Function EditorMoveCamera(DirX As Double, DirY As Double)
+Function EditorMoveCamera(DirX As Single, DirY As Single)
     If IIsEngineRunning Then
         Exit Function
     End If
@@ -532,13 +538,15 @@ Function CreateNewClassComponent(Obj As Object, Name As String) As Object
     Set CreateNewClassComponent = Obj
 End Function
 
-Function CreateGameObject(Name As String, SceneID) As GameObject_Class
+Function CreateGameObject(Name As String, Optional SceneID As String = "") As GameObject_Class
     On Error Resume Next
     Dim TargetScene As Scene_Class
     Dim NGObject As New GameObject_Class
-    Set TargetScene = Me.ScenesInactive.Item(SceneID)
     NGObject.Name = Name
-    TargetScene.AddObject NGObject, Name
+    If Not SceneID = "" Then
+        Set TargetScene = Me.ScenesInactive.Item(SceneID)
+        TargetScene.AddObject NGObject, Name
+    End If
     Set CreateGameObject = NGObject
 End Function
 
@@ -561,10 +569,6 @@ Function SetGlobalScriptData(Data As String) As Boolean
     Me.CodeEngine.AddCode Me.GlobalScript.Data
     IIsGlobalScriptDataLoaded = True
 End Function
-
-Sub EditObjectCode(Edit As CodeEditorEnums, Object As GameObject_Class, Optional Scene As Scene_Class)
-    
-End Sub
 
 Private Sub Class_Initialize()
     ScriptEngine_Intialize
@@ -937,7 +941,7 @@ End Sub
 Function CreateModuleFromFile(FileName As String, Optional ExposedObject As Object = Nothing) As Module
 Attribute CreateModuleFromFile.VB_Description = "Creates ScriptControl Module From File"
     Dim FSystem As New FileSystemObject
-    Dim SFile As file
+    Dim SFile As File
     Dim dataStream As TextStream
     Dim CModule As Module
     
@@ -955,9 +959,9 @@ End Function
 Function OpenProject(FileName As String, AppPath As Boolean) As Boolean
 Attribute OpenProject.VB_Description = "Opens The Project File"
     Dim FileSystem As New FileSystemObject
-    Dim ScriptFile As file
+    Dim ScriptFile As File
     Dim ScriptFileDataStream As TextStream
-    Dim ProjectFile As file
+    Dim ProjectFile As File
     Dim ProjectFileDataStream As TextStream
     Dim Data As String
     Dim SModule As Module
@@ -1185,7 +1189,6 @@ Attribute StartEngine.VB_Description = "Starts The Engine"
             thisScript.MyModule.Run "Load"
         End If
     Next
-    
     'loadStatusDialog.Hide
     If ProjectType = VBCEGameProject Then
         Me.EngineTimer.Start

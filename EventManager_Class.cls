@@ -37,6 +37,12 @@ Sub ChangeClassName(NewName As String)
     Next
 End Sub
 
+Sub AddUser(Obj As Variant, Optional Key As String)
+    For i = 1 To ColEvents.Count
+        ColEvents.Item(i).AddUser Obj, Key
+    Next
+End Sub
+
 Function Count() As Long
     Count = ColEvents.Count
 End Function

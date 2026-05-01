@@ -151,9 +151,7 @@ End Sub
 Sub DrawObjects() ' Not Curently Used
     On Error Resume Next
     For Each Item In IObjects
-        If Item.Active Then
-            Item.Draw
-        End If
+        Item.Draw
     Next
 End Sub
 
@@ -168,7 +166,7 @@ End Sub
 Sub RedrawObjects()
     On Error Resume Next
     For Each Item In IObjects
-        CallByName Item, "EditorCallDraw", VbMethod
+        Item.EditorCallDraw
     Next
 End Sub
 
@@ -181,7 +179,7 @@ Function SetCamera(CameraObject As Variant) As Object
     End If
 End Function
 
-Sub ChangeEditorCameraPosition(AddX As Double, AddY As Double, AddZ As Double)
+Sub ChangeEditorCameraPosition(AddX As Single, AddY As Single, AddZ As Single)
     Me.EditorCameraPosition.AddVector AddX, AddY, AddZ
 End Sub
 

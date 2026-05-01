@@ -13,9 +13,9 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder6" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
-Public X As Double
-Public Y As Double
-Public Z As Double
+Public X As Single
+Public Y As Single
+Public Z As Single
 
 Function To_Array()
 Attribute To_Array.VB_Description = "Converts Vector To Array"
@@ -58,7 +58,7 @@ End Property
 Public Property Set Vector(RHS As Object)
 
 End Property
-Function NewVector(Optional NX As Double, Optional NY As Double, Optional NZ As Double) As Vector_Class 'Luo Uuden Vektorin
+Function NewVector(Optional NX As Single, Optional NY As Single, Optional NZ As Single) As Vector_Class 'Luo Uuden Vektorin
 Attribute NewVector.VB_Description = "Returns A New Vector Instance"
 Attribute NewVector.VB_UserMemId = 0
     Dim NewVectorInstance As New Vector_Class
@@ -74,14 +74,14 @@ Function AddVectorV(Vector3 As Variant) As Vector_Class ' Yhdist‰‰ Vektorin Arvo
     Me.Z = Me.Z + Vector3.Z
     Set AddVectorV = Me
 End Function
-Function AddVector(Optional AddX As Double, Optional AddY As Double, Optional AddZ As Double) As Vector_Class
+Function AddVector(Optional AddX As Single, Optional AddY As Single, Optional AddZ As Single) As Vector_Class
     Me.X = Me.X + AddX
     Me.Y = Me.Y + AddY
     Me.Z = Me.Z + AddZ
     Set AddVector = Me
 End Function
 
-Function SetVector(Optional NewX As Double, Optional NewY As Double, Optional NewZ As Double) As Vector_Class
+Function SetVector(Optional NewX As Single, Optional NewY As Single, Optional NewZ As Single) As Vector_Class
     Me.X = NewX
     Me.Y = NewY
     Me.Z = NewZ
